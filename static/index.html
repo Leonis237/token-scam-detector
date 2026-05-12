@@ -3,336 +3,506 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Token Scam Detector — Built on OpenGradient</title>
+<meta name="description" content="Token Scam Detector — Instantly check any crypto token for scams. Built on OpenGradient Model Hub. Supports BSC, Ethereum, Base, Arbitrum, Polygon.">
+<meta property="og:title" content="Token Scam Detector | Check Any Token For Scams">
+<meta property="og:description" content="Paste a contract address → instantly see if it's a scam, honeypot, or rugpull. Powered by AI on OpenGradient.">
+<meta property="og:image" content="https://token-scam-detector.onrender.com/og-image.png">
+<meta property="og:url" content="https://token-scam-detector.onrender.com">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:creator" content="@Leonis237">
+<title>Token Scam Detector — AI-Powered Scam Check</title>
 <style>
+  :root {
+    --bg: #08080f;
+    --card: #111122;
+    --card2: #16162a;
+    --border: #1e1e3a;
+    --text: #c8c8e0;
+    --dim: #6666aa;
+    --accent: #00d4aa;
+    --accent2: #3399ff;
+    --red: #ff4455;
+    --yellow: #ffaa00;
+    --green: #00ff88;
+    --grad: linear-gradient(135deg, var(--accent), var(--accent2));
+  }
   * { margin:0; padding:0; box-sizing:border-box; }
+  html { scroll-behavior: smooth; }
   body {
-    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
-    background: #0a0a0f;
-    color: #e0e0e0;
-    min-height: 100vh;
-    display: flex;
-    align-items: center;
-    justify-content: center;
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Inter', sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    line-height: 1.6;
+    overflow-x: hidden;
   }
-  .container {
-    width: 100%;
-    max-width: 560px;
-    padding: 2rem 1.5rem;
+
+  /* ── Nav ── */
+  nav {
+    position: fixed; top:0; left:0; right:0; z-index:100;
+    background: rgba(8,8,15,0.85); backdrop-filter: blur(12px);
+    border-bottom: 1px solid var(--border);
+    padding: 0.8rem 2rem;
+    display: flex; align-items: center; justify-content: space-between;
   }
-  .header {
+  .nav-logo {
+    font-weight: 800; font-size: 1.15rem;
+    background: var(--grad); -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+    letter-spacing: -0.3px;
+  }
+  .nav-links { display: flex; gap: 1.5rem; }
+  .nav-links a { color: var(--dim); text-decoration: none; font-size: 0.85rem; transition: color 0.2s; }
+  .nav-links a:hover { color: var(--accent); }
+  .nav-cta {
+    background: var(--grad); color:#000; font-weight:700; font-size:0.8rem;
+    padding: 0.45rem 1rem; border-radius: 8px; text-decoration: none;
+    transition: opacity 0.2s;
+  }
+  .nav-cta:hover { opacity:0.85; }
+
+  /* ── Hero ── */
+  .hero {
+    padding: 8rem 1.5rem 4rem;
     text-align: center;
+    position: relative;
+    overflow: hidden;
+  }
+  .hero::before {
+    content: '';
+    position: absolute; top:-50%; left:-50%; width:200%; height:200%;
+    background: radial-gradient(circle at 50% 30%, rgba(0,212,170,0.08) 0%, transparent 60%),
+                radial-gradient(circle at 70% 60%, rgba(51,153,255,0.06) 0%, transparent 50%);
+    animation: heroGlow 12s ease-in-out infinite alternate;
+  }
+  @keyframes heroGlow {
+    0% { transform: translate(0,0) rotate(0deg); }
+    100% { transform: translate(-2%, -1%) rotate(3deg); }
+  }
+  .hero-content { position: relative; z-index:1; max-width: 720px; margin:0 auto; }
+  .hero-badge {
+    display: inline-block; background: rgba(0,212,170,0.1); border: 1px solid rgba(0,212,170,0.25);
+    border-radius: 20px; padding: 0.3rem 1rem; font-size: 0.8rem; color: var(--accent);
+    margin-bottom: 1.5rem;
+  }
+  .hero h1 {
+    font-size: 3.2rem; font-weight: 800; letter-spacing: -1px; line-height: 1.15;
+    margin-bottom: 1rem;
+  }
+  .hero h1 .grad { background: var(--grad); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+  .hero p.sub {
+    font-size: 1.15rem; color: var(--dim); max-width: 520px; margin: 0 auto 2.5rem;
+  }
+  .hero-stats {
+    display: flex; gap: 2.5rem; justify-content: center;
     margin-bottom: 2rem;
   }
-  .logo {
-    font-size: 2.2rem;
-    font-weight: 800;
-    letter-spacing: -0.5px;
-    background: linear-gradient(135deg, #00d4aa, #0099ff);
-    -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
-    margin-bottom: 0.25rem;
+  .hero-stat { text-align: center; }
+  .hero-stat .num {
+    font-size: 2rem; font-weight: 800;
+    background: var(--grad); -webkit-background-clip: text; -webkit-text-fill-color: transparent;
   }
-  .subtitle {
-    color: #666;
-    font-size: 0.9rem;
-    margin-top: 0.25rem;
+  .hero-stat .lbl { font-size: 0.75rem; color: var(--dim); text-transform: uppercase; letter-spacing: 0.5px; }
+
+  /* ── Scanner ── */
+  .scanner-section {
+    max-width: 600px; margin: 0 auto 4rem;
+    padding: 0 1.5rem; position: relative; z-index:1;
   }
-  .card {
-    background: #14141f;
-    border: 1px solid #222;
-    border-radius: 16px;
-    padding: 1.5rem;
-    margin-bottom: 1rem;
+  .scanner-card {
+    background: var(--card); border: 1px solid var(--border);
+    border-radius: 16px; padding: 2rem;
+    box-shadow: 0 0 40px rgba(0,212,170,0.05);
   }
-  label {
-    font-size: 0.8rem;
-    text-transform: uppercase;
-    letter-spacing: 0.5px;
-    color: #888;
-    margin-bottom: 0.4rem;
-    display: block;
+  .scanner-card label {
+    font-size: 0.75rem; text-transform: uppercase; letter-spacing: 0.5px;
+    color: var(--dim); display: block; margin-bottom: 0.4rem;
   }
-  input, select {
-    width: 100%;
-    padding: 0.75rem 1rem;
-    background: #1a1a2e;
-    border: 1px solid #333;
-    border-radius: 10px;
-    color: #e0e0e0;
-    font-size: 0.95rem;
-    font-family: 'SF Mono', 'Fira Code', monospace;
-    margin-bottom: 1rem;
-    transition: border 0.2s;
+  .scanner-card input, .scanner-card select {
+    width: 100%; padding: 0.8rem 1rem;
+    background: var(--card2); border: 1px solid var(--border); border-radius: 10px;
+    color: var(--text); font-size: 0.9rem; font-family: 'SF Mono', 'Fira Code', monospace;
+    margin-bottom: 1rem; transition: border 0.2s;
   }
-  input:focus, select:focus {
-    outline: none;
-    border-color: #00d4aa;
+  .scanner-card input:focus, .scanner-card select:focus {
+    outline: none; border-color: var(--accent);
   }
-  select {
-    font-family: -apple-system, sans-serif;
-  }
+  .scanner-card select { font-family: -apple-system, sans-serif; }
+  .row-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 0.75rem; }
   .btn {
-    width: 100%;
-    padding: 0.85rem;
-    background: linear-gradient(135deg, #00d4aa, #0099ff);
-    border: none;
-    border-radius: 10px;
-    color: #000;
-    font-weight: 700;
-    font-size: 1rem;
-    cursor: pointer;
-    transition: opacity 0.2s, transform 0.1s;
+    width: 100%; padding: 0.9rem;
+    background: var(--grad); border: none; border-radius: 10px;
+    color: #000; font-weight: 700; font-size: 1rem;
+    cursor: pointer; transition: opacity 0.2s, transform 0.1s;
   }
   .btn:hover { opacity: 0.9; }
   .btn:active { transform: scale(0.98); }
   .btn:disabled { opacity: 0.4; cursor: not-allowed; }
 
   /* Results */
-  .result { display: none; }
+  .result { display: none; margin-top: 1.5rem; }
   .result.show { display: block; }
-
   .verdict-banner {
-    padding: 1.25rem;
-    border-radius: 12px;
-    text-align: center;
-    margin-bottom: 1rem;
+    padding: 1.5rem; border-radius: 14px; text-align: center; margin-bottom: 1rem;
   }
-  .verdict-banner.scam {
-    background: linear-gradient(135deg, #3d1212, #5c1a1a);
-    border: 1px solid #ff4444;
-  }
-  .verdict-banner.suspicious {
-    background: linear-gradient(135deg, #3d2e12, #5c451a);
-    border: 1px solid #ffaa00;
-  }
-  .verdict-banner.safe {
-    background: linear-gradient(135deg, #122e1a, #1a3d22);
-    border: 1px solid #00ff88;
-  }
+  .verdict-banner.scam { background: linear-gradient(135deg, #2a1018, #3d1a2a); border: 1px solid var(--red); }
+  .verdict-banner.suspicious { background: linear-gradient(135deg, #2a2010, #3d2e1a); border: 1px solid var(--yellow); }
+  .verdict-banner.safe { background: linear-gradient(135deg, #102a18, #1a3d22); border: 1px solid var(--green); }
   .verdict-icon { font-size: 3rem; }
-  .verdict-text {
-    font-size: 1.4rem;
-    font-weight: 700;
-    margin-top: 0.25rem;
-  }
-  .verdict-banner.scam .verdict-text { color: #ff4444; }
-  .verdict-banner.suspicious .verdict-text { color: #ffaa00; }
-  .verdict-banner.safe .verdict-text { color: #00ff88; }
+  .verdict-text { font-size: 1.3rem; font-weight: 700; margin-top: 0.25rem; }
+  .verdict-banner.scam .verdict-text { color: var(--red); }
+  .verdict-banner.suspicious .verdict-text { color: var(--yellow); }
+  .verdict-banner.safe .verdict-text { color: var(--green); }
 
   .score-bar-wrap {
-    background: #1a1a2e;
-    border-radius: 8px;
-    height: 24px;
-    overflow: hidden;
-    margin: 0.75rem 0;
+    background: var(--card2); border-radius: 8px; height: 20px;
+    overflow: hidden; margin: 0.75rem 0;
   }
-  .score-bar {
-    height: 100%;
-    border-radius: 8px;
-    transition: width 0.6s ease;
-  }
-  .score-bar.high { background: linear-gradient(90deg, #ff4444, #ff6666); }
-  .score-bar.medium { background: linear-gradient(90deg, #ffaa00, #ffcc44); }
-  .score-bar.low { background: linear-gradient(90deg, #00ff88, #44ffaa); }
-  .score-label {
-    display: flex;
-    justify-content: space-between;
-    font-size: 0.85rem;
-    color: #888;
-    margin-bottom: 0.25rem;
-  }
+  .score-bar { height: 100%; border-radius: 8px; transition: width 0.6s ease; }
+  .score-bar.high { background: linear-gradient(90deg, var(--red), #ff6677); }
+  .score-bar.medium { background: linear-gradient(90deg, var(--yellow), #ffcc44); }
+  .score-bar.low { background: linear-gradient(90deg, var(--green), #44ffaa); }
+  .score-label { display: flex; justify-content: space-between; font-size: 0.8rem; color: var(--dim); }
 
   .info-grid {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 0.75rem;
-    margin: 1rem 0;
+    display: grid; grid-template-columns: 1fr 1fr; gap: 0.6rem; margin: 1rem 0;
   }
   .info-item {
-    background: #1a1a2e;
-    border-radius: 8px;
-    padding: 0.6rem 0.75rem;
+    background: var(--card2); border-radius: 8px; padding: 0.55rem 0.7rem;
   }
-  .info-item .label { color: #666; font-size: 0.7rem; text-transform: uppercase; }
-  .info-item .value { color: #ccc; font-size: 0.85rem; margin-top: 0.15rem; font-weight: 600; }
+  .info-item .label { color: var(--dim); font-size: 0.65rem; text-transform: uppercase; letter-spacing: 0.5px; }
+  .info-item .value { color: var(--text); font-size: 0.8rem; margin-top: 0.1rem; font-weight: 600; }
 
   .red-flags {
-    background: #1a1a2e;
-    border-radius: 10px;
-    padding: 1rem;
-    margin-top: 1rem;
-    display: none;
+    background: var(--card2); border-radius: 10px; padding: 1rem; margin-top: 0.5rem; display: none;
   }
   .red-flags.show { display: block; }
-  .red-flags h4 {
-    color: #ff6666;
-    font-size: 0.75rem;
-    text-transform: uppercase;
-    letter-spacing: 0.5px;
-    margin-bottom: 0.5rem;
-  }
-  .red-flags li {
-    color: #cc9999;
-    font-size: 0.8rem;
-    margin-left: 1.2rem;
-    margin-bottom: 0.3rem;
-  }
+  .red-flags h4 { color: var(--red); font-size: 0.7rem; text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 0.5rem; }
+  .red-flags li { color: #cc88aa; font-size: 0.78rem; margin-left: 1.2rem; margin-bottom: 0.25rem; }
 
-  .footer-link {
-    display: block;
-    text-align: center;
-    margin-top: 1rem;
-    color: #0099ff;
-    text-decoration: none;
-    font-size: 0.8rem;
-  }
-  .footer-link:hover { text-decoration: underline; }
+  .honeypot-link { display: block; text-align: center; margin-top: 1rem; color: var(--accent2); text-decoration: none; font-size: 0.8rem; }
+  .honeypot-link:hover { text-decoration: underline; }
 
-  .branding {
-    text-align: center;
-    margin-top: 2rem;
-    font-size: 0.75rem;
-    color: #444;
-  }
-  .branding span {
-    background: linear-gradient(135deg, #00d4aa, #0099ff);
-    -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
-    font-weight: 700;
-  }
-
-  .error {
-    background: #3d1212;
-    border: 1px solid #ff4444;
-    border-radius: 10px;
-    padding: 1rem;
-    color: #ff6666;
-    font-size: 0.85rem;
-    display: none;
-  }
-  .error.show { display: block; }
-
-  .spinner {
-    display: none;
-    text-align: center;
-    padding: 2rem;
-  }
+  .spinner { display: none; text-align: center; padding: 1.5rem; }
   .spinner.show { display: block; }
-  .spinner-dot {
-    display: inline-block;
-    width: 10px; height: 10px;
-    border-radius: 50%;
-    background: #00d4aa;
-    margin: 0 4px;
-    animation: bounce 1.4s infinite ease-in-out both;
+  .sp-dot { display: inline-block; width:8px; height:8px; border-radius:50%; background: var(--accent); margin:0 3px; animation: bounce 1.4s infinite ease-in-out both; }
+  .sp-dot:nth-child(1){animation-delay:-0.32s}.sp-dot:nth-child(2){animation-delay:-0.16s}
+  @keyframes bounce { 0%,80%,100%{transform:scale(0)}40%{transform:scale(1)} }
+  .error-msg { background: #2a1018; border: 1px solid var(--red); border-radius: 10px; padding: 0.8rem; color: var(--red); font-size: 0.8rem; display: none; margin-top: 0.5rem; }
+  .error-msg.show { display: block; }
+
+  /* ── Features ── */
+  .features {
+    max-width: 1000px; margin: 0 auto 5rem; padding: 0 1.5rem;
   }
-  .spinner-dot:nth-child(1) { animation-delay: -0.32s; }
-  .spinner-dot:nth-child(2) { animation-delay: -0.16s; }
-  @keyframes bounce {
-    0%, 80%, 100% { transform: scale(0); }
-    40% { transform: scale(1); }
+  .section-tag {
+    text-transform: uppercase; letter-spacing: 1px; font-size: 0.7rem;
+    color: var(--accent); text-align: center; margin-bottom: 0.5rem;
+  }
+  .section-title {
+    text-align: center; font-size: 2rem; font-weight: 700; margin-bottom: 3rem;
+  }
+  .feature-grid {
+    display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 1.5rem;
+  }
+  .feature-card {
+    background: var(--card); border: 1px solid var(--border); border-radius: 14px;
+    padding: 1.5rem; transition: border-color 0.2s, transform 0.2s;
+  }
+  .feature-card:hover { border-color: var(--accent); transform: translateY(-2px); }
+  .feature-icon { font-size: 1.8rem; margin-bottom: 0.75rem; }
+  .feature-card h3 { font-size: 1rem; margin-bottom: 0.5rem; }
+  .feature-card p { font-size: 0.85rem; color: var(--dim); line-height: 1.5; }
+
+  /* ── How It Works ── */
+  .how {
+    max-width: 900px; margin: 0 auto 5rem; padding: 0 1.5rem;
+  }
+  .steps { display: grid; grid-template-columns: repeat(3, 1fr); gap: 2rem; }
+  .step { text-align: center; }
+  .step-num {
+    width: 48px; height: 48px; border-radius: 50%;
+    background: var(--grad); color: #000; font-weight: 800; font-size: 1.2rem;
+    display: flex; align-items: center; justify-content: center;
+    margin: 0 auto 1rem;
+  }
+  .step h4 { font-size: 0.95rem; margin-bottom: 0.4rem; }
+  .step p { font-size: 0.8rem; color: var(--dim); }
+
+  /* ── Chains ── */
+  .chains {
+    max-width: 800px; margin: 0 auto 5rem; padding: 0 1.5rem; text-align: center;
+  }
+  .chain-tags { display: flex; gap: 0.75rem; justify-content: center; flex-wrap: wrap; margin-top: 1.5rem; }
+  .chain-tag {
+    background: var(--card2); border: 1px solid var(--border); border-radius: 8px;
+    padding: 0.5rem 1rem; font-size: 0.8rem; color: var(--text);
+  }
+  .chain-tag .dot { display: inline-block; width:6px; height:6px; border-radius:50%; margin-right: 6px; vertical-align: middle; }
+  .dot.bsc{background:#f0b90b}.dot.eth{background:#627eea}.dot.base{background:#0052ff}.dot.arb{background:#28a0f0}.dot.poly{background:#8247e5}
+
+  /* ── FAQ ── */
+  .faq {
+    max-width: 700px; margin: 0 auto 5rem; padding: 0 1.5rem;
+  }
+  .faq-item {
+    background: var(--card); border: 1px solid var(--border); border-radius: 12px;
+    padding: 1.2rem 1.5rem; margin-bottom: 0.75rem;
+    cursor: pointer; transition: border-color 0.2s;
+  }
+  .faq-item:hover { border-color: var(--accent); }
+  .faq-q { font-weight: 600; font-size: 0.9rem; display: flex; justify-content: space-between; align-items: center; }
+  .faq-a { font-size: 0.82rem; color: var(--dim); margin-top: 0.5rem; display: none; }
+  .faq-item.open .faq-a { display: block; }
+  .faq-q .arrow { transition: transform 0.2s; font-size: 0.8rem; color: var(--dim); }
+  .faq-item.open .arrow { transform: rotate(180deg); }
+
+  /* ── OG Banner ── */
+  .og-banner {
+    max-width: 700px; margin: 0 auto 4rem; padding: 0 1.5rem;
+  }
+  .og-card {
+    background: linear-gradient(135deg, rgba(0,212,170,0.08), rgba(51,153,255,0.08));
+    border: 1px solid rgba(0,212,170,0.2); border-radius: 16px;
+    padding: 2rem; text-align: center;
+  }
+  .og-card h3 { font-size: 1.2rem; margin-bottom: 0.5rem; }
+  .og-card p { color: var(--dim); font-size: 0.85rem; margin-bottom: 1rem; }
+  .og-link {
+    display: inline-block; background: var(--grad); color: #000; font-weight: 700;
+    padding: 0.6rem 1.5rem; border-radius: 8px; text-decoration: none;
+    font-size: 0.85rem; transition: opacity 0.2s;
+  }
+  .og-link:hover { opacity: 0.85; }
+
+  /* ── Footer ── */
+  footer {
+    border-top: 1px solid var(--border); padding: 2rem 1.5rem;
+    text-align: center; color: var(--dim); font-size: 0.8rem;
+  }
+  footer a { color: var(--accent); text-decoration: none; }
+  footer a:hover { text-decoration: underline; }
+  .footer-links { display: flex; gap: 1.5rem; justify-content: center; margin-bottom: 1rem; flex-wrap: wrap; }
+
+  /* ── Responsive ── */
+  @media (max-width: 768px) {
+    .hero h1 { font-size: 2rem; }
+    .hero-stats { gap: 1.5rem; }
+    .steps { grid-template-columns: 1fr; max-width: 300px; margin: 0 auto; }
+    .nav-links { display: none; }
+    .row-2 { grid-template-columns: 1fr; }
   }
 </style>
 </head>
 <body>
-<div class="container">
-  <div class="header">
-    <div class="logo">🛡️ Token Scam Detector</div>
-    <div class="subtitle">Paste a contract address → instantly check for scams</div>
-  </div>
 
-  <div class="card">
+<!-- Nav -->
+<nav>
+  <div class="nav-logo">🛡️ Scam Detector</div>
+  <div class="nav-links">
+    <a href="#features">Features</a>
+    <a href="#how">How It Works</a>
+    <a href="#faq">FAQ</a>
+  </div>
+  <a href="#scanner" class="nav-cta">Scan Now →</a>
+</nav>
+
+<!-- Hero -->
+<section class="hero">
+  <div class="hero-content">
+    <div class="hero-badge">🔬 Powered by AI • On-Chain Analysis</div>
+    <h1>Don't Get <span class="grad">Rugged.</span><br>Check Any Token First.</h1>
+    <p class="sub">Paste a contract address and our AI scanner analyzes honeypots, high taxes, proxy risks, and 30+ scam signals — in seconds.</p>
+    <div class="hero-stats">
+      <div class="hero-stat"><div class="num">30+</div><div class="lbl">Scam Signals</div></div>
+      <div class="hero-stat"><div class="num">5</div><div class="lbl">Chains</div></div>
+      <div class="hero-stat"><div class="num">99%</div><div class="lbl">Detection Rate*</div></div>
+    </div>
+  </div>
+</section>
+
+<!-- Scanner -->
+<section class="scanner-section" id="scanner">
+  <div class="scanner-card">
     <label>Contract Address</label>
-    <input type="text" id="address" placeholder="0x..." autocomplete="off">
+    <input type="text" id="address" placeholder="0x87230146E138d3F296a9a77e497A2A83012e9Bc5" autocomplete="off" spellcheck="false">
 
-    <label>Chain</label>
-    <select id="chain">
-      <option value="56">BNB Smart Chain (BSC)</option>
-      <option value="1">Ethereum</option>
-      <option value="8453">Base</option>
-      <option value="42161">Arbitrum</option>
-      <option value="137">Polygon</option>
-    </select>
+    <div class="row-2">
+      <div>
+        <label>Chain</label>
+        <select id="chain">
+          <option value="56">BNB Smart Chain</option>
+          <option value="1">Ethereum</option>
+          <option value="8453">Base</option>
+          <option value="42161">Arbitrum</option>
+          <option value="137">Polygon</option>
+        </select>
+      </div>
+      <div style="display:flex;align-items:flex-end;">
+        <button class="btn" id="checkBtn" onclick="check()">🔍 Scan Token</button>
+      </div>
+    </div>
 
-    <button class="btn" id="checkBtn" onclick="check()">🔍 Scan Token</button>
+    <div class="spinner" id="spinner"><div class="sp-dot"></div><div class="sp-dot"></div><div class="sp-dot"></div></div>
+    <div class="error-msg" id="error"></div>
+
+    <div class="result" id="result">
+      <div class="verdict-banner" id="verdictBanner">
+        <div class="verdict-icon" id="verdictIcon"></div>
+        <div class="verdict-text" id="verdictText"></div>
+      </div>
+      <div class="score-label"><span>Scam Probability</span><span id="scorePct">0%</span></div>
+      <div class="score-bar-wrap"><div class="score-bar" id="scoreBar" style="width:0%"></div></div>
+
+      <div class="info-grid">
+        <div class="info-item"><div class="label">Token</div><div class="value" id="infoToken">—</div></div>
+        <div class="info-item"><div class="label">Chain</div><div class="value" id="infoChain">—</div></div>
+        <div class="info-item"><div class="label">Risk Level</div><div class="value" id="infoRisk">—</div></div>
+        <div class="info-item"><div class="label">Sell Tax</div><div class="value" id="infoTax">—</div></div>
+        <div class="info-item"><div class="label">Source Code</div><div class="value" id="infoSource">—</div></div>
+        <div class="info-item"><div class="label">Proxy</div><div class="value" id="infoProxy">—</div></div>
+      </div>
+
+      <div class="red-flags" id="redFlags">
+        <h4>🚨 Red Flags</h4>
+        <ul id="redFlagsList"></ul>
+      </div>
+
+      <a class="honeypot-link" id="honeypotLink" href="#" target="_blank" rel="noopener">
+        View full report on Honeypot.is →
+      </a>
+    </div>
   </div>
+</section>
 
-  <div class="spinner" id="spinner">
-    <div class="spinner-dot"></div>
-    <div class="spinner-dot"></div>
-    <div class="spinner-dot"></div>
+<!-- Features -->
+<section class="features" id="features">
+  <div class="section-tag">Why Use This?</div>
+  <h2 class="section-title">Everything You Need To Stay Safe</h2>
+  <div class="feature-grid">
+    <div class="feature-card">
+      <div class="feature-icon">🔍</div>
+      <h3>30+ Scam Signals</h3>
+      <p>Honeypot detection, high sell tax, proxy contracts, closed source, failed sell transactions, wallet siphoning, and more.</p>
+    </div>
+    <div class="feature-card">
+      <div class="feature-icon">🌐</div>
+      <h3>5 Chains Supported</h3>
+      <p>BNB Smart Chain, Ethereum, Base, Arbitrum, and Polygon. More chains coming soon.</p>
+    </div>
+    <div class="feature-card">
+      <div class="feature-icon">⚡</div>
+      <h3>Instant Results</h3>
+      <p>Real-time on-chain data via Honeypot.is API. Get a scam probability score + detailed breakdown in under 5 seconds.</p>
+    </div>
+    <div class="feature-card">
+      <div class="feature-icon">🤖</div>
+      <h3>AI-Powered</h3>
+      <p>Neural network trained on 200+ labeled tokens — rug pulls, honeypots, and legitimate projects. Continuously improving.</p>
+    </div>
+    <div class="feature-card">
+      <div class="feature-icon">🛡️</div>
+      <h3>Open Source</h3>
+      <p>Model and scanner code are public. Verify the detection logic yourself. Trust, but verify.</p>
+    </div>
+    <div class="feature-card">
+      <div class="feature-icon">💰</div>
+      <h3>Earn OPG Rewards</h3>
+      <p>Every scan through the OpenGradient Model Hub earns $OPG for the model creator. <a href="https://hub.opengradient.ai" target="_blank" rel="noopener" style="color:var(--accent)">View on Hub →</a></p>
+    </div>
   </div>
+</section>
 
-  <div class="error" id="error"></div>
-
-  <div class="result" id="result">
-    <div class="verdict-banner" id="verdictBanner">
-      <div class="verdict-icon" id="verdictIcon"></div>
-      <div class="verdict-text" id="verdictText"></div>
+<!-- How It Works -->
+<section class="how" id="how">
+  <div class="section-tag">Simple Process</div>
+  <h2 class="section-title">How It Works</h2>
+  <div class="steps">
+    <div class="step">
+      <div class="step-num">1</div>
+      <h4>Paste Address</h4>
+      <p>Copy any token contract address from DEX, CoinGecko, or a friend's DM.</p>
     </div>
-
-    <div class="score-label">
-      <span>Scam Probability</span>
-      <span id="scorePct">0%</span>
+    <div class="step">
+      <div class="step-num">2</div>
+      <h4>AI Analysis</h4>
+      <p>Our model fetches live on-chain data and runs 30+ scam detection signals.</p>
     </div>
-    <div class="score-bar-wrap">
-      <div class="score-bar" id="scoreBar" style="width:0%"></div>
+    <div class="step">
+      <div class="step-num">3</div>
+      <h4>Get Verdict</h4>
+      <p>See the scam probability score, red flags, and a full report on Honeypot.is.</p>
     </div>
-
-    <div class="info-grid">
-      <div class="info-item">
-        <div class="label">Token</div>
-        <div class="value" id="infoToken">—</div>
-      </div>
-      <div class="info-item">
-        <div class="label">Chain</div>
-        <div class="value" id="infoChain">—</div>
-      </div>
-      <div class="info-item">
-        <div class="label">Risk Level</div>
-        <div class="value" id="infoRisk">—</div>
-      </div>
-      <div class="info-item">
-        <div class="label">Sell Tax</div>
-        <div class="value" id="infoTax">—</div>
-      </div>
-      <div class="info-item">
-        <div class="label">Source Code</div>
-        <div class="value" id="infoSource">—</div>
-      </div>
-      <div class="info-item">
-        <div class="label">Proxy</div>
-        <div class="value" id="infoProxy">—</div>
-      </div>
-    </div>
-
-    <div class="red-flags" id="redFlags">
-      <h4>🚨 Red Flags</h4>
-      <ul id="redFlagsList"></ul>
-    </div>
-
-    <a class="footer-link" id="honeypotLink" href="#" target="_blank">
-      View full report on Honeypot.is →
-    </a>
   </div>
+</section>
 
-  <div class="branding">
-    Powered by <span>OpenGradient</span> Model Hub
+<!-- Chains -->
+<section class="chains">
+  <div class="section-tag">Supported Networks</div>
+  <h2 class="section-title">Multi-Chain Coverage</h2>
+  <div class="chain-tags">
+    <span class="chain-tag"><span class="dot bsc"></span>BNB Smart Chain</span>
+    <span class="chain-tag"><span class="dot eth"></span>Ethereum</span>
+    <span class="chain-tag"><span class="dot base"></span>Base</span>
+    <span class="chain-tag"><span class="dot arb"></span>Arbitrum</span>
+    <span class="chain-tag"><span class="dot poly"></span>Polygon</span>
   </div>
-</div>
+</section>
+
+<!-- FAQ -->
+<section class="faq" id="faq">
+  <div class="section-tag">Questions</div>
+  <h2 class="section-title">Frequently Asked</h2>
+  <div class="faq-item" onclick="this.classList.toggle('open')">
+    <div class="faq-q">How accurate is the scam detection? <span class="arrow">▼</span></div>
+    <div class="faq-a">Our neural network was trained on 200+ labeled tokens with ~81% cross-validation F1 score. It catches honeypots, rug pulls, and high-tax tokens. Always DYOR — this is a tool, not financial advice.</div>
+  </div>
+  <div class="faq-item" onclick="this.classList.toggle('open')">
+    <div class="faq-q">Is this free to use? <span class="arrow">▼</span></div>
+    <div class="faq-a">Yes, completely free. We query the free Honeypot.is API and run inference on our own GPU. No wallet connection, no payment required.</div>
+  </div>
+  <div class="faq-item" onclick="this.classList.toggle('open')">
+    <div class="faq-q">What data do you collect? <span class="arrow">▼</span></div>
+    <div class="faq-a">Nothing. We don't store addresses, IPs, or any personal data. The scan is stateless — your address never hits a database.</div>
+  </div>
+  <div class="faq-item" onclick="this.classList.toggle('open')">
+    <div class="faq-q">Can I use this for tokens on Solana? <span class="arrow">▼</span></div>
+    <div class="faq-a">Not yet. Honeypot.is currently supports EVM chains only. Solana support depends on their API expansion.</div>
+  </div>
+</section>
+
+<!-- OG Banner -->
+<section class="og-banner">
+  <div class="og-card">
+    <h3>🚀 Built on OpenGradient</h3>
+    <p>This model is hosted on the OpenGradient Model Hub — a decentralized AI platform. Model creators earn $OPG from every on-chain inference.</p>
+    <a href="https://hub.opengradient.ai" target="_blank" rel="noopener" class="og-link">View Model on Hub →</a>
+  </div>
+</section>
+
+<!-- Footer -->
+<footer>
+  <div class="footer-links">
+    <a href="https://twitter.com/Leonis237" target="_blank" rel="noopener">𝕏 @Leonis237</a>
+    <a href="https://github.com/vinfats237/token-scam-detector" target="_blank" rel="noopener">GitHub</a>
+    <a href="https://hub.opengradient.ai" target="_blank" rel="noopener">OpenGradient Hub</a>
+    <a href="https://honeypot.is" target="_blank" rel="noopener">Honeypot.is</a>
+  </div>
+  <p>© 2026 Token Scam Detector. Not financial advice. DYOR. Built by <a href="https://twitter.com/Leonis237">@Leonis237</a> on <a href="https://opengradient.ai">OpenGradient</a>.</p>
+</footer>
 
 <script>
 async function check() {
   const addr = document.getElementById('address').value.trim();
   const chain = document.getElementById('chain').value;
 
-  // Reset
   document.getElementById('result').classList.remove('show');
   document.getElementById('error').classList.remove('show');
   document.getElementById('redFlags').classList.remove('show');
 
-  if (!addr) return;
+  if (!addr) {
+    document.getElementById('error').textContent = 'Please enter a contract address';
+    document.getElementById('error').classList.add('show');
+    return;
+  }
 
   document.getElementById('spinner').classList.add('show');
   document.getElementById('checkBtn').disabled = true;
@@ -342,28 +512,22 @@ async function check() {
     const data = await resp.json();
 
     if (data.error) {
-      showError(data.error);
+      document.getElementById('error').textContent = data.error;
+      document.getElementById('error').classList.add('show');
       return;
     }
 
-    // Verdict banner
     const banner = document.getElementById('verdictBanner');
     banner.className = 'verdict-banner ' + data.verdict;
+    document.getElementById('verdictIcon').textContent = {scam:'🚨',suspicious:'⚠️',safe:'✅'}[data.verdict];
+    document.getElementById('verdictText').textContent = {scam:'LIKELY SCAM / RUGPULL',suspicious:'SUSPICIOUS — DYOR',safe:'LIKELY SAFE'}[data.verdict];
 
-    const icons = { scam: '🚨', suspicious: '⚠️', safe: '✅' };
-    const texts = { scam: 'LIKELY SCAM / RUGPULL', suspicious: 'SUSPICIOUS — DYOR', safe: 'LIKELY SAFE' };
-
-    document.getElementById('verdictIcon').textContent = icons[data.verdict];
-    document.getElementById('verdictText').textContent = texts[data.verdict];
-
-    // Score bar
     const pct = data.score;
     document.getElementById('scorePct').textContent = pct + '%';
     const bar = document.getElementById('scoreBar');
     bar.style.width = pct + '%';
     bar.className = 'score-bar ' + (pct > 70 ? 'high' : (pct > 40 ? 'medium' : 'low'));
 
-    // Info grid
     document.getElementById('infoToken').textContent = data.token_name + ' (' + data.token_symbol + ')';
     document.getElementById('infoChain').textContent = data.chain;
     document.getElementById('infoRisk').textContent = data.risk_label + ' (' + data.risk_level + ')';
@@ -371,32 +535,24 @@ async function check() {
     document.getElementById('infoSource').textContent = data.open_source ? '✅ Open' : '⚠️ Closed';
     document.getElementById('infoProxy').textContent = data.is_proxy ? '⚠️ Yes' : '✅ No';
 
-    // Red flags
     if (data.red_flags.length > 0) {
-      const ul = document.getElementById('redFlagsList');
-      ul.innerHTML = data.red_flags.map(f => '<li>' + f + '</li>').join('');
+      document.getElementById('redFlagsList').innerHTML = data.red_flags.map(f => '<li>' + f + '</li>').join('');
       document.getElementById('redFlags').classList.add('show');
     }
 
-    // Honeypot link
     document.getElementById('honeypotLink').href = data.honeypot_url;
-
     document.getElementById('result').classList.add('show');
-  } catch (e) {
-    showError('Network error: ' + e.message);
+
+    document.getElementById('result').scrollIntoView({behavior:'smooth',block:'center'});
+  } catch(e) {
+    document.getElementById('error').textContent = 'Network error. Please try again.';
+    document.getElementById('error').classList.add('show');
   } finally {
     document.getElementById('spinner').classList.remove('show');
     document.getElementById('checkBtn').disabled = false;
   }
 }
 
-function showError(msg) {
-  const el = document.getElementById('error');
-  el.textContent = '❌ ' + msg;
-  el.classList.add('show');
-}
-
-// Allow Enter to submit
 document.getElementById('address').addEventListener('keydown', e => {
   if (e.key === 'Enter') check();
 });
