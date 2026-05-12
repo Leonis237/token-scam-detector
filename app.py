@@ -7,7 +7,7 @@ import onnxruntime as ort
 from pathlib import Path
 from flask import Flask, request, jsonify, send_from_directory
 
-app = Flask(__name__, static_folder="static", static_url_path="")
+app = Flask(__name__, static_folder="static")
 DIR = Path(__file__).parent
 
 CHAIN_NAMES = {"1": "eth", "56": "bsc", "8453": "base", "42161": "arbitrum", "137": "polygon"}
