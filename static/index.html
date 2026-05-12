@@ -1,0 +1,405 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Token Scam Detector — Built on OpenGradient</title>
+<style>
+  * { margin:0; padding:0; box-sizing:border-box; }
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+    background: #0a0a0f;
+    color: #e0e0e0;
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  .container {
+    width: 100%;
+    max-width: 560px;
+    padding: 2rem 1.5rem;
+  }
+  .header {
+    text-align: center;
+    margin-bottom: 2rem;
+  }
+  .logo {
+    font-size: 2.2rem;
+    font-weight: 800;
+    letter-spacing: -0.5px;
+    background: linear-gradient(135deg, #00d4aa, #0099ff);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    margin-bottom: 0.25rem;
+  }
+  .subtitle {
+    color: #666;
+    font-size: 0.9rem;
+    margin-top: 0.25rem;
+  }
+  .card {
+    background: #14141f;
+    border: 1px solid #222;
+    border-radius: 16px;
+    padding: 1.5rem;
+    margin-bottom: 1rem;
+  }
+  label {
+    font-size: 0.8rem;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    color: #888;
+    margin-bottom: 0.4rem;
+    display: block;
+  }
+  input, select {
+    width: 100%;
+    padding: 0.75rem 1rem;
+    background: #1a1a2e;
+    border: 1px solid #333;
+    border-radius: 10px;
+    color: #e0e0e0;
+    font-size: 0.95rem;
+    font-family: 'SF Mono', 'Fira Code', monospace;
+    margin-bottom: 1rem;
+    transition: border 0.2s;
+  }
+  input:focus, select:focus {
+    outline: none;
+    border-color: #00d4aa;
+  }
+  select {
+    font-family: -apple-system, sans-serif;
+  }
+  .btn {
+    width: 100%;
+    padding: 0.85rem;
+    background: linear-gradient(135deg, #00d4aa, #0099ff);
+    border: none;
+    border-radius: 10px;
+    color: #000;
+    font-weight: 700;
+    font-size: 1rem;
+    cursor: pointer;
+    transition: opacity 0.2s, transform 0.1s;
+  }
+  .btn:hover { opacity: 0.9; }
+  .btn:active { transform: scale(0.98); }
+  .btn:disabled { opacity: 0.4; cursor: not-allowed; }
+
+  /* Results */
+  .result { display: none; }
+  .result.show { display: block; }
+
+  .verdict-banner {
+    padding: 1.25rem;
+    border-radius: 12px;
+    text-align: center;
+    margin-bottom: 1rem;
+  }
+  .verdict-banner.scam {
+    background: linear-gradient(135deg, #3d1212, #5c1a1a);
+    border: 1px solid #ff4444;
+  }
+  .verdict-banner.suspicious {
+    background: linear-gradient(135deg, #3d2e12, #5c451a);
+    border: 1px solid #ffaa00;
+  }
+  .verdict-banner.safe {
+    background: linear-gradient(135deg, #122e1a, #1a3d22);
+    border: 1px solid #00ff88;
+  }
+  .verdict-icon { font-size: 3rem; }
+  .verdict-text {
+    font-size: 1.4rem;
+    font-weight: 700;
+    margin-top: 0.25rem;
+  }
+  .verdict-banner.scam .verdict-text { color: #ff4444; }
+  .verdict-banner.suspicious .verdict-text { color: #ffaa00; }
+  .verdict-banner.safe .verdict-text { color: #00ff88; }
+
+  .score-bar-wrap {
+    background: #1a1a2e;
+    border-radius: 8px;
+    height: 24px;
+    overflow: hidden;
+    margin: 0.75rem 0;
+  }
+  .score-bar {
+    height: 100%;
+    border-radius: 8px;
+    transition: width 0.6s ease;
+  }
+  .score-bar.high { background: linear-gradient(90deg, #ff4444, #ff6666); }
+  .score-bar.medium { background: linear-gradient(90deg, #ffaa00, #ffcc44); }
+  .score-bar.low { background: linear-gradient(90deg, #00ff88, #44ffaa); }
+  .score-label {
+    display: flex;
+    justify-content: space-between;
+    font-size: 0.85rem;
+    color: #888;
+    margin-bottom: 0.25rem;
+  }
+
+  .info-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 0.75rem;
+    margin: 1rem 0;
+  }
+  .info-item {
+    background: #1a1a2e;
+    border-radius: 8px;
+    padding: 0.6rem 0.75rem;
+  }
+  .info-item .label { color: #666; font-size: 0.7rem; text-transform: uppercase; }
+  .info-item .value { color: #ccc; font-size: 0.85rem; margin-top: 0.15rem; font-weight: 600; }
+
+  .red-flags {
+    background: #1a1a2e;
+    border-radius: 10px;
+    padding: 1rem;
+    margin-top: 1rem;
+    display: none;
+  }
+  .red-flags.show { display: block; }
+  .red-flags h4 {
+    color: #ff6666;
+    font-size: 0.75rem;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    margin-bottom: 0.5rem;
+  }
+  .red-flags li {
+    color: #cc9999;
+    font-size: 0.8rem;
+    margin-left: 1.2rem;
+    margin-bottom: 0.3rem;
+  }
+
+  .footer-link {
+    display: block;
+    text-align: center;
+    margin-top: 1rem;
+    color: #0099ff;
+    text-decoration: none;
+    font-size: 0.8rem;
+  }
+  .footer-link:hover { text-decoration: underline; }
+
+  .branding {
+    text-align: center;
+    margin-top: 2rem;
+    font-size: 0.75rem;
+    color: #444;
+  }
+  .branding span {
+    background: linear-gradient(135deg, #00d4aa, #0099ff);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    font-weight: 700;
+  }
+
+  .error {
+    background: #3d1212;
+    border: 1px solid #ff4444;
+    border-radius: 10px;
+    padding: 1rem;
+    color: #ff6666;
+    font-size: 0.85rem;
+    display: none;
+  }
+  .error.show { display: block; }
+
+  .spinner {
+    display: none;
+    text-align: center;
+    padding: 2rem;
+  }
+  .spinner.show { display: block; }
+  .spinner-dot {
+    display: inline-block;
+    width: 10px; height: 10px;
+    border-radius: 50%;
+    background: #00d4aa;
+    margin: 0 4px;
+    animation: bounce 1.4s infinite ease-in-out both;
+  }
+  .spinner-dot:nth-child(1) { animation-delay: -0.32s; }
+  .spinner-dot:nth-child(2) { animation-delay: -0.16s; }
+  @keyframes bounce {
+    0%, 80%, 100% { transform: scale(0); }
+    40% { transform: scale(1); }
+  }
+</style>
+</head>
+<body>
+<div class="container">
+  <div class="header">
+    <div class="logo">🛡️ Token Scam Detector</div>
+    <div class="subtitle">Paste a contract address → instantly check for scams</div>
+  </div>
+
+  <div class="card">
+    <label>Contract Address</label>
+    <input type="text" id="address" placeholder="0x..." autocomplete="off">
+
+    <label>Chain</label>
+    <select id="chain">
+      <option value="56">BNB Smart Chain (BSC)</option>
+      <option value="1">Ethereum</option>
+      <option value="8453">Base</option>
+      <option value="42161">Arbitrum</option>
+      <option value="137">Polygon</option>
+    </select>
+
+    <button class="btn" id="checkBtn" onclick="check()">🔍 Scan Token</button>
+  </div>
+
+  <div class="spinner" id="spinner">
+    <div class="spinner-dot"></div>
+    <div class="spinner-dot"></div>
+    <div class="spinner-dot"></div>
+  </div>
+
+  <div class="error" id="error"></div>
+
+  <div class="result" id="result">
+    <div class="verdict-banner" id="verdictBanner">
+      <div class="verdict-icon" id="verdictIcon"></div>
+      <div class="verdict-text" id="verdictText"></div>
+    </div>
+
+    <div class="score-label">
+      <span>Scam Probability</span>
+      <span id="scorePct">0%</span>
+    </div>
+    <div class="score-bar-wrap">
+      <div class="score-bar" id="scoreBar" style="width:0%"></div>
+    </div>
+
+    <div class="info-grid">
+      <div class="info-item">
+        <div class="label">Token</div>
+        <div class="value" id="infoToken">—</div>
+      </div>
+      <div class="info-item">
+        <div class="label">Chain</div>
+        <div class="value" id="infoChain">—</div>
+      </div>
+      <div class="info-item">
+        <div class="label">Risk Level</div>
+        <div class="value" id="infoRisk">—</div>
+      </div>
+      <div class="info-item">
+        <div class="label">Sell Tax</div>
+        <div class="value" id="infoTax">—</div>
+      </div>
+      <div class="info-item">
+        <div class="label">Source Code</div>
+        <div class="value" id="infoSource">—</div>
+      </div>
+      <div class="info-item">
+        <div class="label">Proxy</div>
+        <div class="value" id="infoProxy">—</div>
+      </div>
+    </div>
+
+    <div class="red-flags" id="redFlags">
+      <h4>🚨 Red Flags</h4>
+      <ul id="redFlagsList"></ul>
+    </div>
+
+    <a class="footer-link" id="honeypotLink" href="#" target="_blank">
+      View full report on Honeypot.is →
+    </a>
+  </div>
+
+  <div class="branding">
+    Powered by <span>OpenGradient</span> Model Hub
+  </div>
+</div>
+
+<script>
+async function check() {
+  const addr = document.getElementById('address').value.trim();
+  const chain = document.getElementById('chain').value;
+
+  // Reset
+  document.getElementById('result').classList.remove('show');
+  document.getElementById('error').classList.remove('show');
+  document.getElementById('redFlags').classList.remove('show');
+
+  if (!addr) return;
+
+  document.getElementById('spinner').classList.add('show');
+  document.getElementById('checkBtn').disabled = true;
+
+  try {
+    const resp = await fetch(`/api/check?address=${encodeURIComponent(addr)}&chain=${chain}`);
+    const data = await resp.json();
+
+    if (data.error) {
+      showError(data.error);
+      return;
+    }
+
+    // Verdict banner
+    const banner = document.getElementById('verdictBanner');
+    banner.className = 'verdict-banner ' + data.verdict;
+
+    const icons = { scam: '🚨', suspicious: '⚠️', safe: '✅' };
+    const texts = { scam: 'LIKELY SCAM / RUGPULL', suspicious: 'SUSPICIOUS — DYOR', safe: 'LIKELY SAFE' };
+
+    document.getElementById('verdictIcon').textContent = icons[data.verdict];
+    document.getElementById('verdictText').textContent = texts[data.verdict];
+
+    // Score bar
+    const pct = data.score;
+    document.getElementById('scorePct').textContent = pct + '%';
+    const bar = document.getElementById('scoreBar');
+    bar.style.width = pct + '%';
+    bar.className = 'score-bar ' + (pct > 70 ? 'high' : (pct > 40 ? 'medium' : 'low'));
+
+    // Info grid
+    document.getElementById('infoToken').textContent = data.token_name + ' (' + data.token_symbol + ')';
+    document.getElementById('infoChain').textContent = data.chain;
+    document.getElementById('infoRisk').textContent = data.risk_label + ' (' + data.risk_level + ')';
+    document.getElementById('infoTax').textContent = data.sell_tax + '%';
+    document.getElementById('infoSource').textContent = data.open_source ? '✅ Open' : '⚠️ Closed';
+    document.getElementById('infoProxy').textContent = data.is_proxy ? '⚠️ Yes' : '✅ No';
+
+    // Red flags
+    if (data.red_flags.length > 0) {
+      const ul = document.getElementById('redFlagsList');
+      ul.innerHTML = data.red_flags.map(f => '<li>' + f + '</li>').join('');
+      document.getElementById('redFlags').classList.add('show');
+    }
+
+    // Honeypot link
+    document.getElementById('honeypotLink').href = data.honeypot_url;
+
+    document.getElementById('result').classList.add('show');
+  } catch (e) {
+    showError('Network error: ' + e.message);
+  } finally {
+    document.getElementById('spinner').classList.remove('show');
+    document.getElementById('checkBtn').disabled = false;
+  }
+}
+
+function showError(msg) {
+  const el = document.getElementById('error');
+  el.textContent = '❌ ' + msg;
+  el.classList.add('show');
+}
+
+// Allow Enter to submit
+document.getElementById('address').addEventListener('keydown', e => {
+  if (e.key === 'Enter') check();
+});
+</script>
+</body>
+</html>
