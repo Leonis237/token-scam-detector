@@ -27,6 +27,7 @@ const I18N = {
 
     scam_label_addr: "Địa chỉ contract token",
     scam_placeholder: "0x87230146E138d3F296a9a77e497A2A83012e9Bc5",
+    search_placeholder: "Dán địa chỉ token hoặc ví...",
     scam_label_chain: "Chain",
     scam_btn: "🔍 Scan Token",
     scam_loading: "Đang quét...",
@@ -157,6 +158,7 @@ const I18N = {
 
     scam_label_addr: "Token contract address",
     scam_placeholder: "0x87230146E138d3F296a9a77e497A2A83012e9Bc5",
+    search_placeholder: "Paste token or wallet address...",
     scam_label_chain: "Chain",
     scam_btn: "🔍 Scan Token",
     scam_loading: "Scanning...",
@@ -287,6 +289,7 @@ const I18N = {
 
     scam_label_addr: "代币合约地址",
     scam_placeholder: "0x87230146E138d3F296a9a77e497A2A83012e9Bc5",
+    search_placeholder: "粘贴代币或钱包地址...",
     scam_label_chain: "公链",
     scam_btn: "🔍 扫描代币",
     scam_loading: "扫描中...",
@@ -417,6 +420,7 @@ const I18N = {
 
     scam_label_addr: "토큰 컨트랙트 주소",
     scam_placeholder: "0x87230146E138d3F296a9a77e497A2A83012e9Bc5",
+    search_placeholder: "토큰 또는 지갑 주소 붙여넣기...",
     scam_label_chain: "체인",
     scam_btn: "🔍 토큰 스캔",
     scam_loading: "스캔 중...",
