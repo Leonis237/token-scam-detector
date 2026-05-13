@@ -36,8 +36,10 @@ def track_request():
     today = datetime.utcnow().strftime("%Y-%m-%d")
     analytics["daily"][today] += 1
 
+# ── Stats auth (env STATS_KEY or default) ──
+STATS_KEY = os.environ.get("STATS_KEY", "leonis-stats-2026")
+
 CHAIN_NAMES = {"1": "eth", "56": "bsc", "8453": "base", "42161": "arbitrum", "137": "polygon"}
-LOG_TRANSFORM_COLS = [8, 9, 17]
 
 # RPC endpoints
 RPC_URLS = {
@@ -609,7 +611,9 @@ def api_alerts():
 
 @app.route("/api/stats")
 def api_stats():
-    """Public analytics dashboard data (no secrets, no user data)."""
+    """Analytics dashboard data (key-protected)."""
+    if request.args.get("key") != STATS_KEY:
+        return jsonify({"error": "not found"}), 404
     daily = dict(sorted(analytics["daily"].items(), reverse=True)[:7])
     endpoints = dict(analytics["endpoints"])
     referrers = dict(
@@ -627,6 +631,8 @@ def api_stats():
 
 @app.route("/stats")
 def stats_page():
+    if request.args.get("key") != STATS_KEY:
+        return "not found", 404
     return send_from_directory("static", "stats.html")
 
 
