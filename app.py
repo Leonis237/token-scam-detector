@@ -311,7 +311,7 @@ def api_approvals():
         "0xc02aaa39b223fe8d0a0e5c4f27ead9083c756cc2",  # WETH
         "0x2260fac5e5542a773aa44fbcfedf7c193bc2c599",  # WBTC
         "0x6b175474e89094c44da98b954eedeac495271d0f",  # DAI
-        "0x6982508145454ce325ddbe47a25d4ec3d2311933b",  # PEPE
+        "0x6982508145454ce325ddbe47a25d4ec3d2311933",  # PEPE
         "0x95ad61b0a150d79219dcf64e1e6cc01f0b64c4ce",  # SHIB
         "0x514910771af9ca656af840dff83e8264ecf986ca",  # LINK
         "0x1f9840a85d5af5bf1d1762f925bdaddc4201f984",  # UNI
