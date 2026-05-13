@@ -151,6 +151,58 @@ def check_allowance(chain_id, token_addr, wallet, spender):
     return 0
 
 
+def query_goplus(addr, chain_id):
+    """Fallback: query GoPlus Security API when Honeypot.is doesn't have the token."""
+    url = f"https://api.gopluslabs.io/api/v1/token_security/{chain_id}?contract_addresses={addr}"
+    req = urllib.request.Request(url)
+    req.add_header("User-Agent", "LeonisGuardian/1.0")
+    try:
+        with urllib.request.urlopen(req, timeout=10) as resp:
+            data = json.loads(resp.read().decode())
+    except Exception as e:
+        return {"_not_found": True, "error": str(e)}
+
+    result = data.get("result", {}).get(addr.lower())
+    if not result:
+        return {"_not_found": True, "message": "Token not found in GoPlus"}
+
+    # Map GoPlus response to Honeypot.is-like structure for extract_features
+    return {
+        "simulationResult": {
+            "buyTax": float(result.get("buy_tax", "0") or 0) * 100,
+            "sellTax": float(result.get("sell_tax", "0") or 0) * 100,
+            "transferTax": 0,
+        },
+        "contractCode": {
+            "openSource": result.get("is_open_source", "0") == "1",
+            "isProxy": result.get("is_proxy", "0") == "1",
+            "hasProxyCalls": False,
+        },
+        "holderAnalysis": {
+            "holders": int(result.get("holder_count", "0") or 0),
+            "failed": 0,
+            "siphoned": 0,
+            "averageTax": 0,
+            "highestTax": 0,
+            "snipersFailed": 0,
+            "snipersSuccess": 0,
+        },
+        "summary": {
+            "riskLevel": 30 if result.get("is_honeypot", "0") == "1" else 15,
+            "risk": "medium" if result.get("is_honeypot", "0") == "1" else "low",
+        },
+        "honeypotResult": {
+            "isHoneypot": result.get("is_honeypot", "0") == "1",
+        },
+        "simulationSuccess": True,
+        "token": {
+            "name": result.get("token_name", "?"),
+            "symbol": result.get("token_symbol", "?"),
+        },
+        "flags": [{"flag": "goPlus_source"}] if result.get("is_honeypot", "0") == "1" else [],
+    }
+
+
 def query_honeypot(addr, chain_id):
     url = f"https://api.honeypot.is/v2/IsHoneypot?address={addr}&chainID={chain_id}"
     req = urllib.request.Request(url)
@@ -158,6 +210,16 @@ def query_honeypot(addr, chain_id):
     try:
         with urllib.request.urlopen(req, timeout=15) as resp:
             return json.loads(resp.read().decode())
+    except urllib.error.HTTPError as e:
+        # 404 = token not indexed (not an API error)
+        if e.code == 404:
+            try:
+                body = json.loads(e.read().decode())
+                if "Token not found" in body.get("error", ""):
+                    return {"_not_found": True, "message": "Token not yet indexed by Honeypot.is"}
+            except Exception:
+                pass
+        return {"error": f"HTTP {e.code}: {e.reason}"}
     except Exception as e:
         return {"error": str(e)}
 
@@ -227,8 +289,30 @@ def api_check():
     chain_name = CHAIN_NAMES.get(chain_id, chain_id)
 
     hp_data = query_honeypot(addr, chain_id)
+
+    # Honeypot.is doesn't have this token — try GoPlus as fallback
+    if hp_data.get("_not_found"):
+        hp_data = query_goplus(addr, chain_id)
+
     if "error" in hp_data:
         return jsonify({"error": f"Honeypot.is API error: {hp_data['error']}"}), 502
+
+    if hp_data.get("_not_found"):
+        # Neither Honeypot.is nor GoPlus has this token — basic on-chain info only
+        token_name, token_symbol = get_token_info(chain_id, addr)
+        return jsonify({
+            "address": addr,
+            "chain": chain_name,
+            "token_name": token_name,
+            "token_symbol": token_symbol,
+            "verdict": "unknown",
+            "score": 0,
+            "status": "not_indexed",
+            "message": "Token chưa được index bởi Honeypot.is hoặc GoPlus. Có thể là token quá mới hoặc ít người biết.",
+            "red_flags": [],
+            "scam_types": ["not-indexed"],
+            "honeypot_url": f"https://honeypot.is/{chain_name}?address={addr}",
+        })
 
     if hp_data.get("simulationSuccess") is False:
         return jsonify({

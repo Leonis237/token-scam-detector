@@ -716,6 +716,28 @@ async function checkToken() {
       return;
     }
 
+    // Token not indexed by any API — show limited info card
+    if (data.status === 'not_indexed') {
+      document.getElementById('result').classList.remove('hidden');
+      document.getElementById('verdictBanner').className = 'border-[3px] shadow-sketch-sm wobbly p-5 text-center mb-4 bg-blue-50 border-bluepen';
+      document.getElementById('verdictIcon').textContent = '🔍';
+      document.getElementById('verdictText').textContent = 'TOKEN NOT INDEXED';
+      document.getElementById('verdictText').className = 'font-heading text-2xl text-bluepen';
+      document.getElementById('scorePct').textContent = '—';
+      document.getElementById('scoreBar').style.width = '0%';
+      document.getElementById('scoreBar').className = 'h-full rounded-full bg-gray-200';
+      document.getElementById('infoToken').textContent = (data.token_name || '?') + ' (' + (data.token_symbol || '?') + ')';
+      document.getElementById('infoChain').textContent = data.chain;
+      document.getElementById('infoRisk').textContent = 'N/A';
+      document.getElementById('infoTax').textContent = 'N/A';
+      document.getElementById('infoSource').textContent = '?';
+      document.getElementById('infoProxy').textContent = '?';
+      document.getElementById('redFlags').classList.add('hidden');
+      document.getElementById('honeypotLink').href = data.honeypot_url || '#';
+      document.getElementById('result').scrollIntoView({ behavior: 'smooth', block: 'center' });
+      return;
+    }
+
     // Verdict banner
     const banner = document.getElementById('verdictBanner');
     const colors = {
