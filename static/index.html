@@ -83,6 +83,10 @@ tailwind.config = {
     border-radius: 2px;
     z-index: 5;
   }
+  .tape-blue {
+    background: rgba(99, 139, 204, 0.35);
+    transform: translateX(-50%) rotate(3deg);
+  }
 
   /* ── Squiggly Underline ── */
   .squiggly {
@@ -195,6 +199,7 @@ tailwind.config = {
       <a href="#features" class="hover:text-accent transition-colors"><span data-i18n="nav_features">Features</span></a>
       <a href="#how" class="hover:text-accent transition-colors"><span data-i18n="nav_how">How</span></a>
       <a href="#faq" class="hover:text-accent transition-colors"><span data-i18n="nav_faq">FAQ</span></a>
+      <a href="#ecosystem" class="hover:text-bluepen transition-colors text-bluepen font-heading">Minara</a>
     </div>
     <div class="hidden md:flex items-center gap-3">
       <a href="#scanner" class="font-heading text-sm bg-white border-[3px] border-pencil shadow-sketch px-4 py-1.5 wobbly-sm btn-sketch hover:bg-accent hover:text-white transition-colors" data-i18n="nav_cta">Scan now ✦</a>
@@ -611,6 +616,53 @@ tailwind.config = {
     <span class="border-[3px] border-pencil bg-white shadow-sketch-sm px-5 py-2 rounded-full text-sm font-heading">🔵 Base</span>
     <span class="border-[3px] border-pencil bg-white shadow-sketch-sm px-5 py-2 rounded-full text-sm font-heading">🔷 Arbitrum</span>
     <span class="border-[3px] border-pencil bg-white shadow-sketch-sm px-5 py-2 rounded-full text-sm font-heading">🟣 Polygon</span>
+  </div>
+</section>
+
+<!-- ════════════════ ECOSYSTEM ════════════════ -->
+<section class="max-w-3xl mx-auto px-6 pb-20" id="ecosystem">
+  <div class="text-center mb-8">
+    <span class="inline-block bg-bluepen/10 border-[2px] border-bluepen/30 shadow-sketch-sm px-4 py-1 wobbly-sm rotate-1 font-heading text-sm mb-4">🛠️ Leonis Ecosystem</span>
+    <h2 class="font-heading text-3xl md:text-4xl text-pencil mb-3">Scan. Trade. Profit.</h2>
+    <p class="text-pencil/60 text-sm max-w-lg mx-auto">Two tools, one flow — check safety with Leonis Forge, then trade smarter with Minara AI.</p>
+  </div>
+
+  <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+    <!-- Leonis Forge card -->
+    <div class="bg-white border-[3px] border-pencil shadow-sketch-sm wobbly-md p-6 relative">
+      <div class="tape"></div>
+      <div class="flex items-center gap-3 mb-3">
+        <span class="text-2xl">⚒️</span>
+        <h3 class="font-heading text-xl">Leonis Forge</h3>
+        <span class="text-xs bg-postit border-[2px] border-pencil/20 px-2 py-0.5 rounded-full -rotate-2">You are here</span>
+      </div>
+      <p class="text-sm text-pencil/70 mb-3 leading-relaxed">Free security scanner — paste <strong>any token address</strong>, AI checks 30+ scam signals. Honeypots, hidden taxes, proxy contracts, closed source — all flagged before you buy.</p>
+      <div class="flex gap-2 flex-wrap mb-3">
+        <span class="text-xs bg-greenpen/10 border-[2px] border-greenpen/20 px-2 py-0.5 rounded-full">🛡️ Scan tokens</span>
+        <span class="text-xs bg-greenpen/10 border-[2px] border-greenpen/20 px-2 py-0.5 rounded-full">🔍 Check approvals</span>
+        <span class="text-xs bg-greenpen/10 border-[2px] border-greenpen/20 px-2 py-0.5 rounded-full">🔐 EIP-7702</span>
+      </div>
+      <p class="text-xs text-pencil/40 italic">→ Step 1: Verify the token isn't a scam</p>
+    </div>
+
+    <!-- Minara card -->
+    <div class="bg-white border-[3px] border-pencil shadow-sketch-sm wobbly-md p-6 relative">
+      <div class="tape tape-blue"></div>
+      <div class="flex items-center gap-3 mb-3">
+        <span class="text-2xl">📊</span>
+        <h3 class="font-heading text-xl">Minara</h3>
+      </div>
+      <p class="text-sm text-pencil/70 mb-3 leading-relaxed"><strong>AI crypto trading agent</strong> — automated strategies for perps, spot, and copy trading. Backtested, real-time execution, no emotions. Runs on your exchange via API key.</p>
+      <div class="flex gap-2 flex-wrap mb-3">
+        <span class="text-xs bg-bluepen/10 border-[2px] border-bluepen/20 px-2 py-0.5 rounded-full">🤖 Auto trading</span>
+        <span class="text-xs bg-bluepen/10 border-[2px] border-bluepen/20 px-2 py-0.5 rounded-full">📈 Perps & spot</span>
+        <span class="text-xs bg-bluepen/10 border-[2px] border-bluepen/20 px-2 py-0.5 rounded-full">👥 Copy strategies</span>
+      </div>
+      <a href="https://minara.ai/vi/app/trade/perps/BTC?r=1MPQ6Z" target="_blank" rel="noopener" class="inline-block font-heading text-sm bg-bluepen text-white border-[3px] border-bluepen shadow-sketch px-5 py-2 wobbly-sm hover:bg-bluepen/90 transition-colors">
+        Try Minara →
+      </a>
+      <p class="text-xs text-pencil/40 italic mt-2">→ Step 2: Trade the safe ones with AI</p>
+    </div>
   </div>
 </section>
 
