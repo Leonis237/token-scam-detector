@@ -920,20 +920,36 @@ async function heroSearch() {
   const query = document.getElementById('heroSearch').value.trim();
   if (!query || !query.startsWith('0x')) return;
 
-  // Auto-detect: wallet has no contract code → likely EOA → check approvals
-  // Simple heuristic: if 42 chars (0x + 40 hex), try token scam first, fallback to wallet
+  // Auto-detect: contract (token) vs EOA (wallet)
+  // Strategy: try scam check first. If it returns valid token data → stay on scam tab.
+  // If scam check fails (error/not_indexed) → likely a wallet → switch to approval.
   if (query.length === 42) {
-    // Try token scam check
     document.getElementById('address').value = query;
     switchTab('scam');
-    await checkToken();
+    document.getElementById('error').classList.add('hidden');
+    document.getElementById('result').classList.add('hidden');
 
-    // Also try wallet approvals in background
-    document.getElementById('walletAddr').value = query;
-    setTimeout(() => {
-      switchTab('approval');
-      checkApprovals();
-    }, 2000);
+    // Run scam check and capture result
+    let scamOk = false;
+    try {
+      const resp = await fetch(`/api/check?address=${encodeURIComponent(query)}&chain=${chain}`);
+      const data = await resp.json();
+      if (!data.error && data.verdict && data.verdict !== 'unknown') {
+        scamOk = true;
+      }
+    } catch(e) {}
+
+    await checkToken(); // Renders the result UI
+
+    if (!scamOk) {
+      // Scam check didn't find a valid token → try wallet approvals
+      document.getElementById('walletAddr').value = query;
+      document.getElementById('approvalChain').value = '1'; // Default to Ethereum for wallets
+      setTimeout(() => {
+        switchTab('approval');
+        checkApprovals();
+      }, 800);
+    }
   } else {
     showError('Địa chỉ không hợp lệ (cần 0x + 40 ký tự)');
   }
