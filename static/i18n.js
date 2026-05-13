@@ -511,3 +511,18 @@ function applyLang() {
 
 // Apply on page load
 document.addEventListener('DOMContentLoaded', applyLang);
+
+// Language switcher UI
+function toggleLangMenu() {
+  const menu = document.getElementById('langMenu');
+  if (menu) menu.classList.toggle('hidden');
+}
+function closeLangMenu() {
+  const menu = document.getElementById('langMenu');
+  if (menu) menu.classList.add('hidden');
+}
+document.addEventListener('click', (e) => {
+  if (!e.target.closest('#langMenu') && !e.target.closest('button[onclick*="toggleLangMenu"]')) {
+    closeLangMenu();
+  }
+});
