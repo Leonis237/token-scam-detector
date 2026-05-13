@@ -1,6 +1,5 @@
 #!/usr/bin/env python3
-"""Token Scam Detector — Flask web API + frontend."""
-
+"""Crypto Guardian — Token Scam Detector + Approval Checker."""
 import json, time, pickle, urllib.request, os
 import numpy as np
 import onnxruntime as ort
@@ -13,7 +12,68 @@ DIR = Path(__file__).parent
 CHAIN_NAMES = {"1": "eth", "56": "bsc", "8453": "base", "42161": "arbitrum", "137": "polygon"}
 LOG_TRANSFORM_COLS = [8, 9, 17]
 
-# Load model once at startup
+# RPC endpoints for allowance checks
+RPC_URLS = {
+    "1": "https://eth.llamarpc.com",
+    "56": "https://binance.llamarpc.com",
+    "8453": "https://base.llamarpc.com",
+    "42161": "https://arbitrum.llamarpc.com",
+    "137": "https://polygon.llamarpc.com",
+}
+
+# Known DEX/spender contracts to check allowances against
+KNOWN_SPENDERS = {
+    "1": [
+        ("0xdef1c0ded9bec7f1a1670819833240f027b25eff", "0x Protocol"),
+        ("0x1111111254fb6c44bac0bed2854e76f90643097d", "1inch Router v4"),
+        ("0x3fc91a3afd70395cd496c647d5a6cc9d4b2b7fad", "Uniswap Universal Router"),
+        ("0x881d40237659c251811cec9c364ef91dc08d300c", "Metamask Swap"),
+        ("0x7a250d5630b4cf539739df2c5dacb4c659f2488d", "Uniswap V2 Router"),
+        ("0x68b3465833fb72a70ecdf485e0e4c7bd8665fc45", "Uniswap V3 Router"),
+        ("0x6131b5fae19ea4f9d964eac0408e4408b66337b5", "KyberSwap"),
+        ("0x216b4b4ba9f3e719726886d34a177484278bfcae", "Paraswap"),
+    ],
+    "56": [
+        ("0x10ed43c718714eb63d5aa57b78b54704e256024e", "PancakeSwap Router"),
+        ("0x13f4ea83d0bd40e75c8222255bc855a974568dd4", "PancakeSwap V3"),
+        ("0xdef1c0ded9bec7f1a1670819833240f027b25eff", "0x Protocol"),
+        ("0x1111111254fb6c44bac0bed2854e76f90643097d", "1inch Router"),
+    ],
+    "8453": [
+        ("0xdef1c0ded9bec7f1a1670819833240f027b25eff", "0x Protocol"),
+        ("0x3fc91a3afd70395cd496c647d5a6cc9d4b2b7fad", "Uniswap Universal Router"),
+    ],
+    "42161": [
+        ("0xdef1c0ded9bec7f1a1670819833240f027b25eff", "0x Protocol"),
+        ("0x3fc91a3afd70395cd496c647d5a6cc9d4b2b7fad", "Uniswap Universal Router"),
+    ],
+    "137": [
+        ("0xdef1c0ded9bec7f1a1670819833240f027b25eff", "0x Protocol"),
+        ("0xa5e0829caced8ffdd4de3c43696c57f7d7a678ff", "QuickSwap Router"),
+    ],
+}
+
+# Common tokens per chain (top by TVL)
+COMMON_TOKENS = {
+    "1": [
+        ("0xdac17f958d2ee523a2206206994597c13d831ec7", "USDT"),
+        ("0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48", "USDC"),
+        ("0xc02aaa39b223fe8d0a0e5c4f27ead9083c756cc2", "WETH"),
+        ("0x2260fac5e5542a773aa44fbcfedf7c193bc2c599", "WBTC"),
+        ("0x6b175474e89094c44da98b954eedeac495271d0f", "DAI"),
+        ("0x95ad61b0a150d79219dcf64e1e6cc01f0b64c4ce", "SHIB"),
+        ("0x7d1afa7b718fb893db30a3abc0cfc608aacfebb0", "MATIC"),
+        ("0x514910771af9ca656af840dff83e8264ecf986ca", "LINK"),
+    ],
+    "56": [
+        ("0x55d398326f99059ff775485246999027b3197955", "USDT"),
+        ("0x8ac76a51cc950d9822d68b83fe1ad97b32cd580d", "USDC"),
+        ("0xbb4cdb9cbd36b01bd1cbaebf2de08d9173bc095c", "WBNB"),
+        ("0x0e09fabb73bd3ade0a17ecc321fd13a19e81ce82", "CAKE"),
+        ("0x2170ed0880ac9a755fd29b2688956bd959f933f8", "ETH"),
+    ],
+}
+
 MODEL_PATH = DIR / "scam_detector_v3.onnx"
 SCALER_PATH = DIR / "scam_detector_v3_scaler.pkl"
 session = ort.InferenceSession(str(MODEL_PATH))
@@ -24,10 +84,36 @@ else:
     scaler = None
 
 
+def rpc_call(chain_id, method, params):
+    """Make a JSON-RPC call to a public RPC endpoint."""
+    url = RPC_URLS.get(chain_id)
+    if not url:
+        return None
+    data = json.dumps({"jsonrpc": "2.0", "id": 1, "method": method, "params": params}).encode()
+    req = urllib.request.Request(url, data=data, headers={"Content-Type": "application/json"})
+    try:
+        with urllib.request.urlopen(req, timeout=10) as resp:
+            return json.loads(resp.read().decode())
+    except Exception:
+        return None
+
+
+def check_allowance(chain_id, token_addr, wallet, spender):
+    """Check ERC20 allowance via eth_call."""
+    # allowance(address owner, address spender) → 0xdd62ed3e
+    data = "0xdd62ed3e" + wallet[2:].lower().rjust(64, "0") + spender[2:].lower().rjust(64, "0")
+    result = rpc_call(chain_id, "eth_call", [
+        {"to": token_addr, "data": data}, "latest"
+    ])
+    if result and "result" in result and result["result"]:
+        return int(result["result"], 16)
+    return 0
+
+
 def query_honeypot(addr, chain_id):
     url = f"https://api.honeypot.is/v2/IsHoneypot?address={addr}&chainID={chain_id}"
     req = urllib.request.Request(url)
-    req.add_header("User-Agent", "Token-Scam-Detector/1.0")
+    req.add_header("User-Agent", "CryptoGuardian/1.0")
     try:
         with urllib.request.urlopen(req, timeout=15) as resp:
             return json.loads(resp.read().decode())
@@ -114,7 +200,6 @@ def api_check():
     if features is None:
         return jsonify({"error": "Cannot extract features"}), 500
 
-    # Run inference
     x = preprocess(features)
     out = session.run(None, {"features": x})
     prob = float(out[1][0][1])
@@ -126,7 +211,6 @@ def api_check():
 
     verdict = "scam" if prob > 0.7 else ("suspicious" if prob > 0.4 else "safe")
 
-    # Build red flags
     red_flags = []
     if features[1] > 0.5:
         red_flags.append("HONEYPOT — buy OK, sell blocked")
@@ -160,6 +244,74 @@ def api_check():
         "score": round(prob * 100, 1),
         "red_flags": red_flags,
         "honeypot_url": f"https://honeypot.is/{chain_name}?address={addr}",
+    })
+
+
+@app.route("/api/approvals")
+def api_approvals():
+    wallet = request.args.get("wallet", "").strip()
+    chain_id = request.args.get("chain", "1").strip()
+
+    if not wallet or not wallet.startswith("0x") or len(wallet) != 42:
+        return jsonify({"error": "Invalid wallet address"}), 400
+
+    if chain_id not in RPC_URLS:
+        return jsonify({"error": f"Chain {chain_id} not supported for approval checks"}), 400
+
+    chain_name = CHAIN_NAMES.get(chain_id, chain_id)
+    spenders = KNOWN_SPENDERS.get(chain_id, [])
+    tokens = COMMON_TOKENS.get(chain_id, [])
+
+    approvals = []
+    total_active = 0
+    high_risk = 0
+    unlimited_count = 0
+
+    for token_addr, token_symbol in tokens:
+        for spender_addr, spender_name in spenders:
+            try:
+                allowance = check_allowance(chain_id, token_addr, wallet, spender_addr)
+            except Exception:
+                continue
+
+            if allowance is None or allowance == 0:
+                continue
+
+            total_active += 1
+            is_unlimited = allowance > 10**30  # practically unlimited
+            if is_unlimited:
+                unlimited_count += 1
+
+            risk = "low"
+            if is_unlimited:
+                risk = "high"
+            elif allowance > 10**20:
+                risk = "medium"
+
+            if risk == "high":
+                high_risk += 1
+
+            approvals.append({
+                "token": token_symbol,
+                "token_address": token_addr,
+                "spender": spender_name,
+                "spender_address": spender_addr,
+                "allowance": str(allowance),
+                "unlimited": is_unlimited,
+                "risk": risk,
+            })
+
+    return jsonify({
+        "wallet": wallet,
+        "chain": chain_name,
+        "chain_id": chain_id,
+        "total_active": total_active,
+        "high_risk": high_risk,
+        "unlimited": unlimited_count,
+        "approvals": approvals,
+        "scanned_tokens": len(tokens),
+        "scanned_spenders": len(spenders),
+        "note": "Scanning top tokens + known DEX contracts. Limited to {} tokens and {} spenders.".format(len(tokens), len(spenders)),
     })
 
 

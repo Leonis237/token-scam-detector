@@ -1,510 +1,636 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="vi">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<meta name="description" content="Token Scam Detector — Instantly check any crypto token for scams. Built on OpenGradient Model Hub. Supports BSC, Ethereum, Base, Arbitrum, Polygon.">
-<meta property="og:title" content="Token Scam Detector | Check Any Token For Scams">
-<meta property="og:description" content="Paste a contract address → instantly see if it's a scam, honeypot, or rugpull. Powered by AI on OpenGradient.">
-<meta property="og:image" content="https://token-scam-detector.onrender.com/og-image.png">
+<meta name="description" content="🛡️ Crypto Guardian — Kiểm tra token scam & quét approval ví. AI-powered, free forever. Hỗ trợ Ethereum, BSC, Base, Arbitrum, Polygon.">
+<meta property="og:title" content="Crypto Guardian | Scan Token Scam + Approval Checker">
+<meta property="og:description" content="Dán địa chỉ token hoặc ví → kiểm tra scam, quét approval nguy hiểm. Miễn phí, không cần đăng ký.">
 <meta property="og:url" content="https://token-scam-detector.onrender.com">
 <meta name="twitter:card" content="summary_large_image">
 <meta name="twitter:creator" content="@Leonis237">
-<title>Token Scam Detector — AI-Powered Scam Check</title>
+<title>Crypto Guardian — Scan Token & Approval Checker</title>
+
+<!-- Google Fonts -->
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Kalam:wght@700&family=Patrick+Hand&display=swap" rel="stylesheet">
+
+<!-- Tailwind CDN -->
+<script src="https://cdn.tailwindcss.com"></script>
+<script>
+tailwind.config = {
+  theme: {
+    extend: {
+      fontFamily: {
+        heading: ['Kalam', 'cursive'],
+        body: ['Patrick Hand', 'cursive'],
+      },
+      colors: {
+        paper: '#fdfbf7',
+        pencil: '#2d2d2d',
+        muted: '#e5e0d8',
+        accent: '#ff4d4d',
+        bluepen: '#2d5da1',
+        greenpen: '#4a9c5d',
+        yellowpen: '#d4a017',
+        postit: '#fff9c4',
+      }
+    }
+  }
+}
+</script>
+
 <style>
-  :root {
-    --bg: #08080f;
-    --card: #111122;
-    --card2: #16162a;
-    --border: #1e1e3a;
-    --text: #c8c8e0;
-    --dim: #6666aa;
-    --accent: #00d4aa;
-    --accent2: #3399ff;
-    --red: #ff4455;
-    --yellow: #ffaa00;
-    --green: #00ff88;
-    --grad: linear-gradient(135deg, var(--accent), var(--accent2));
+  /* ── Wobbly Borders ── */
+  .wobbly {
+    border-radius: 255px 15px 225px 15px / 15px 225px 15px 255px;
   }
-  * { margin:0; padding:0; box-sizing:border-box; }
-  html { scroll-behavior: smooth; }
+  .wobbly-md {
+    border-radius: 185px 25px 155px 35px / 25px 195px 35px 165px;
+  }
+  .wobbly-sm {
+    border-radius: 155px 20px 145px 25px / 20px 155px 25px 145px;
+  }
+
+  /* ── Hard Shadows ── */
+  .shadow-sketch {
+    box-shadow: 4px 4px 0px 0px #2d2d2d;
+  }
+  .shadow-sketch-lg {
+    box-shadow: 6px 6px 0px 0px #2d2d2d;
+  }
+  .shadow-sketch-sm {
+    box-shadow: 3px 3px 0px 0px rgba(45, 45, 45, 0.15);
+  }
+
+  /* ── Paper Texture ── */
   body {
-    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Inter', sans-serif;
-    background: var(--bg);
-    color: var(--text);
-    line-height: 1.6;
-    overflow-x: hidden;
+    background-color: #fdfbf7;
+    background-image: radial-gradient(#e5e0d8 1px, transparent 1px);
+    background-size: 24px 24px;
   }
 
-  /* ── Nav ── */
-  nav {
-    position: fixed; top:0; left:0; right:0; z-index:100;
-    background: rgba(8,8,15,0.85); backdrop-filter: blur(12px);
-    border-bottom: 1px solid var(--border);
-    padding: 0.8rem 2rem;
-    display: flex; align-items: center; justify-content: space-between;
+  /* ── Tape decoration ── */
+  .tape {
+    position: absolute;
+    top: -10px;
+    left: 50%;
+    transform: translateX(-50%) rotate(-2deg);
+    width: 60px;
+    height: 22px;
+    background: rgba(180, 170, 150, 0.4);
+    border-radius: 2px;
+    z-index: 5;
   }
-  .nav-logo {
-    font-weight: 800; font-size: 1.15rem;
-    background: var(--grad); -webkit-background-clip: text; -webkit-text-fill-color: transparent;
-    letter-spacing: -0.3px;
-  }
-  .nav-links { display: flex; gap: 1.5rem; }
-  .nav-links a { color: var(--dim); text-decoration: none; font-size: 0.85rem; transition: color 0.2s; }
-  .nav-links a:hover { color: var(--accent); }
-  .nav-cta {
-    background: var(--grad); color:#000; font-weight:700; font-size:0.8rem;
-    padding: 0.45rem 1rem; border-radius: 8px; text-decoration: none;
-    transition: opacity 0.2s;
-  }
-  .nav-cta:hover { opacity:0.85; }
 
-  /* ── Hero ── */
-  .hero {
-    padding: 8rem 1.5rem 4rem;
-    text-align: center;
-    position: relative;
-    overflow: hidden;
+  /* ── Squiggly Underline ── */
+  .squiggly {
+    text-decoration: underline;
+    text-decoration-style: wavy;
+    text-decoration-color: #ff4d4d;
+    text-underline-offset: 6px;
+    text-decoration-thickness: 2px;
   }
-  .hero::before {
-    content: '';
-    position: absolute; top:-50%; left:-50%; width:200%; height:200%;
-    background: radial-gradient(circle at 50% 30%, rgba(0,212,170,0.08) 0%, transparent 60%),
-                radial-gradient(circle at 70% 60%, rgba(51,153,255,0.06) 0%, transparent 50%);
-    animation: heroGlow 12s ease-in-out infinite alternate;
-  }
-  @keyframes heroGlow {
-    0% { transform: translate(0,0) rotate(0deg); }
-    100% { transform: translate(-2%, -1%) rotate(3deg); }
-  }
-  .hero-content { position: relative; z-index:1; max-width: 720px; margin:0 auto; }
-  .hero-badge {
-    display: inline-block; background: rgba(0,212,170,0.1); border: 1px solid rgba(0,212,170,0.25);
-    border-radius: 20px; padding: 0.3rem 1rem; font-size: 0.8rem; color: var(--accent);
-    margin-bottom: 1.5rem;
-  }
-  .hero h1 {
-    font-size: 3.2rem; font-weight: 800; letter-spacing: -1px; line-height: 1.15;
-    margin-bottom: 1rem;
-  }
-  .hero h1 .grad { background: var(--grad); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
-  .hero p.sub {
-    font-size: 1.15rem; color: var(--dim); max-width: 520px; margin: 0 auto 2.5rem;
-  }
-  .hero-stats {
-    display: flex; gap: 2.5rem; justify-content: center;
-    margin-bottom: 2rem;
-  }
-  .hero-stat { text-align: center; }
-  .hero-stat .num {
-    font-size: 2rem; font-weight: 800;
-    background: var(--grad); -webkit-background-clip: text; -webkit-text-fill-color: transparent;
-  }
-  .hero-stat .lbl { font-size: 0.75rem; color: var(--dim); text-transform: uppercase; letter-spacing: 0.5px; }
 
-  /* ── Scanner ── */
-  .scanner-section {
-    max-width: 600px; margin: 0 auto 4rem;
-    padding: 0 1.5rem; position: relative; z-index:1;
+  /* ── Button press animation ── */
+  .btn-sketch {
+    transition: transform 0.1s, box-shadow 0.1s;
   }
-  .scanner-card {
-    background: var(--card); border: 1px solid var(--border);
-    border-radius: 16px; padding: 2rem;
-    box-shadow: 0 0 40px rgba(0,212,170,0.05);
+  .btn-sketch:hover {
+    transform: translate(2px, 2px);
+    box-shadow: 2px 2px 0px 0px #2d2d2d !important;
   }
-  .scanner-card label {
-    font-size: 0.75rem; text-transform: uppercase; letter-spacing: 0.5px;
-    color: var(--dim); display: block; margin-bottom: 0.4rem;
+  .btn-sketch:active {
+    transform: translate(4px, 4px) !important;
+    box-shadow: 0px 0px 0px 0px #2d2d2d !important;
   }
-  .scanner-card input, .scanner-card select {
-    width: 100%; padding: 0.8rem 1rem;
-    background: var(--card2); border: 1px solid var(--border); border-radius: 10px;
-    color: var(--text); font-size: 0.9rem; font-family: 'SF Mono', 'Fira Code', monospace;
-    margin-bottom: 1rem; transition: border 0.2s;
-  }
-  .scanner-card input:focus, .scanner-card select:focus {
-    outline: none; border-color: var(--accent);
-  }
-  .scanner-card select { font-family: -apple-system, sans-serif; }
-  .row-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 0.75rem; }
-  .btn {
-    width: 100%; padding: 0.9rem;
-    background: var(--grad); border: none; border-radius: 10px;
-    color: #000; font-weight: 700; font-size: 1rem;
-    cursor: pointer; transition: opacity 0.2s, transform 0.1s;
-  }
-  .btn:hover { opacity: 0.9; }
-  .btn:active { transform: scale(0.98); }
-  .btn:disabled { opacity: 0.4; cursor: not-allowed; }
 
-  /* Results */
-  .result { display: none; margin-top: 1.5rem; }
-  .result.show { display: block; }
-  .verdict-banner {
-    padding: 1.5rem; border-radius: 14px; text-align: center; margin-bottom: 1rem;
+  /* ── Card hover rotation ── */
+  .card-hover {
+    transition: transform 0.15s;
   }
-  .verdict-banner.scam { background: linear-gradient(135deg, #2a1018, #3d1a2a); border: 1px solid var(--red); }
-  .verdict-banner.suspicious { background: linear-gradient(135deg, #2a2010, #3d2e1a); border: 1px solid var(--yellow); }
-  .verdict-banner.safe { background: linear-gradient(135deg, #102a18, #1a3d22); border: 1px solid var(--green); }
-  .verdict-icon { font-size: 3rem; }
-  .verdict-text { font-size: 1.3rem; font-weight: 700; margin-top: 0.25rem; }
-  .verdict-banner.scam .verdict-text { color: var(--red); }
-  .verdict-banner.suspicious .verdict-text { color: var(--yellow); }
-  .verdict-banner.safe .verdict-text { color: var(--green); }
+  .card-hover:hover {
+    transform: rotate(0.5deg);
+  }
 
-  .score-bar-wrap {
-    background: var(--card2); border-radius: 8px; height: 20px;
-    overflow: hidden; margin: 0.75rem 0;
+  /* ── Tab active underline ── */
+  .tab-active {
+    border-bottom: 3px solid #2d2d2d;
+    border-bottom-style: wavy;
   }
-  .score-bar { height: 100%; border-radius: 8px; transition: width 0.6s ease; }
-  .score-bar.high { background: linear-gradient(90deg, var(--red), #ff6677); }
-  .score-bar.medium { background: linear-gradient(90deg, var(--yellow), #ffcc44); }
-  .score-bar.low { background: linear-gradient(90deg, var(--green), #44ffaa); }
-  .score-label { display: flex; justify-content: space-between; font-size: 0.8rem; color: var(--dim); }
 
-  .info-grid {
-    display: grid; grid-template-columns: 1fr 1fr; gap: 0.6rem; margin: 1rem 0;
+  /* ── Animations ── */
+  @keyframes float {
+    0%, 100% { transform: translateY(0px) rotate(-3deg); }
+    50% { transform: translateY(-6px) rotate(-1deg); }
   }
-  .info-item {
-    background: var(--card2); border-radius: 8px; padding: 0.55rem 0.7rem;
+  .float-anim {
+    animation: float 3s ease-in-out infinite;
   }
-  .info-item .label { color: var(--dim); font-size: 0.65rem; text-transform: uppercase; letter-spacing: 0.5px; }
-  .info-item .value { color: var(--text); font-size: 0.8rem; margin-top: 0.1rem; font-weight: 600; }
 
-  .red-flags {
-    background: var(--card2); border-radius: 10px; padding: 1rem; margin-top: 0.5rem; display: none;
+  @keyframes spin-slow {
+    from { transform: rotate(0deg); }
+    to { transform: rotate(360deg); }
   }
-  .red-flags.show { display: block; }
-  .red-flags h4 { color: var(--red); font-size: 0.7rem; text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 0.5rem; }
-  .red-flags li { color: #cc88aa; font-size: 0.78rem; margin-left: 1.2rem; margin-bottom: 0.25rem; }
+  .spin-slow {
+    animation: spin-slow 12s linear infinite;
+  }
 
-  .honeypot-link { display: block; text-align: center; margin-top: 1rem; color: var(--accent2); text-decoration: none; font-size: 0.8rem; }
-  .honeypot-link:hover { text-decoration: underline; }
+  /* ── Scanner input override ── */
+  .input-sketch {
+    font-family: 'Patrick Hand', cursive;
+    font-size: 1.05rem;
+    background: white;
+  }
+  .input-sketch:focus {
+    outline: none;
+    border-color: #2d5da1 !important;
+    box-shadow: 0 0 0 3px rgba(45, 93, 161, 0.15);
+  }
+  .input-sketch::placeholder {
+    color: rgba(45, 45, 45, 0.35);
+  }
 
-  .spinner { display: none; text-align: center; padding: 1.5rem; }
-  .spinner.show { display: block; }
-  .sp-dot { display: inline-block; width:8px; height:8px; border-radius:50%; background: var(--accent); margin:0 3px; animation: bounce 1.4s infinite ease-in-out both; }
-  .sp-dot:nth-child(1){animation-delay:-0.32s}.sp-dot:nth-child(2){animation-delay:-0.16s}
-  @keyframes bounce { 0%,80%,100%{transform:scale(0)}40%{transform:scale(1)} }
-  .error-msg { background: #2a1018; border: 1px solid var(--red); border-radius: 10px; padding: 0.8rem; color: var(--red); font-size: 0.8rem; display: none; margin-top: 0.5rem; }
-  .error-msg.show { display: block; }
+  /* ── Result transitions ── */
+  .fade-in {
+    animation: fadeIn 0.3s ease-out;
+  }
+  @keyframes fadeIn {
+    from { opacity: 0; transform: translateY(8px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
 
-  /* ── Features ── */
-  .features {
-    max-width: 1000px; margin: 0 auto 5rem; padding: 0 1.5rem;
+  /* ── Score bar ── */
+  .score-bar-fill {
+    transition: width 0.6s cubic-bezier(0.22, 1, 0.36, 1);
   }
-  .section-tag {
-    text-transform: uppercase; letter-spacing: 1px; font-size: 0.7rem;
-    color: var(--accent); text-align: center; margin-bottom: 0.5rem;
-  }
-  .section-title {
-    text-align: center; font-size: 2rem; font-weight: 700; margin-bottom: 3rem;
-  }
-  .feature-grid {
-    display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 1.5rem;
-  }
-  .feature-card {
-    background: var(--card); border: 1px solid var(--border); border-radius: 14px;
-    padding: 1.5rem; transition: border-color 0.2s, transform 0.2s;
-  }
-  .feature-card:hover { border-color: var(--accent); transform: translateY(-2px); }
-  .feature-icon { font-size: 1.8rem; margin-bottom: 0.75rem; }
-  .feature-card h3 { font-size: 1rem; margin-bottom: 0.5rem; }
-  .feature-card p { font-size: 0.85rem; color: var(--dim); line-height: 1.5; }
 
-  /* ── How It Works ── */
-  .how {
-    max-width: 900px; margin: 0 auto 5rem; padding: 0 1.5rem;
+  /* ── Select custom styling ── */
+  select {
+    font-family: 'Patrick Hand', cursive;
   }
-  .steps { display: grid; grid-template-columns: repeat(3, 1fr); gap: 2rem; }
-  .step { text-align: center; }
-  .step-num {
-    width: 48px; height: 48px; border-radius: 50%;
-    background: var(--grad); color: #000; font-weight: 800; font-size: 1.2rem;
-    display: flex; align-items: center; justify-content: center;
-    margin: 0 auto 1rem;
-  }
-  .step h4 { font-size: 0.95rem; margin-bottom: 0.4rem; }
-  .step p { font-size: 0.8rem; color: var(--dim); }
 
-  /* ── Chains ── */
-  .chains {
-    max-width: 800px; margin: 0 auto 5rem; padding: 0 1.5rem; text-align: center;
-  }
-  .chain-tags { display: flex; gap: 0.75rem; justify-content: center; flex-wrap: wrap; margin-top: 1.5rem; }
-  .chain-tag {
-    background: var(--card2); border: 1px solid var(--border); border-radius: 8px;
-    padding: 0.5rem 1rem; font-size: 0.8rem; color: var(--text);
-  }
-  .chain-tag .dot { display: inline-block; width:6px; height:6px; border-radius:50%; margin-right: 6px; vertical-align: middle; }
-  .dot.bsc{background:#f0b90b}.dot.eth{background:#627eea}.dot.base{background:#0052ff}.dot.arb{background:#28a0f0}.dot.poly{background:#8247e5}
-
-  /* ── FAQ ── */
-  .faq {
-    max-width: 700px; margin: 0 auto 5rem; padding: 0 1.5rem;
-  }
-  .faq-item {
-    background: var(--card); border: 1px solid var(--border); border-radius: 12px;
-    padding: 1.2rem 1.5rem; margin-bottom: 0.75rem;
-    cursor: pointer; transition: border-color 0.2s;
-  }
-  .faq-item:hover { border-color: var(--accent); }
-  .faq-q { font-weight: 600; font-size: 0.9rem; display: flex; justify-content: space-between; align-items: center; }
-  .faq-a { font-size: 0.82rem; color: var(--dim); margin-top: 0.5rem; display: none; }
-  .faq-item.open .faq-a { display: block; }
-  .faq-q .arrow { transition: transform 0.2s; font-size: 0.8rem; color: var(--dim); }
-  .faq-item.open .arrow { transform: rotate(180deg); }
-
-  /* ── OG Banner ── */
-  .og-banner {
-    max-width: 700px; margin: 0 auto 4rem; padding: 0 1.5rem;
-  }
-  .og-card {
-    background: linear-gradient(135deg, rgba(0,212,170,0.08), rgba(51,153,255,0.08));
-    border: 1px solid rgba(0,212,170,0.2); border-radius: 16px;
-    padding: 2rem; text-align: center;
-  }
-  .og-card h3 { font-size: 1.2rem; margin-bottom: 0.5rem; }
-  .og-card p { color: var(--dim); font-size: 0.85rem; margin-bottom: 1rem; }
-  .og-link {
-    display: inline-block; background: var(--grad); color: #000; font-weight: 700;
-    padding: 0.6rem 1.5rem; border-radius: 8px; text-decoration: none;
-    font-size: 0.85rem; transition: opacity 0.2s;
-  }
-  .og-link:hover { opacity: 0.85; }
-
-  /* ── Footer ── */
-  footer {
-    border-top: 1px solid var(--border); padding: 2rem 1.5rem;
-    text-align: center; color: var(--dim); font-size: 0.8rem;
-  }
-  footer a { color: var(--accent); text-decoration: none; }
-  footer a:hover { text-decoration: underline; }
-  .footer-links { display: flex; gap: 1.5rem; justify-content: center; margin-bottom: 1rem; flex-wrap: wrap; }
-
-  /* ── Responsive ── */
-  @media (max-width: 768px) {
-    .hero h1 { font-size: 2rem; }
-    .hero-stats { gap: 1.5rem; }
-    .steps { grid-template-columns: 1fr; max-width: 300px; margin: 0 auto; }
-    .nav-links { display: none; }
-    .row-2 { grid-template-columns: 1fr; }
-  }
+  /* ── Scrollbar ── */
+  ::-webkit-scrollbar { width: 8px; }
+  ::-webkit-scrollbar-track { background: #fdfbf7; }
+  ::-webkit-scrollbar-thumb { background: #e5e0d8; border-radius: 4px; }
 </style>
 </head>
-<body>
+<body class="font-body text-pencil">
 
-<!-- Nav -->
-<nav>
-  <div class="nav-logo">🛡️ Scam Detector</div>
-  <div class="nav-links">
-    <a href="#features">Features</a>
-    <a href="#how">How It Works</a>
-    <a href="#faq">FAQ</a>
+<!-- ════════════════ NAV ════════════════ -->
+<nav class="sticky top-0 z-50 bg-paper/90 backdrop-blur-sm border-b-[3px] border-dashed border-pencil/20">
+  <div class="max-w-5xl mx-auto px-6 py-3 flex items-center justify-between">
+    <a href="#" class="font-heading text-xl text-pencil hover:text-accent transition-colors flex items-center gap-2">
+      <span class="text-2xl">🛡️</span>Crypto Guardian
+    </a>
+    <div class="hidden md:flex gap-5 text-sm">
+      <a href="#scanner" class="hover:text-accent transition-colors relative">
+        Scan
+        <span class="absolute -bottom-1 left-0 right-0 h-0.5 bg-accent scale-x-0 hover:scale-x-100 transition-transform"></span>
+      </a>
+      <a href="#approvals" class="hover:text-accent transition-colors">Approvals</a>
+      <a href="#features" class="hover:text-accent transition-colors">Features</a>
+      <a href="#how" class="hover:text-accent transition-colors">How</a>
+      <a href="#faq" class="hover:text-accent transition-colors">FAQ</a>
+    </div>
+    <a href="#scanner" class="font-heading text-sm bg-white border-[3px] border-pencil shadow-sketch px-4 py-1.5 wobbly-sm btn-sketch hover:bg-accent hover:text-white transition-colors hidden md:inline-block">
+      Scan now ✦
+    </a>
   </div>
-  <a href="#scanner" class="nav-cta">Scan Now →</a>
 </nav>
 
-<!-- Hero -->
-<section class="hero">
-  <div class="hero-content">
-    <div class="hero-badge">🔬 Powered by AI • On-Chain Analysis</div>
-    <h1>Don't Get <span class="grad">Rugged.</span><br>Check Any Token First.</h1>
-    <p class="sub">Paste a contract address and our AI scanner analyzes honeypots, high taxes, proxy risks, and 30+ scam signals — in seconds.</p>
-    <div class="hero-stats">
-      <div class="hero-stat"><div class="num">30+</div><div class="lbl">Scam Signals</div></div>
-      <div class="hero-stat"><div class="num">5</div><div class="lbl">Chains</div></div>
-      <div class="hero-stat"><div class="num">99%</div><div class="lbl">Detection Rate*</div></div>
+<!-- ════════════════ HERO ════════════════ -->
+<section class="relative overflow-hidden py-20 md:py-28 px-6">
+  <!-- Decorative elements -->
+  <div class="hidden md:block absolute top-20 right-10 w-16 h-16 border-[3px] border-dashed border-accent/30 rounded-full float-anim"></div>
+  <div class="hidden md:block absolute bottom-10 left-8 text-4xl opacity-20 spin-slow">✧</div>
+
+  <div class="max-w-3xl mx-auto text-center relative z-10">
+    <!-- Post-it badge -->
+    <div class="inline-block bg-postit border-[3px] border-pencil shadow-sketch-sm px-5 py-1.5 wobbly-sm -rotate-1 mb-6">
+      <span class="font-heading text-sm text-pencil">🛡️ Miễn phí · Không cần đăng ký</span>
     </div>
+
+    <h1 class="font-heading text-5xl md:text-6xl leading-tight mb-4 text-pencil">
+      Đừng để ví <span class="text-accent squiggly">dính chưởng</span><br>
+      <span class="relative">
+        Check trước khi quá muộn
+        <span class="hidden md:inline absolute -right-8 -top-2 text-3xl animate-bounce">!</span>
+      </span>
+    </h1>
+
+    <p class="text-lg md:text-xl text-pencil/65 max-w-xl mx-auto mb-8">
+      Dán địa chỉ token — AI quét 30+ tín hiệu scam. Dán địa chỉ ví — kiểm tra approvals nguy hiểm. Tất cả trong 1 tool.
+    </p>
+
+    <!-- Stats -->
+    <div class="flex justify-center gap-6 md:gap-10 mb-8">
+      <div class="text-center">
+        <div class="font-heading text-3xl md:text-4xl text-accent">30+</div>
+        <div class="text-xs text-pencil/50 uppercase tracking-wider">Tín hiệu scam</div>
+      </div>
+      <div class="text-center">
+        <div class="font-heading text-3xl md:text-4xl text-bluepen">5</div>
+        <div class="text-xs text-pencil/50 uppercase tracking-wider">Chain</div>
+      </div>
+      <div class="text-center">
+        <div class="font-heading text-3xl md:text-4xl text-greenpen">~81%</div>
+        <div class="text-xs text-pencil/50 uppercase tracking-wider">F1 Score</div>
+      </div>
+    </div>
+
+    <a href="#scanner" class="inline-block font-heading text-lg bg-white border-[3px] border-pencil shadow-sketch-lg px-8 py-3 wobbly btn-sketch hover:bg-accent hover:text-white transition-colors">
+      Bắt đầu quét ngay →
+    </a>
   </div>
 </section>
 
-<!-- Scanner -->
-<section class="scanner-section" id="scanner">
-  <div class="scanner-card">
-    <label>Contract Address</label>
-    <input type="text" id="address" placeholder="0x87230146E138d3F296a9a77e497A2A83012e9Bc5" autocomplete="off" spellcheck="false">
+<!-- ════════════════ TOOLS SECTION ════════════════ -->
+<section class="max-w-3xl mx-auto px-6 pb-20" id="scanner">
 
-    <div class="row-2">
+  <!-- Tab switcher -->
+  <div class="flex gap-1 mb-0 border-b-[3px] border-dashed border-pencil/20 pb-0">
+    <button id="tabScam" onclick="switchTab('scam')"
+      class="font-heading text-lg px-5 py-2 border-[3px] border-b-0 border-pencil rounded-t-2xl bg-white -mb-[3px] relative z-10 transition-colors">
+      🔍 Scan Token Scam
+    </button>
+    <button id="tabApproval" onclick="switchTab('approval')"
+      class="font-heading text-lg px-5 py-2 border-[3px] border-b-0 border-muted rounded-t-2xl bg-muted/40 text-pencil/50 transition-colors">
+      🛡️ Approval Checker
+    </button>
+  </div>
+
+  <!-- ═══ SCAM DETECTOR TAB ═══ -->
+  <div id="panelScam" class="bg-white border-[3px] border-pencil shadow-sketch-sm wobbly-md p-6 md:p-8">
+    <div class="mb-4">
+      <label class="font-heading text-sm block mb-1 text-pencil/70">Địa chỉ contract token</label>
+      <input type="text" id="address"
+        class="input-sketch w-full border-[3px] border-pencil rounded-xl px-4 py-3 bg-white transition-colors"
+        placeholder="0x87230146E138d3F296a9a77e497A2A83012e9Bc5"
+        autocomplete="off" spellcheck="false">
+    </div>
+
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
       <div>
-        <label>Chain</label>
-        <select id="chain">
-          <option value="56">BNB Smart Chain</option>
-          <option value="1">Ethereum</option>
-          <option value="8453">Base</option>
-          <option value="42161">Arbitrum</option>
-          <option value="137">Polygon</option>
+        <label class="font-heading text-sm block mb-1 text-pencil/70">Chain</label>
+        <select id="chain"
+          class="input-sketch w-full border-[3px] border-pencil rounded-xl px-4 py-3 bg-white appearance-none cursor-pointer">
+          <option value="56">🟡 BNB Smart Chain</option>
+          <option value="1">💎 Ethereum</option>
+          <option value="8453">🔵 Base</option>
+          <option value="42161">🔷 Arbitrum</option>
+          <option value="137">🟣 Polygon</option>
         </select>
       </div>
-      <div style="display:flex;align-items:flex-end;">
-        <button class="btn" id="checkBtn" onclick="check()">🔍 Scan Token</button>
+      <div class="flex items-end">
+        <button id="checkBtn" onclick="checkToken()"
+          class="font-heading text-lg w-full bg-white border-[3px] border-pencil shadow-sketch px-6 py-3 wobbly-sm btn-sketch hover:bg-accent hover:text-white transition-colors">
+          🔍 Scan Token
+        </button>
       </div>
     </div>
 
-    <div class="spinner" id="spinner"><div class="sp-dot"></div><div class="sp-dot"></div><div class="sp-dot"></div></div>
-    <div class="error-msg" id="error"></div>
+    <!-- Loading -->
+    <div id="spinner" class="hidden text-center py-6">
+      <span class="inline-block w-3 h-3 bg-accent rounded-full mx-1 animate-bounce" style="animation-delay:0s"></span>
+      <span class="inline-block w-3 h-3 bg-bluepen rounded-full mx-1 animate-bounce" style="animation-delay:0.15s"></span>
+      <span class="inline-block w-3 h-3 bg-greenpen rounded-full mx-1 animate-bounce" style="animation-delay:0.3s"></span>
+    </div>
 
-    <div class="result" id="result">
-      <div class="verdict-banner" id="verdictBanner">
-        <div class="verdict-icon" id="verdictIcon"></div>
-        <div class="verdict-text" id="verdictText"></div>
-      </div>
-      <div class="score-label"><span>Scam Probability</span><span id="scorePct">0%</span></div>
-      <div class="score-bar-wrap"><div class="score-bar" id="scoreBar" style="width:0%"></div></div>
+    <!-- Error -->
+    <div id="error" class="hidden bg-accent/10 border-[3px] border-accent rounded-xl p-4 text-accent text-sm mt-3"></div>
 
-      <div class="info-grid">
-        <div class="info-item"><div class="label">Token</div><div class="value" id="infoToken">—</div></div>
-        <div class="info-item"><div class="label">Chain</div><div class="value" id="infoChain">—</div></div>
-        <div class="info-item"><div class="label">Risk Level</div><div class="value" id="infoRisk">—</div></div>
-        <div class="info-item"><div class="label">Sell Tax</div><div class="value" id="infoTax">—</div></div>
-        <div class="info-item"><div class="label">Source Code</div><div class="value" id="infoSource">—</div></div>
-        <div class="info-item"><div class="label">Proxy</div><div class="value" id="infoProxy">—</div></div>
-      </div>
+    <!-- Results -->
+    <div id="result" class="hidden fade-in mt-4">
 
-      <div class="red-flags" id="redFlags">
-        <h4>🚨 Red Flags</h4>
-        <ul id="redFlagsList"></ul>
+      <!-- Verdict Banner -->
+      <div id="verdictBanner" class="border-[3px] border-pencil shadow-sketch-sm wobbly p-5 text-center mb-4">
+        <div id="verdictIcon" class="text-5xl mb-1"></div>
+        <div id="verdictText" class="font-heading text-2xl"></div>
       </div>
 
-      <a class="honeypot-link" id="honeypotLink" href="#" target="_blank" rel="noopener">
-        View full report on Honeypot.is →
+      <!-- Score bar -->
+      <div class="flex justify-between text-sm text-pencil/60 mb-1">
+        <span>Xác suất scam</span>
+        <span id="scorePct" class="font-heading">0%</span>
+      </div>
+      <div class="h-5 bg-muted/50 rounded-full overflow-hidden border-[2px] border-pencil/20 mb-4">
+        <div id="scoreBar" class="h-full rounded-full score-bar-fill" style="width:0%"></div>
+      </div>
+
+      <!-- Info grid -->
+      <div class="grid grid-cols-2 md:grid-cols-3 gap-3 mb-4">
+        <div class="bg-postit/60 border-[2px] border-pencil/20 rounded-xl p-3">
+          <div class="text-xs text-pencil/50 uppercase tracking-wide">Token</div>
+          <div id="infoToken" class="text-sm font-heading mt-0.5">—</div>
+        </div>
+        <div class="bg-postit/60 border-[2px] border-pencil/20 rounded-xl p-3">
+          <div class="text-xs text-pencil/50 uppercase tracking-wide">Chain</div>
+          <div id="infoChain" class="text-sm font-heading mt-0.5">—</div>
+        </div>
+        <div class="bg-postit/60 border-[2px] border-pencil/20 rounded-xl p-3">
+          <div class="text-xs text-pencil/50 uppercase tracking-wide">Risk Level</div>
+          <div id="infoRisk" class="text-sm font-heading mt-0.5">—</div>
+        </div>
+        <div class="bg-postit/60 border-[2px] border-pencil/20 rounded-xl p-3">
+          <div class="text-xs text-pencil/50 uppercase tracking-wide">Sell Tax</div>
+          <div id="infoTax" class="text-sm font-heading mt-0.5">—</div>
+        </div>
+        <div class="bg-postit/60 border-[2px] border-pencil/20 rounded-xl p-3">
+          <div class="text-xs text-pencil/50 uppercase tracking-wide">Source Code</div>
+          <div id="infoSource" class="text-sm font-heading mt-0.5">—</div>
+        </div>
+        <div class="bg-postit/60 border-[2px] border-pencil/20 rounded-xl p-3">
+          <div class="text-xs text-pencil/50 uppercase tracking-wide">Proxy</div>
+          <div id="infoProxy" class="text-sm font-heading mt-0.5">—</div>
+        </div>
+      </div>
+
+      <!-- Red flags -->
+      <div id="redFlags" class="hidden bg-accent/5 border-[3px] border-dashed border-accent/40 rounded-xl p-4 mb-3">
+        <h4 class="font-heading text-accent mb-2 flex items-center gap-2">
+          <span>🚩</span> Red Flags
+        </h4>
+        <ul id="redFlagsList" class="space-y-1 text-sm text-pencil/80"></ul>
+      </div>
+
+      <!-- Honeypot link -->
+      <a id="honeypotLink" href="#" target="_blank" rel="noopener"
+        class="block text-center text-sm text-bluepen hover:text-accent transition-colors underline decoration-dashed underline-offset-4">
+        Xem báo cáo đầy đủ trên Honeypot.is →
       </a>
     </div>
   </div>
+
+  <!-- ═══ APPROVAL CHECKER TAB ═══ -->
+  <div id="panelApproval" class="hidden bg-white border-[3px] border-pencil shadow-sketch-sm wobbly-md p-6 md:p-8">
+    <div class="mb-4">
+      <label class="font-heading text-sm block mb-1 text-pencil/70">Địa chỉ ví cần kiểm tra</label>
+      <input type="text" id="walletAddr"
+        class="input-sketch w-full border-[3px] border-pencil rounded-xl px-4 py-3 bg-white transition-colors"
+        placeholder="0x36F50C8c..."
+        autocomplete="off" spellcheck="false">
+    </div>
+
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
+      <div>
+        <label class="font-heading text-sm block mb-1 text-pencil/70">Chain</label>
+        <select id="approvalChain"
+          class="input-sketch w-full border-[3px] border-pencil rounded-xl px-4 py-3 bg-white appearance-none cursor-pointer">
+          <option value="1">💎 Ethereum</option>
+          <option value="56">🟡 BNB Smart Chain</option>
+          <option value="8453">🔵 Base</option>
+          <option value="42161">🔷 Arbitrum</option>
+          <option value="137">🟣 Polygon</option>
+        </select>
+      </div>
+      <div class="flex items-end">
+        <button id="approvalBtn" onclick="checkApprovals()"
+          class="font-heading text-lg w-full bg-white border-[3px] border-pencil shadow-sketch px-6 py-3 wobbly-sm btn-sketch hover:bg-bluepen hover:text-white transition-colors">
+          🛡️ Quét Approvals
+        </button>
+      </div>
+    </div>
+
+    <!-- Loading -->
+    <div id="approvalSpinner" class="hidden text-center py-6">
+      <span class="inline-block w-3 h-3 bg-bluepen rounded-full mx-1 animate-bounce" style="animation-delay:0s"></span>
+      <span class="inline-block w-3 h-3 bg-accent rounded-full mx-1 animate-bounce" style="animation-delay:0.15s"></span>
+      <span class="inline-block w-3 h-3 bg-greenpen rounded-full mx-1 animate-bounce" style="animation-delay:0.3s"></span>
+    </div>
+
+    <div id="approvalError" class="hidden bg-accent/10 border-[3px] border-accent rounded-xl p-4 text-accent text-sm mt-3"></div>
+
+    <!-- Summary cards -->
+    <div id="approvalResult" class="hidden fade-in mt-4">
+      <div class="grid grid-cols-3 gap-3 mb-4">
+        <div class="bg-white border-[3px] border-pencil shadow-sketch-sm rounded-xl p-3 text-center">
+          <div class="font-heading text-2xl text-pencil" id="totalActive">0</div>
+          <div class="text-xs text-pencil/50">Approvals active</div>
+        </div>
+        <div class="bg-accent/10 border-[3px] border-accent shadow-sketch-sm rounded-xl p-3 text-center">
+          <div class="font-heading text-2xl text-accent" id="highRisk">0</div>
+          <div class="text-xs text-pencil/50">Rủi ro cao</div>
+        </div>
+        <div class="bg-accent/10 border-[3px] border-accent shadow-sketch-sm rounded-xl p-3 text-center">
+          <div class="font-heading text-2xl text-accent" id="unlimited">0</div>
+          <div class="text-xs text-pencil/50">Không giới hạn</div>
+        </div>
+      </div>
+
+      <!-- Approvals list -->
+      <div id="approvalsList" class="space-y-3"></div>
+
+      <p class="text-xs text-pencil/40 text-center mt-4">
+        Quét top token + DEX phổ biến. Hỗ trợ thêm token khi có nhu cầu.
+      </p>
+    </div>
+  </div>
+
 </section>
 
-<!-- Features -->
-<section class="features" id="features">
-  <div class="section-tag">Why Use This?</div>
-  <h2 class="section-title">Everything You Need To Stay Safe</h2>
-  <div class="feature-grid">
-    <div class="feature-card">
-      <div class="feature-icon">🔍</div>
-      <h3>30+ Scam Signals</h3>
-      <p>Honeypot detection, high sell tax, proxy contracts, closed source, failed sell transactions, wallet siphoning, and more.</p>
+<!-- ════════════════ FEATURES ════════════════ -->
+<section class="max-w-5xl mx-auto px-6 pb-20" id="features">
+  <div class="text-center mb-10">
+    <span class="inline-block bg-postit border-[2px] border-pencil/30 shadow-sketch-sm px-4 py-1 wobbly-sm -rotate-1 font-heading text-sm mb-4">✨ Tại sao nên dùng?</span>
+    <h2 class="font-heading text-4xl md:text-5xl text-pencil">Mọi thứ để giữ ví an toàn</h2>
+  </div>
+
+  <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+    <!-- Feature cards -->
+    <div class="relative bg-white border-[3px] border-pencil shadow-sketch-sm wobbly-md p-6 card-hover">
+      <div class="tape"></div>
+      <div class="text-3xl mb-3">🔍</div>
+      <h3 class="font-heading text-xl mb-2">30+ Tín Hiệu Scam</h3>
+      <p class="text-sm text-pencil/65">Honeypot, high tax, proxy, closed source, siphoned wallets — tất cả được AI phân tích.</p>
     </div>
-    <div class="feature-card">
-      <div class="feature-icon">🌐</div>
-      <h3>5 Chains Supported</h3>
-      <p>BNB Smart Chain, Ethereum, Base, Arbitrum, and Polygon. More chains coming soon.</p>
+
+    <div class="relative bg-white border-[3px] border-pencil shadow-sketch-sm wobbly-md p-6 card-hover">
+      <div class="text-3xl mb-3">🛡️</div>
+      <h3 class="font-heading text-xl mb-2">Approval Checker</h3>
+      <p class="text-sm text-pencil/65">Quét ví tìm token approvals nguy hiểm. Phát hiện unlimited allowance với DEX lạ.</p>
     </div>
-    <div class="feature-card">
-      <div class="feature-icon">⚡</div>
-      <h3>Instant Results</h3>
-      <p>Real-time on-chain data via Honeypot.is API. Get a scam probability score + detailed breakdown in under 5 seconds.</p>
+
+    <div class="relative bg-postit border-[3px] border-pencil shadow-sketch-sm wobbly-md p-6 card-hover">
+      <div class="tape" style="transform: translateX(-50%) rotate(1deg); width: 50px;"></div>
+      <div class="text-3xl mb-3">🌐</div>
+      <h3 class="font-heading text-xl mb-2">5 Chain Hỗ Trợ</h3>
+      <p class="text-sm text-pencil/65">Ethereum, BSC, Base, Arbitrum, Polygon. Nhiều chain hơn sắp ra mắt.</p>
     </div>
-    <div class="feature-card">
-      <div class="feature-icon">🤖</div>
-      <h3>AI-Powered</h3>
-      <p>Neural network trained on 200+ labeled tokens — rug pulls, honeypots, and legitimate projects. Continuously improving.</p>
+
+    <div class="relative bg-white border-[3px] border-pencil shadow-sketch-sm wobbly-md p-6 card-hover">
+      <div class="text-3xl mb-3">⚡</div>
+      <h3 class="font-heading text-xl mb-2">Kết Quả Tức Thì</h3>
+      <p class="text-sm text-pencil/65">Dữ liệu on-chain real-time. Kết quả scam detection trong dưới 5 giây.</p>
     </div>
-    <div class="feature-card">
-      <div class="feature-icon">🛡️</div>
-      <h3>Open Source</h3>
-      <p>Model and scanner code are public. Verify the detection logic yourself. Trust, but verify.</p>
+
+    <div class="relative bg-white border-[3px] border-pencil shadow-sketch-sm wobbly-md p-6 card-hover">
+      <div class="text-3xl mb-3">🤖</div>
+      <h3 class="font-heading text-xl mb-2">AI-Powered</h3>
+      <p class="text-sm text-pencil/65">Neural network huấn luyện trên 200+ token. Cập nhật liên tục, F1 ~81%.</p>
     </div>
-    <div class="feature-card">
-      <div class="feature-icon">💰</div>
-      <h3>Earn OPG Rewards</h3>
-      <p>Every scan through the OpenGradient Model Hub earns $OPG for the model creator. <a href="https://hub.opengradient.ai" target="_blank" rel="noopener" style="color:var(--accent)">View on Hub →</a></p>
+
+    <div class="relative bg-white border-[3px] border-pencil shadow-sketch-sm wobbly-md p-6 card-hover">
+      <div class="text-3xl mb-3">💯</div>
+      <h3 class="font-heading text-xl mb-2">Miễn Phí Mãi Mãi</h3>
+      <p class="text-sm text-pencil/65">Không cần đăng ký, không cần connect ví. Dùng public RPC — zero cost.</p>
     </div>
   </div>
 </section>
 
-<!-- How It Works -->
-<section class="how" id="how">
-  <div class="section-tag">Simple Process</div>
-  <h2 class="section-title">How It Works</h2>
-  <div class="steps">
-    <div class="step">
-      <div class="step-num">1</div>
-      <h4>Paste Address</h4>
-      <p>Copy any token contract address from DEX, CoinGecko, or a friend's DM.</p>
+<!-- ════════════════ HOW IT WORKS ════════════════ -->
+<section class="max-w-3xl mx-auto px-6 pb-20" id="how">
+  <div class="text-center mb-10">
+    <span class="inline-block bg-postit border-[2px] border-pencil/30 shadow-sketch-sm px-4 py-1 wobbly-sm rotate-1 font-heading text-sm mb-4">📋 Quy trình</span>
+    <h2 class="font-heading text-4xl md:text-5xl text-pencil">Cách hoạt động</h2>
+  </div>
+
+  <div class="grid grid-cols-1 md:grid-cols-3 gap-8 relative">
+    <!-- Squiggly connector line (desktop only) -->
+    <div class="hidden md:block absolute top-10 left-[20%] right-[20%] h-1 border-t-[3px] border-dashed border-pencil/20 -z-10"></div>
+
+    <div class="text-center">
+      <div class="inline-flex items-center justify-center w-16 h-16 border-[3px] border-pencil bg-white shadow-sketch-sm rounded-full mb-4 relative z-10 font-heading text-2xl">1</div>
+      <h4 class="font-heading text-lg mb-1">Dán địa chỉ</h4>
+      <p class="text-sm text-pencil/60">Copy contract token hoặc địa chỉ ví. Hỗ trợ mọi EVM chain.</p>
     </div>
-    <div class="step">
-      <div class="step-num">2</div>
-      <h4>AI Analysis</h4>
-      <p>Our model fetches live on-chain data and runs 30+ scam detection signals.</p>
+
+    <div class="text-center">
+      <div class="inline-flex items-center justify-center w-16 h-16 border-[3px] border-pencil bg-white shadow-sketch-sm rounded-full mb-4 relative z-10 font-heading text-2xl">2</div>
+      <h4 class="font-heading text-lg mb-1">AI Quét</h4>
+      <p class="text-sm text-pencil/60">Model phân tích 30+ tín hiệu + on-chain data. Dưới 5 giây.</p>
     </div>
-    <div class="step">
-      <div class="step-num">3</div>
-      <h4>Get Verdict</h4>
-      <p>See the scam probability score, red flags, and a full report on Honeypot.is.</p>
+
+    <div class="text-center">
+      <div class="inline-flex items-center justify-center w-16 h-16 border-[3px] border-pencil bg-accent text-white shadow-sketch-sm rounded-full mb-4 relative z-10 font-heading text-2xl">3</div>
+      <h4 class="font-heading text-lg mb-1">Nhận Kết Quả</h4>
+      <p class="text-sm text-pencil/60">Scam score, red flags, approvals nguy hiểm — tất cả rõ ràng.</p>
     </div>
   </div>
 </section>
 
-<!-- Chains -->
-<section class="chains">
-  <div class="section-tag">Supported Networks</div>
-  <h2 class="section-title">Multi-Chain Coverage</h2>
-  <div class="chain-tags">
-    <span class="chain-tag"><span class="dot bsc"></span>BNB Smart Chain</span>
-    <span class="chain-tag"><span class="dot eth"></span>Ethereum</span>
-    <span class="chain-tag"><span class="dot base"></span>Base</span>
-    <span class="chain-tag"><span class="dot arb"></span>Arbitrum</span>
-    <span class="chain-tag"><span class="dot poly"></span>Polygon</span>
+<!-- ════════════════ CHAINS ════════════════ -->
+<section class="max-w-3xl mx-auto px-6 pb-20 text-center">
+  <span class="inline-block bg-postit border-[2px] border-pencil/30 shadow-sketch-sm px-4 py-1 wobbly-sm -rotate-1 font-heading text-sm mb-4">⛓️ Networks</span>
+  <h2 class="font-heading text-4xl text-pencil mb-8">Multi-Chain</h2>
+  <div class="flex flex-wrap justify-center gap-3">
+    <span class="border-[3px] border-pencil bg-white shadow-sketch-sm px-5 py-2 rounded-full text-sm font-heading">🟡 BNB Chain</span>
+    <span class="border-[3px] border-pencil bg-white shadow-sketch-sm px-5 py-2 rounded-full text-sm font-heading">💎 Ethereum</span>
+    <span class="border-[3px] border-pencil bg-white shadow-sketch-sm px-5 py-2 rounded-full text-sm font-heading">🔵 Base</span>
+    <span class="border-[3px] border-pencil bg-white shadow-sketch-sm px-5 py-2 rounded-full text-sm font-heading">🔷 Arbitrum</span>
+    <span class="border-[3px] border-pencil bg-white shadow-sketch-sm px-5 py-2 rounded-full text-sm font-heading">🟣 Polygon</span>
   </div>
 </section>
 
-<!-- FAQ -->
-<section class="faq" id="faq">
-  <div class="section-tag">Questions</div>
-  <h2 class="section-title">Frequently Asked</h2>
-  <div class="faq-item" onclick="this.classList.toggle('open')">
-    <div class="faq-q">How accurate is the scam detection? <span class="arrow">▼</span></div>
-    <div class="faq-a">Our neural network was trained on 200+ labeled tokens with ~81% cross-validation F1 score. It catches honeypots, rug pulls, and high-tax tokens. Always DYOR — this is a tool, not financial advice.</div>
+<!-- ════════════════ FAQ ════════════════ -->
+<section class="max-w-2xl mx-auto px-6 pb-20" id="faq">
+  <div class="text-center mb-10">
+    <span class="inline-block bg-postit border-[2px] border-pencil/30 shadow-sketch-sm px-4 py-1 wobbly-sm rotate-1 font-heading text-sm mb-4">❓ Hỏi đáp</span>
+    <h2 class="font-heading text-4xl text-pencil">Câu Hỏi Thường Gặp</h2>
   </div>
-  <div class="faq-item" onclick="this.classList.toggle('open')">
-    <div class="faq-q">Is this free to use? <span class="arrow">▼</span></div>
-    <div class="faq-a">Yes, completely free. We query the free Honeypot.is API and run inference on our own GPU. No wallet connection, no payment required.</div>
-  </div>
-  <div class="faq-item" onclick="this.classList.toggle('open')">
-    <div class="faq-q">What data do you collect? <span class="arrow">▼</span></div>
-    <div class="faq-a">Nothing. We don't store addresses, IPs, or any personal data. The scan is stateless — your address never hits a database.</div>
-  </div>
-  <div class="faq-item" onclick="this.classList.toggle('open')">
-    <div class="faq-q">Can I use this for tokens on Solana? <span class="arrow">▼</span></div>
-    <div class="faq-a">Not yet. Honeypot.is currently supports EVM chains only. Solana support depends on their API expansion.</div>
+
+  <div class="space-y-3">
+    <details class="group bg-white border-[3px] border-pencil shadow-sketch-sm wobbly-md p-5 cursor-pointer">
+      <summary class="font-heading text-lg list-none flex justify-between items-center">
+        Tool này có chính xác không?
+        <span class="text-xl transition-transform group-open:rotate-180">▼</span>
+      </summary>
+      <p class="mt-3 text-sm text-pencil/65 border-t-[2px] border-dashed border-pencil/10 pt-3">Model neural network huấn luyện trên 200+ token với F1 score ~81% (cross-validation). Phát hiện honeypot, rug pull, high-tax tokens. Luôn luôn DYOR — đây là công cụ hỗ trợ, không phải lời khuyên tài chính.</p>
+    </details>
+
+    <details class="group bg-white border-[3px] border-pencil shadow-sketch-sm wobbly-md p-5 cursor-pointer">
+      <summary class="font-heading text-lg list-none flex justify-between items-center">
+        Có mất phí không?
+        <span class="text-xl transition-transform group-open:rotate-180">▼</span>
+      </summary>
+      <p class="mt-3 text-sm text-pencil/65 border-t-[2px] border-dashed border-pencil/10 pt-3">Hoàn toàn miễn phí. Dùng Honeypot.is API (free) + public RPC endpoints. Không cần đăng ký, không cần connect ví, không lưu data.</p>
+    </details>
+
+    <details class="group bg-white border-[3px] border-pencil shadow-sketch-sm wobbly-md p-5 cursor-pointer">
+      <summary class="font-heading text-lg list-none flex justify-between items-center">
+        Approval Checker quét những gì?
+        <span class="text-xl transition-transform group-open:rotate-180">▼</span>
+      </summary>
+      <p class="mt-3 text-sm text-pencil/65 border-t-[2px] border-dashed border-pencil/10 pt-3">Quét allowance của các token phổ biến (USDT, USDC, ETH, WBTC...) với các DEX/router lớn (Uniswap, 0x, 1inch, PancakeSwap...). Phát hiện unlimited approval với spender lạ. Hiện tại quét khoảng 8-10 token × 8 spender mỗi chain.</p>
+    </details>
+
+    <details class="group bg-white border-[3px] border-pencil shadow-sketch-sm wobbly-md p-5 cursor-pointer">
+      <summary class="font-heading text-lg list-none flex justify-between items-center">
+        Có hỗ trợ Solana không?
+        <span class="text-xl transition-transform group-open:rotate-180">▼</span>
+      </summary>
+      <p class="mt-3 text-sm text-pencil/65 border-t-[2px] border-dashed border-pencil/10 pt-3">Chưa. Honeypot.is chỉ hỗ trợ EVM chains. Solana sẽ được thêm khi có API phù hợp.</p>
+    </details>
   </div>
 </section>
 
-<!-- OG Banner -->
-<section class="og-banner">
-  <div class="og-card">
-    <h3>🚀 Built on OpenGradient</h3>
-    <p>This model is hosted on the OpenGradient Model Hub — a decentralized AI platform. Model creators earn $OPG from every on-chain inference.</p>
-    <a href="https://hub.opengradient.ai" target="_blank" rel="noopener" class="og-link">View Model on Hub →</a>
+<!-- ════════════════ OPG BANNER ════════════════ -->
+<section class="max-w-2xl mx-auto px-6 pb-20">
+  <div class="bg-postit border-[3px] border-pencil shadow-sketch-lg wobbly-md p-6 text-center relative">
+    <div class="tape" style="width: 70px;"></div>
+    <h3 class="font-heading text-2xl mb-2">🚀 Built on OpenGradient</h3>
+    <p class="text-sm text-pencil/70 mb-4">Model scam detection được host trên OpenGradient Model Hub — nền tảng AI phi tập trung. Mỗi lần inference kiếm $OPG cho creator.</p>
+    <a href="https://hub.opengradient.ai" target="_blank" rel="noopener"
+      class="inline-block font-heading bg-white border-[3px] border-pencil shadow-sketch px-6 py-2 wobbly-sm btn-sketch hover:bg-bluepen hover:text-white transition-colors text-sm">
+      Xem Model trên Hub →
+    </a>
   </div>
 </section>
 
-<!-- Footer -->
-<footer>
-  <div class="footer-links">
-    <a href="https://twitter.com/Leonis237" target="_blank" rel="noopener">𝕏 @Leonis237</a>
-    <a href="https://github.com/vinfats237/token-scam-detector" target="_blank" rel="noopener">GitHub</a>
-    <a href="https://hub.opengradient.ai" target="_blank" rel="noopener">OpenGradient Hub</a>
-    <a href="https://honeypot.is" target="_blank" rel="noopener">Honeypot.is</a>
+<!-- ════════════════ FOOTER ════════════════ -->
+<footer class="border-t-[3px] border-dashed border-pencil/20 py-10 px-6">
+  <div class="max-w-3xl mx-auto text-center">
+    <div class="flex justify-center gap-6 flex-wrap mb-4 text-sm">
+      <a href="https://x.com/Leonis237" target="_blank" rel="noopener" class="hover:text-accent hover:line-through transition-colors">𝕏 @Leonis237</a>
+      <a href="https://github.com/Leonis237/token-scam-detector" target="_blank" rel="noopener" class="hover:text-accent hover:line-through transition-colors">GitHub</a>
+      <a href="https://hub.opengradient.ai" target="_blank" rel="noopener" class="hover:text-accent hover:line-through transition-colors">OpenGradient Hub</a>
+      <a href="https://honeypot.is" target="_blank" rel="noopener" class="hover:text-accent hover:line-through transition-colors">Honeypot.is</a>
+    </div>
+    <p class="text-xs text-pencil/40">
+      © 2026 Crypto Guardian. Không phải lời khuyên tài chính. DYOR. Built with ✦ by <a href="https://x.com/Leonis237" class="hover:text-accent transition-colors">@Leonis237</a>
+    </p>
   </div>
-  <p>© 2026 Token Scam Detector. Not financial advice. DYOR. Built by <a href="https://twitter.com/Leonis237">@Leonis237</a> on <a href="https://opengradient.ai">OpenGradient</a>.</p>
 </footer>
 
+<!-- ════════════════ SCRIPTS ════════════════ -->
 <script>
-async function check() {
+// ── Tab switching ──
+function switchTab(tab) {
+  const scamPanel = document.getElementById('panelScam');
+  const approvalPanel = document.getElementById('panelApproval');
+  const scamTab = document.getElementById('tabScam');
+  const approvalTab = document.getElementById('tabApproval');
+
+  if (tab === 'scam') {
+    scamPanel.classList.remove('hidden');
+    approvalPanel.classList.add('hidden');
+    scamTab.className = 'font-heading text-lg px-5 py-2 border-[3px] border-b-0 border-pencil rounded-t-2xl bg-white -mb-[3px] relative z-10 text-pencil';
+    approvalTab.className = 'font-heading text-lg px-5 py-2 border-[3px] border-b-0 border-muted rounded-t-2xl bg-muted/40 text-pencil/50';
+  } else {
+    scamPanel.classList.add('hidden');
+    approvalPanel.classList.remove('hidden');
+    scamTab.className = 'font-heading text-lg px-5 py-2 border-[3px] border-b-0 border-muted rounded-t-2xl bg-muted/40 text-pencil/50';
+    approvalTab.className = 'font-heading text-lg px-5 py-2 border-[3px] border-b-0 border-pencil rounded-t-2xl bg-white -mb-[3px] relative z-10 text-pencil';
+  }
+}
+
+// ── Scam Detection ──
+async function checkToken() {
   const addr = document.getElementById('address').value.trim();
   const chain = document.getElementById('chain').value;
 
-  document.getElementById('result').classList.remove('show');
-  document.getElementById('error').classList.remove('show');
-  document.getElementById('redFlags').classList.remove('show');
+  document.getElementById('result').classList.add('hidden');
+  document.getElementById('error').classList.add('hidden');
+  document.getElementById('redFlags').classList.add('hidden');
 
   if (!addr) {
-    document.getElementById('error').textContent = 'Please enter a contract address';
-    document.getElementById('error').classList.add('show');
+    showError('Vui lòng nhập địa chỉ contract token');
     return;
   }
 
-  document.getElementById('spinner').classList.add('show');
+  document.getElementById('spinner').classList.remove('hidden');
   document.getElementById('checkBtn').disabled = true;
 
   try {
@@ -512,22 +638,31 @@ async function check() {
     const data = await resp.json();
 
     if (data.error) {
-      document.getElementById('error').textContent = data.error;
-      document.getElementById('error').classList.add('show');
+      showError(data.error);
       return;
     }
 
+    // Verdict banner
     const banner = document.getElementById('verdictBanner');
-    banner.className = 'verdict-banner ' + data.verdict;
-    document.getElementById('verdictIcon').textContent = {scam:'🚨',suspicious:'⚠️',safe:'✅'}[data.verdict];
-    document.getElementById('verdictText').textContent = {scam:'LIKELY SCAM / RUGPULL',suspicious:'SUSPICIOUS — DYOR',safe:'LIKELY SAFE'}[data.verdict];
+    const colors = {
+      scam: { bg: 'bg-accent/10', border: 'border-accent', icon: '🚨', text: 'LIKELY SCAM / RUGPULL', textColor: 'text-accent' },
+      suspicious: { bg: 'bg-yellowpen/10', border: 'border-yellowpen', icon: '⚠️', text: 'SUSPICIOUS — DYOR', textColor: 'text-yellowpen' },
+      safe: { bg: 'bg-greenpen/10', border: 'border-greenpen', icon: '✅', text: 'LIKELY SAFE', textColor: 'text-greenpen' }
+    };
+    const c = colors[data.verdict];
+    banner.className = `border-[3px] shadow-sketch-sm wobbly p-5 text-center mb-4 ${c.bg} ${c.border}`;
+    document.getElementById('verdictIcon').textContent = c.icon;
+    document.getElementById('verdictText').textContent = c.text;
+    document.getElementById('verdictText').className = `font-heading text-2xl ${c.textColor}`;
 
+    // Score bar
     const pct = data.score;
     document.getElementById('scorePct').textContent = pct + '%';
     const bar = document.getElementById('scoreBar');
     bar.style.width = pct + '%';
-    bar.className = 'score-bar ' + (pct > 70 ? 'high' : (pct > 40 ? 'medium' : 'low'));
+    bar.className = 'h-full rounded-full score-bar-fill ' + (pct > 70 ? 'bg-accent' : (pct > 40 ? 'bg-yellowpen' : 'bg-greenpen'));
 
+    // Info
     document.getElementById('infoToken').textContent = data.token_name + ' (' + data.token_symbol + ')';
     document.getElementById('infoChain').textContent = data.chain;
     document.getElementById('infoRisk').textContent = data.risk_label + ' (' + data.risk_level + ')';
@@ -535,27 +670,103 @@ async function check() {
     document.getElementById('infoSource').textContent = data.open_source ? '✅ Open' : '⚠️ Closed';
     document.getElementById('infoProxy').textContent = data.is_proxy ? '⚠️ Yes' : '✅ No';
 
+    // Red flags
     if (data.red_flags.length > 0) {
-      document.getElementById('redFlagsList').innerHTML = data.red_flags.map(f => '<li>' + f + '</li>').join('');
-      document.getElementById('redFlags').classList.add('show');
+      document.getElementById('redFlagsList').innerHTML = data.red_flags.map(f => '<li class="flex items-start gap-2"><span>▸</span><span>' + f + '</span></li>').join('');
+      document.getElementById('redFlags').classList.remove('hidden');
     }
 
     document.getElementById('honeypotLink').href = data.honeypot_url;
-    document.getElementById('result').classList.add('show');
+    document.getElementById('result').classList.remove('hidden');
+    document.getElementById('result').scrollIntoView({ behavior: 'smooth', block: 'center' });
 
-    document.getElementById('result').scrollIntoView({behavior:'smooth',block:'center'});
-  } catch(e) {
-    document.getElementById('error').textContent = 'Network error. Please try again.';
-    document.getElementById('error').classList.add('show');
+  } catch (e) {
+    showError('Lỗi mạng. Vui lòng thử lại.');
   } finally {
-    document.getElementById('spinner').classList.remove('show');
+    document.getElementById('spinner').classList.add('hidden');
     document.getElementById('checkBtn').disabled = false;
   }
 }
 
-document.getElementById('address').addEventListener('keydown', e => {
-  if (e.key === 'Enter') check();
-});
+function showError(msg) {
+  document.getElementById('error').textContent = msg;
+  document.getElementById('error').classList.remove('hidden');
+}
+
+// ── Approval Checker ──
+async function checkApprovals() {
+  const wallet = document.getElementById('walletAddr').value.trim();
+  const chain = document.getElementById('approvalChain').value;
+
+  document.getElementById('approvalResult').classList.add('hidden');
+  document.getElementById('approvalError').classList.add('hidden');
+
+  if (!wallet || !wallet.startsWith('0x') || wallet.length !== 42) {
+    document.getElementById('approvalError').textContent = 'Địa chỉ ví không hợp lệ (cần 0x + 40 ký tự hex)';
+    document.getElementById('approvalError').classList.remove('hidden');
+    return;
+  }
+
+  document.getElementById('approvalSpinner').classList.remove('hidden');
+  document.getElementById('approvalBtn').disabled = true;
+
+  try {
+    const resp = await fetch(`/api/approvals?wallet=${encodeURIComponent(wallet)}&chain=${chain}`);
+    const data = await resp.json();
+
+    if (data.error) {
+      document.getElementById('approvalError').textContent = data.error;
+      document.getElementById('approvalError').classList.remove('hidden');
+      return;
+    }
+
+    // Summary
+    document.getElementById('totalActive').textContent = data.total_active;
+    document.getElementById('highRisk').textContent = data.high_risk;
+    document.getElementById('unlimited').textContent = data.unlimited;
+
+    // Approval list
+    const list = document.getElementById('approvalsList');
+    if (data.approvals.length === 0) {
+      list.innerHTML = '<div class="bg-greenpen/10 border-[3px] border-greenpen rounded-xl p-5 text-center"><span class="font-heading text-xl text-greenpen">✅ Ví sạch!</span><p class="text-sm text-pencil/60 mt-1">Không phát hiện approval rủi ro nào.</p></div>';
+    } else {
+      list.innerHTML = data.approvals.map(a => {
+        const riskColors = a.risk === 'high' ? 'border-accent bg-accent/5' : (a.risk === 'medium' ? 'border-yellowpen bg-yellowpen/5' : 'border-greenpen/30 bg-greenpen/5');
+        const riskBadge = a.risk === 'high' ? 'bg-accent text-white' : (a.risk === 'medium' ? 'bg-yellowpen text-white' : 'bg-greenpen text-white');
+        return `
+          <div class="border-[3px] ${riskColors} shadow-sketch-sm wobbly-sm p-4">
+            <div class="flex justify-between items-start mb-2">
+              <div>
+                <span class="font-heading text-lg">${a.token}</span>
+                <span class="text-xs text-pencil/40 ml-2">→ ${a.spender}</span>
+              </div>
+              <span class="text-xs px-2 py-0.5 rounded-full font-heading ${riskBadge}">
+                ${a.risk === 'high' ? '⚠ Rủi ro cao' : (a.risk === 'medium' ? '⚡ Trung bình' : '✅ An toàn')}
+              </span>
+            </div>
+            <div class="flex gap-4 text-xs text-pencil/50">
+              ${a.unlimited ? '<span class="text-accent font-heading">∞ Unlimited</span>' : '<span>Allowance: ' + a.allowance + '</span>'}
+              <span>Spender: ${a.spender_address.slice(0,10)}...${a.spender_address.slice(-6)}</span>
+            </div>
+          </div>`;
+      }).join('');
+    }
+
+    document.getElementById('approvalResult').classList.remove('hidden');
+    document.getElementById('approvalResult').scrollIntoView({ behavior: 'smooth', block: 'center' });
+
+  } catch (e) {
+    document.getElementById('approvalError').textContent = 'Lỗi mạng hoặc RPC không phản hồi. Thử lại sau.';
+    document.getElementById('approvalError').classList.remove('hidden');
+  } finally {
+    document.getElementById('approvalSpinner').classList.add('hidden');
+    document.getElementById('approvalBtn').disabled = false;
+  }
+}
+
+// ── Enter key triggers ──
+document.getElementById('address').addEventListener('keydown', e => { if (e.key === 'Enter') checkToken(); });
+document.getElementById('walletAddr').addEventListener('keydown', e => { if (e.key === 'Enter') checkApprovals(); });
 </script>
 </body>
 </html>
