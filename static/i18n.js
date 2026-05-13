@@ -101,9 +101,9 @@ const I18N = {
     faq_q4: "Có hỗ trợ Solana không?",
     faq_a4: "Chưa. Honeypot.is chỉ hỗ trợ EVM chains. Solana sẽ được thêm khi có API phù hợp.",
 
-    og_badge: "📋 Model on OpenGradient",
-    og_desc: "Model được liệt kê trên OpenGradient Model Hub — kiếm $OPG khi người khác sử dụng model trên mạng lưới.",
-    og_link: "Xem trên Hub →",
+    og_badge: "🔬 AI 작동 방식",
+    og_desc: "Logistic Regression 모델 (572B)이 200개 이상의 라벨링된 토큰으로 훈련되었습니다. ONNX를 통해 로컬에서 실행 — 데이터가 브라우저를 떠나지 않습니다. OpenGradient Model Hub에도 등록되어 있습니다.",
+    og_link: "OpenGradient에서 모델 보기 →",
 
     footer_built: "Built with ✦ by",
     footer_disclaimer: "© 2026 Leonis Forge. Không phải lời khuyên tài chính. DYOR.",
@@ -373,9 +373,9 @@ const I18N = {
     faq_q4: "Does it support Solana?",
     faq_a4: "Not yet. Honeypot.is only supports EVM chains. Solana will be added when suitable APIs become available.",
 
-    og_badge: "📋 Model on OpenGradient",
-    og_desc: "Model listed on OpenGradient Model Hub — earn $OPG when others use it on the network.",
-    og_link: "View on Hub →",
+    og_badge: "🔬 AI 작동 방식",
+    og_desc: "Logistic Regression 모델 (572B)이 200개 이상의 라벨링된 토큰으로 훈련되었습니다. ONNX를 통해 로컬에서 실행 — 데이터가 브라우저를 떠나지 않습니다. OpenGradient Model Hub에도 등록되어 있습니다.",
+    og_link: "OpenGradient에서 모델 보기 →",
 
     footer_built: "Built with ✦ by",
     footer_disclaimer: "© 2026 Leonis Forge. Not financial advice. DYOR.",
@@ -645,9 +645,9 @@ const I18N = {
     faq_q4: "支持 Solana 吗？",
     faq_a4: "暂不支持。Honeypot.is 仅支持 EVM 链。待有合适的 API 后添加 Solana。",
 
-    og_badge: "📋 Model on OpenGradient",
-    og_desc: "模型列在 OpenGradient Model Hub 上 — 当其他人在网络上使用模型时赚取 $OPG。",
-    og_link: "在 Hub 上查看 →",
+    og_badge: "🔬 AI 작동 방식",
+    og_desc: "Logistic Regression 모델 (572B)이 200개 이상의 라벨링된 토큰으로 훈련되었습니다. ONNX를 통해 로컬에서 실행 — 데이터가 브라우저를 떠나지 않습니다. OpenGradient Model Hub에도 등록되어 있습니다.",
+    og_link: "OpenGradient에서 모델 보기 →",
 
     footer_built: "由 ✦ 构建",
     footer_disclaimer: "© 2026 Leonis Forge。非财务建议。DYOR。",
@@ -917,9 +917,9 @@ const I18N = {
     faq_q4: "솔라나를 지원하나요?",
     faq_a4: "아직 아닙니다. Honeypot.is는 EVM 체인만 지원합니다. 적절한 API가 제공되면 솔라나를 추가할 예정입니다.",
 
-    og_badge: "📋 Model on OpenGradient",
-    og_desc: "모델이 OpenGradient Model Hub에 등록되어 있습니다 — 다른 사람이 네트워크에서 사용할 때 $OPG를 얻습니다.",
-    og_link: "Hub에서 보기 →",
+    og_badge: "🔬 AI 작동 방식",
+    og_desc: "Logistic Regression 모델 (572B)이 200개 이상의 라벨링된 토큰으로 훈련되었습니다. ONNX를 통해 로컬에서 실행 — 데이터가 브라우저를 떠나지 않습니다. OpenGradient Model Hub에도 등록되어 있습니다.",
+    og_link: "OpenGradient에서 모델 보기 →",
 
     footer_built: "✦ 제작:",
     footer_disclaimer: "© 2026 Leonis Forge. 재정적 조언이 아닙니다. DYOR.",
