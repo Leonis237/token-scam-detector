@@ -1,6 +1,8 @@
 #!/usr/bin/env python3
 """Leonis Forge — Token Scam Detector + Approval Checker + EIP-7702 Checker."""
 import json, time, pickle, urllib.request, os, re, xml.etree.ElementTree as ET
+from collections import defaultdict, OrderedDict
+from datetime import datetime, timedelta
 import numpy as np
 import onnxruntime as ort
 from pathlib import Path
@@ -8,6 +10,31 @@ from flask import Flask, request, jsonify, send_from_directory
 
 app = Flask(__name__, static_folder="static")
 DIR = Path(__file__).parent
+
+# ── Analytics (in-memory) ──
+analytics = {
+    "started": datetime.utcnow().isoformat(),
+    "total": 0,
+    "endpoints": defaultdict(int),
+    "ips": set(),
+    "referrers": defaultdict(int),
+    "daily": defaultdict(int),  # key: "YYYY-MM-DD"
+}
+
+@app.before_request
+def track_request():
+    analytics["total"] += 1
+    path = request.path
+    if path.startswith("/api/"):
+        analytics["endpoints"][path] += 1
+    else:
+        analytics["endpoints"]["/ (pages)"] += 1
+    analytics["ips"].add(request.remote_addr)
+    ref = request.referrer
+    if ref:
+        analytics["referrers"][ref] += 1
+    today = datetime.utcnow().strftime("%Y-%m-%d")
+    analytics["daily"][today] += 1
 
 CHAIN_NAMES = {"1": "eth", "56": "bsc", "8453": "base", "42161": "arbitrum", "137": "polygon"}
 LOG_TRANSFORM_COLS = [8, 9, 17]
@@ -578,6 +605,29 @@ def api_alerts():
         })
 
     return jsonify({"alerts": alerts, "source": "Rekt.news"})
+
+
+@app.route("/api/stats")
+def api_stats():
+    """Public analytics dashboard data (no secrets, no user data)."""
+    daily = dict(sorted(analytics["daily"].items(), reverse=True)[:7])
+    endpoints = dict(analytics["endpoints"])
+    referrers = dict(
+        sorted(analytics["referrers"].items(), key=lambda x: x[1], reverse=True)[:10]
+    )
+    return jsonify({
+        "server_started": analytics["started"],
+        "total_requests": analytics["total"],
+        "unique_ips": len(analytics["ips"]),
+        "endpoints": endpoints,
+        "referrers": referrers,
+        "daily": daily,
+    })
+
+
+@app.route("/stats")
+def stats_page():
+    return send_from_directory("static", "stats.html")
 
 
 if __name__ == "__main__":

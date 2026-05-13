@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Stats — Leonis Forge</title>
+<script src="https://cdn.tailwindcss.com"></script>
+<script>
+tailwind.config = {
+  theme: {
+    extend: {
+      fontFamily: {
+        heading: ['Kalam', 'cursive'],
+        body: ['Patrick Hand', 'cursive'],
+      },
+      colors: {
+        paper: '#fdfbf7',
+        pencil: '#2d2d2d',
+        accent: '#ff4d4d',
+        yellowpen: '#d4a017',
+      }
+    }
+  }
+}
+</script>
+<style>
+  body {
+    background-color: #fdfbf7;
+    background-image: radial-gradient(#e5e0d8 1px, transparent 1px);
+    background-size: 24px 24px;
+  }
+  .wobbly { border-radius: 255px 15px 225px 15px / 15px 225px 15px 255px; }
+  .shadow-sketch { box-shadow: 4px 4px 0px 0px #2d2d2d; }
+  .tape {
+    position: absolute; top: -10px; left: 50%;
+    transform: translateX(-50%) rotate(-2deg);
+    width: 60px; height: 22px;
+    background: rgba(180,180,170,0.4);
+  }
+</style>
+</head>
+<body class="font-body text-pencil min-h-screen">
+
+<div class="max-w-2xl mx-auto px-6 py-12">
+  <!-- Header -->
+  <div class="relative bg-white border-[3px] border-pencil shadow-sketch wobbly p-8 mb-8">
+    <div class="tape"></div>
+    <h1 class="font-heading text-3xl text-center mb-2">📊 Site Stats</h1>
+    <p class="text-center text-sm text-pencil/50">Leonis Forge — public analytics</p>
+  </div>
+
+  <!-- Stats cards -->
+  <div class="grid grid-cols-3 gap-4 mb-8">
+    <div class="bg-white border-[3px] border-pencil shadow-sketch wobbly p-4 text-center">
+      <div class="font-heading text-3xl text-accent" id="total">…</div>
+      <div class="text-xs text-pencil/50 mt-1">total requests</div>
+    </div>
+    <div class="bg-white border-[3px] border-pencil shadow-sketch wobbly p-4 text-center">
+      <div class="font-heading text-3xl text-bluepen" id="ips">…</div>
+      <div class="text-xs text-pencil/50 mt-1">unique IPs</div>
+    </div>
+    <div class="bg-white border-[3px] border-pencil shadow-sketch wobbly p-4 text-center">
+      <div class="font-heading text-3xl text-greenpen" id="uptime">…</div>
+      <div class="text-xs text-pencil/50 mt-1">uptime</div>
+    </div>
+  </div>
+
+  <!-- Daily chart -->
+  <div class="bg-white border-[3px] border-pencil shadow-sketch wobbly p-6 mb-8">
+    <h2 class="font-heading text-xl mb-4">📅 Daily (last 7 days)</h2>
+    <div id="daily" class="space-y-2"></div>
+  </div>
+
+  <!-- Endpoints -->
+  <div class="bg-white border-[3px] border-pencil shadow-sketch wobbly p-6 mb-8">
+    <h2 class="font-heading text-xl mb-4">🔗 Endpoints</h2>
+    <div id="endpoints" class="space-y-1"></div>
+  </div>
+
+  <!-- Top referrers -->
+  <div class="bg-white border-[3px] border-pencil shadow-sketch wobbly p-6 mb-8">
+    <h2 class="font-heading text-xl mb-4">🔍 Top Referrers</h2>
+    <div id="referrers" class="space-y-1 text-xs break-all"></div>
+  </div>
+
+  <!-- Back -->
+  <div class="text-center">
+    <a href="/" class="font-heading inline-block bg-white border-[3px] border-pencil shadow-sketch px-6 py-2 wobbly hover:bg-accent hover:text-white transition-colors">← Back to Scanner</a>
+  </div>
+</div>
+
+<script>
+async function load() {
+  try {
+    const r = await fetch('/api/stats');
+    const d = await r.json();
+
+    document.getElementById('total').textContent = d.total_requests;
+    document.getElementById('ips').textContent = d.unique_ips;
+
+    // uptime
+    const started = new Date(d.server_started);
+    const now = new Date();
+    const hrs = Math.floor((now - started) / 3600000);
+    const days = Math.floor(hrs / 24);
+    document.getElementById('uptime').textContent = days > 0 ? `${days}d ${hrs%24}h` : `${hrs}h`;
+
+    // daily
+    const dailyEl = document.getElementById('daily');
+    const maxVal = Math.max(1, ...Object.values(d.daily));
+    for (const [date, count] of Object.entries(d.daily)) {
+      const pct = (count / maxVal * 100).toFixed(0);
+      dailyEl.innerHTML += `
+        <div class="flex items-center gap-3">
+          <span class="text-xs w-20 text-pencil/50">${date.slice(5)}</span>
+          <div class="flex-1 h-5 bg-muted border border-pencil/20 relative">
+            <div class="h-full bg-accent/20 border-r border-accent/30" style="width:${pct}%"></div>
+          </div>
+          <span class="font-heading text-sm w-10 text-right">${count}</span>
+        </div>`;
+    }
+
+    // endpoints
+    const epEl = document.getElementById('endpoints');
+    for (const [path, count] of Object.entries(d.endpoints)) {
+      epEl.innerHTML += `<div class="flex justify-between text-sm"><code class="text-pencil/70">${path}</code> <span class="font-heading">${count}</span></div>`;
+    }
+
+    // referrers
+    const refEl = document.getElementById('referrers');
+    if (Object.keys(d.referrers).length === 0) {
+      refEl.innerHTML = '<p class="text-pencil/40 text-sm">no referrers yet</p>';
+    } else {
+      for (const [ref, count] of Object.entries(d.referrers)) {
+        const host = ref.replace(/^https?:\/\//, '').split('/')[0];
+        refEl.innerHTML += `<div class="flex justify-between"><span class="text-pencil/70">${host}</span> <span class="font-heading">${count}</span></div>`;
+      }
+    }
+  } catch (e) {
+    document.body.innerHTML = '<div class="text-center py-20 text-accent">Failed to load stats :(</div>';
+  }
+}
+load();
+</script>
+</body>
+</html>
