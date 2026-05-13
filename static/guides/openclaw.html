@@ -29,14 +29,14 @@
       <span class="text-2xl">🛡️</span>Leonis Forge
     </a>
     <h1 class="font-heading text-4xl md:text-5xl text-pencil mb-4">🦞 OpenClaw — Installation & Migration Guide</h1>
-    <p class="text-pencil/60 text-lg max-w-xl mx-auto">The original open-source AI agent by Nous Research. Now succeeded by <a href="/guides/hermes-agent.html" class="text-bluepen hover:underline">Hermes Agent</a> — we recommend migrating.</p>
+    <p class="text-pencil/60 text-lg max-w-xl mx-auto">The original open-source AI agent gateway. Maintained fork continues development — but we recommend <a href="/guides/hermes-agent.html" class="text-bluepen hover:underline">Hermes Agent</a> for new users.</p>
   </div>
 
   <!-- What is OpenClaw -->
   <div class="bg-white border-[3px] border-pencil shadow-sketch wobbly-md p-6 mb-8">
     <h2 class="font-heading text-2xl mb-3">🤔 What is OpenClaw?</h2>
-    <p class="text-pencil/80 leading-relaxed mb-3">OpenClaw was the <strong>first popular open-source AI coding agent</strong> — it could run shell commands, read files, search the web, and complete complex tasks autonomously. It pioneered the "agent in your terminal" workflow that tools like Claude Code and Cursor later adopted.</p>
-    <p class="text-pencil/80 leading-relaxed">In 2025, OpenClaw was <strong>rebranded as Hermes Agent</strong> with major improvements: self-learning skills, persistent memory, multi-platform gateway, and 18+ LLM providers. OpenClaw is now in <strong>maintenance mode</strong> — it works, but active development has moved to Hermes.</p>
+    <p class="text-pencil/80 leading-relaxed mb-3">OpenClaw was the <strong>first popular open-source AI agent gateway</strong> — it could run shell commands, connect to messaging platforms, call LLMs, and schedule cron jobs. It pioneered the "AI agent in your terminal + chat apps" paradigm.</p>
+    <p class="text-pencil/80 leading-relaxed"><strong>Current status:</strong> The original NousResearch project was rebranded as <a href="/guides/hermes-agent.html" class="text-bluepen hover:underline">Hermes Agent</a>. A maintained community fork continues at <a href="https://github.com/openclaw/openclaw" target="_blank" class="text-bluepen hover:underline">openclaw/openclaw</a> (v2026.5.7). It still works great for gateway/messaging use cases.</p>
   </div>
 
   <!-- Install OpenClaw -->
@@ -49,8 +49,9 @@
         <h3 class="font-heading text-lg mb-1">Install via npm</h3>
         <p class="text-sm text-pencil/60 mb-2">OpenClaw is distributed as an npm package:</p>
         <div class="bg-gray-900 text-green-400 rounded-xl p-3 overflow-x-auto text-xs">
-          <code>npm install -g @nousresearch/openclaw</code>
+          <code>npm install -g openclaw</code>
         </div>
+        <p class="text-xs text-pencil/50 mt-2">Current version: 2026.5.7 · Repository: <a href="https://github.com/openclaw/openclaw" target="_blank" class="text-bluepen hover:underline">openclaw/openclaw</a> (maintained fork of the original NousResearch project)</p>
       </div>
     </div>
 
@@ -139,7 +140,7 @@
           <tr class="border-b border-pencil/10"><td class="py-2 pr-4">Cron Scheduler</td><td class="text-center py-2">✅</td><td class="text-center py-2 bg-greenpen/5">✅</td></tr>
           <tr class="border-b border-pencil/10"><td class="py-2 pr-4">Voice (STT/TTS)</td><td class="text-center py-2">❌</td><td class="text-center py-2 bg-greenpen/5">✅</td></tr>
           <tr class="border-b border-pencil/10"><td class="py-2 pr-4">MCP Server Support</td><td class="text-center py-2">❌</td><td class="text-center py-2 bg-greenpen/5">✅</td></tr>
-          <tr class="border-b border-pencil/10"><td class="py-2 pr-4">Active Development</td><td class="text-center py-2">Maintenance only</td><td class="text-center py-2 bg-greenpen/5">✅ Active</td></tr>
+          <tr class="border-b border-pencil/10"><td class="py-2 pr-4">Active Development</td><td class="text-center py-2">Community maintained</td><td class="text-center py-2 bg-greenpen/5">✅ Active (Nous)</td></tr>
           <tr><td class="py-2 pr-4">Code Execution</td><td class="text-center py-2">✅</td><td class="text-center py-2 bg-greenpen/5">✅</td></tr>
         </tbody>
       </table>
@@ -149,8 +150,8 @@
   <!-- Verdict -->
   <div class="bg-greenpen/10 border-[3px] border-greenpen shadow-sketch-sm wobbly-md p-6 mb-8">
     <h2 class="font-heading text-2xl text-greenpen mb-2">⭐ Our Verdict</h2>
-    <p class="text-pencil/80 leading-relaxed mb-2">OpenClaw was groundbreaking — it proved that open-source AI agents could compete with commercial tools. But <strong>Hermes Agent is the direct successor with every feature OpenClaw had, plus more</strong>.</p>
-    <p class="text-pencil/80 leading-relaxed">If you're starting fresh → <a href="/guides/hermes-agent.html" class="text-bluepen hover:underline font-heading">install Hermes Agent</a>. If you're on OpenClaw → <code class="bg-greenpen/20 px-1 rounded text-xs">hermes claw migrate</code> and you're done in seconds.</p>
+    <p class="text-pencil/80 leading-relaxed mb-2">OpenClaw pioneered the AI agent gateway concept and <strong>still works well today</strong> — a community fork keeps it updated (v2026.5.7). But <strong>Hermes Agent took the core ideas and added game-changing features</strong>: self-learning skills, persistent memory, 18+ providers, voice, and MCP support.</p>
+    <p class="text-pencil/80 leading-relaxed">If you need a battle-tested gateway for messaging channels → OpenClaw works great. If you want the future of AI agents → <a href="/guides/hermes-agent.html" class="text-bluepen hover:underline font-heading">install Hermes Agent</a>. If you're on OpenClaw → <code class="bg-greenpen/20 px-1 rounded text-xs">hermes claw migrate</code> and you're done in seconds.</p>
   </div>
 
   <!-- Back -->
