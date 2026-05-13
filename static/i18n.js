@@ -1,4 +1,4 @@
-// i18n — Crypto Guardian multi-language support
+// i18n — Leonis Guardian multi-language support
 const I18N = {
   vi: {
     nav_scan: "Scan",
@@ -23,6 +23,7 @@ const I18N = {
 
     tab_scam: "🔍 Scan Token Scam",
     tab_approval: "🛡️ Approval Checker",
+    tab_eip7702: "🔐 EIP-7702 Checker",
 
     scam_label_addr: "Địa chỉ contract token",
     scam_placeholder: "0x87230146E138d3F296a9a77e497A2A83012e9Bc5",
@@ -111,7 +112,6 @@ const I18N = {
     err_invalid_wallet: "Địa chỉ ví không hợp lệ (cần 0x + 40 ký tự hex)",
     err_rpc: "Lỗi mạng hoặc RPC không phản hồi. Thử lại sau.",
 
-    tab_eip7702: "🔐 EIP-7702 Checker",
     eip7702_desc: "EIP-7702 cho phép ví EOA ủy quyền thực thi giao dịch cho smart contract. Kiểm tra ví của bạn có đang bị ủy quyền không — phát hiện sớm để ngăn chặn rủi ro.",
     eip7702_label_addr: "Địa chỉ ví cần kiểm tra",
     eip7702_btn: "🔐 Kiểm tra EIP-7702",
@@ -124,6 +124,10 @@ const I18N = {
     alerts_badge: "🚨 Cảnh báo",
     alerts_title: "Scam Alerts Mới Nhất",
     alerts_source: "Nguồn: Rekt.news — cập nhật tự động",
+
+    tab_scam_desc: "<strong class=\"font-heading text-bluepen\">🔍 Token Scam Detector</strong> — Dán địa chỉ contract token để kiểm tra rủi ro: <span class=\"text-accent font-semibold\">honeypot</span> (chỉ mua được, không bán được), <span class=\"text-accent font-semibold\">thuế cao</span> (mất % lớn khi bán), <span class=\"text-accent font-semibold\">proxy ẩn</span> (owner nâng cấp logic bất kỳ lúc nào), <span class=\"text-accent font-semibold\">mã nguồn đóng</span>. AI phân tích 19 đặc điểm on-chain + Honeypot.is API. <em>Dùng cho: trader kiểm tra token trước khi mua.</em>",
+    tab_approval_desc: "<strong class=\"font-heading text-greenpen\">🛡️ Approval Checker</strong> — Bạn đã từng swap trên Uniswap, PancakeSwap, hay 1inch? Mỗi lần swap bạn cấp quyền <span class=\"font-semibold\">approve</span> cho DEX rút token. Nếu quên thu hồi (revoke), hacker exploit contract DEX là <span class=\"text-accent font-semibold\">rút sạch token của bạn</span> — kể cả USDT, USDC, ETH. Quét on-chain 200K blocks + top DEX để tìm tất cả approval còn active. <em>Dùng cho: kiểm tra ví định kỳ, sau khi swap token lạ.</em>",
+    tab_eip7702_desc: "<strong class=\"font-heading text-accent\">🔐 EIP-7702 Delegation Checker</strong> — Sau bản nâng cấp <span class=\"font-semibold\">Pectra</span> (2025), EIP-7702 cho phép smart contract \"mượn\" ví EOA (ví thường của bạn) để ký giao dịch thay bạn.<br><span class=\"text-accent font-semibold\">⚠️ Attack vector:</span> Bạn click \"Connect Wallet\" trên web lạ → ký 1 chữ ký trông vô hại → contract được delegate toàn quyền điều khiển ví → <span class=\"text-accent font-semibold\">rút sạch token mà không cần private key.</span><br>🧠 <em>Nhiều người không biết ví mình đang bị delegate. Checker này quét 5 chain (ETH, BSC, Base, Arbitrum, Polygon) cùng lúc — nếu thấy code <code class=\"bg-accent/20 px-1 rounded text-xs\">0xef01...</code> trong ví là có delegation.</em>",
   },
 
   en: {
@@ -149,6 +153,7 @@ const I18N = {
 
     tab_scam: "🔍 Scan Token Scam",
     tab_approval: "🛡️ Approval Checker",
+    tab_eip7702: "🔐 EIP-7702 Checker",
 
     scam_label_addr: "Token contract address",
     scam_placeholder: "0x87230146E138d3F296a9a77e497A2A83012e9Bc5",
@@ -235,13 +240,8 @@ const I18N = {
     err_no_addr: "Please enter a contract address",
     err_network: "Network error. Please try again.",
     err_invalid_wallet: "Invalid wallet address (needs 0x + 40 hex chars)",
-    
-    err_no_addr: "Please enter a contract address",
-    err_network: "Network error. Please try again.",
-    err_invalid_wallet: "Invalid wallet address (needs 0x + 40 hex chars)",
     err_rpc: "Network or RPC error. Try again later.",
 
-    tab_eip7702: "🔐 EIP-7702 Checker",
     eip7702_desc: "EIP-7702 allows EOA wallets to delegate transaction execution to smart contracts. Check if your wallet has any active delegations — early detection prevents risks.",
     eip7702_label_addr: "Wallet address to check",
     eip7702_btn: "🔐 Check EIP-7702",
@@ -254,6 +254,10 @@ const I18N = {
     alerts_badge: "🚨 Alerts",
     alerts_title: "Latest Scam Alerts",
     alerts_source: "Source: Rekt.news — auto-updated",
+
+    tab_scam_desc: "<strong class=\"font-heading text-bluepen\">🔍 Token Scam Detector</strong> — Paste a token contract address to check for risks: <span class=\"text-accent font-semibold\">honeypots</span> (buy OK, sell blocked), <span class=\"text-accent font-semibold\">high taxes</span>, <span class=\"text-accent font-semibold\">hidden proxies</span>, <span class=\"text-accent font-semibold\">closed source</span>. AI analyzes 19 on-chain features + Honeypot.is API. <em>Use for: checking tokens before buying.</em>",
+    tab_approval_desc: "<strong class=\"font-heading text-greenpen\">🛡️ Approval Checker</strong> — Ever swapped on Uniswap, PancakeSwap, or 1inch? Each swap grants <span class=\"font-semibold\">approve</span> permission for the DEX to withdraw your tokens. Forgotten approvals are a <span class=\"text-accent font-semibold\">critical exploit vector</span> — if a DEX contract gets hacked, attackers drain your USDT, USDC, ETH. Scans 200K on-chain blocks + top DEXes for all active approvals. <em>Use for: periodic wallet audits, after swapping obscure tokens.</em>",
+    tab_eip7702_desc: "<strong class=\"font-heading text-accent\">🔐 EIP-7702 Delegation Checker</strong> — After the <span class=\"font-semibold\">Pectra</span> upgrade (2025), EIP-7702 lets smart contracts \"borrow\" your EOA wallet to sign transactions on your behalf.<br><span class=\"text-accent font-semibold\">⚠️ Attack vector:</span> You click \"Connect Wallet\" on a shady site → sign an innocent-looking signature → the contract gets full delegation over your wallet → <span class=\"text-accent font-semibold\">drains all tokens without your private key.</span><br>🧠 <em>Many users don't know their wallet is delegated. This checker scans 5 chains (ETH, BSC, Base, Arbitrum, Polygon) simultaneously — if <code class=\"bg-accent/20 px-1 rounded text-xs\">0xef01...</code> code appears in your wallet, you have an active delegation.</em>",
   },
 
   zh: {
@@ -279,6 +283,7 @@ const I18N = {
 
     tab_scam: "🔍 代币骗局扫描",
     tab_approval: "🛡️ 授权检查",
+    tab_eip7702: "🔐 EIP-7702 检查",
 
     scam_label_addr: "代币合约地址",
     scam_placeholder: "0x87230146E138d3F296a9a77e497A2A83012e9Bc5",
@@ -355,7 +360,7 @@ const I18N = {
     faq_q4: "支持 Solana 吗？",
     faq_a4: "暂不支持。Honeypot.is 仅支持 EVM 链。待有合适的 API 后添加 Solana。",
 
-    og_badge: "🚀 基于 OpenGradient",
+    og_badge: "📋 Model on OpenGradient",
     og_desc: "模型列在 OpenGradient Model Hub 上 — 当其他人在网络上使用模型时赚取 $OPG。",
     og_link: "在 Hub 上查看 →",
 
@@ -365,13 +370,8 @@ const I18N = {
     err_no_addr: "请输入合约地址",
     err_network: "网络错误。请重试。",
     err_invalid_wallet: "无效的钱包地址（需要 0x + 40 个十六进制字符）",
-    
-    err_no_addr: "请输入合约地址",
-    err_network: "网络错误。请重试。",
-    err_invalid_wallet: "无效的钱包地址（需要 0x + 40 个十六进制字符）",
     err_rpc: "网络或 RPC 错误。请稍后重试。",
 
-    tab_eip7702: "🔐 EIP-7702 检查",
     eip7702_desc: "EIP-7702 允许 EOA 钱包将交易执行委托给智能合约。检查您的钱包是否有活跃的委托 — 及早发现以防止风险。",
     eip7702_label_addr: "要检查的钱包地址",
     eip7702_btn: "🔐 检查 EIP-7702",
@@ -384,6 +384,10 @@ const I18N = {
     alerts_badge: "🚨 警报",
     alerts_title: "最新骗局警报",
     alerts_source: "来源: Rekt.news — 自动更新",
+
+    tab_scam_desc: "<strong class=\"font-heading text-bluepen\">🔍 代币骗局检测器</strong> — 粘贴代币合约地址以检查风险：<span class=\"text-accent font-semibold\">蜜罐</span>（只能买不能卖）、<span class=\"text-accent font-semibold\">高税率</span>、<span class=\"text-accent font-semibold\">隐藏代理</span>、<span class=\"text-accent font-semibold\">闭源代码</span>。AI分析19个链上特征 + Honeypot.is API。<em>用途：购买前检查代币。</em>",
+    tab_approval_desc: "<strong class=\"font-heading text-greenpen\">🛡️ 授权检查器</strong> — 在Uniswap、PancakeSwap或1inch上交易过吗？每次交易都会授予DEX <span class=\"font-semibold\">approve</span> 权限来提取您的代币。忘记撤销（revoke）的授权是<span class=\"text-accent font-semibold\">严重的安全漏洞</span>——如果DEX合约被黑，攻击者将清空您的USDT、USDC、ETH。扫描20万区块 + 主流DEX以查找所有活跃授权。<em>用途：定期钱包审计、交易陌生代币后。</em>",
+    tab_eip7702_desc: "<strong class=\"font-heading text-accent\">🔐 EIP-7702 委托检查器</strong> — <span class=\"font-semibold\">Pectra</span>升级（2025）后，EIP-7702允许智能合约\"借用\"您的EOA钱包代表您签署交易。<br><span class=\"text-accent font-semibold\">⚠️ 攻击方式：</span>您在可疑网站点击\"连接钱包\"→签署一个看似无害的签名→合约获得您钱包的完全委托权限→<span class=\"text-accent font-semibold\">无需私钥即可清空所有代币。</span><br>🧠 <em>许多用户不知道自己的钱包已被委托。此检查器同时扫描5条链（ETH、BSC、Base、Arbitrum、Polygon）——如果钱包中出现<code class=\"bg-accent/20 px-1 rounded text-xs\">0xef01...</code>代码，说明存在活跃委托。</em>",
   },
 
   ko: {
@@ -409,6 +413,7 @@ const I18N = {
 
     tab_scam: "🔍 토큰 사기 스캔",
     tab_approval: "🛡️ 승인 확인",
+    tab_eip7702: "🔐 EIP-7702 검사",
 
     scam_label_addr: "토큰 컨트랙트 주소",
     scam_placeholder: "0x87230146E138d3F296a9a77e497A2A83012e9Bc5",
@@ -485,7 +490,7 @@ const I18N = {
     faq_q4: "솔라나를 지원하나요?",
     faq_a4: "아직 아닙니다. Honeypot.is는 EVM 체인만 지원합니다. 적절한 API가 제공되면 솔라나를 추가할 예정입니다.",
 
-    og_badge: "🚀 OpenGradient 기반",
+    og_badge: "📋 Model on OpenGradient",
     og_desc: "모델이 OpenGradient Model Hub에 등록되어 있습니다 — 다른 사람이 네트워크에서 사용할 때 $OPG를 얻습니다.",
     og_link: "Hub에서 보기 →",
 
@@ -496,6 +501,23 @@ const I18N = {
     err_network: "네트워크 오류. 다시 시도해주세요.",
     err_invalid_wallet: "유효하지 않은 지갑 주소 (0x + 40자 16진수 필요)",
     err_rpc: "네트워크 또는 RPC 오류. 나중에 다시 시도해주세요.",
+
+    eip7702_desc: "EIP-7702는 EOA 지갑이 스마트 컨트랙트에 거래 실행을 위임할 수 있게 합니다. 지갑에 활성 위임이 있는지 확인하세요 — 조기 발견으로 위험을 방지합니다.",
+    eip7702_label_addr: "확인할 지갑 주소",
+    eip7702_btn: "🔐 EIP-7702 확인",
+    eip7702_clean: "✅ 지갑 안전!",
+    eip7702_clean_sub: "모든 체인에서 EIP-7702 위임이 발견되지 않았습니다.",
+    eip7702_found: "🚨 위임 발견!",
+    eip7702_found_sub: "개 체인에 활성 EIP-7702 위임이 있습니다.",
+    eip7702_clean_short: "안전",
+    eip7702_delegated_short: "위임됨",
+    alerts_badge: "🚨 경고",
+    alerts_title: "최신 사기 경고",
+    alerts_source: "출처: Rekt.news — 자동 업데이트",
+
+    tab_scam_desc: "<strong class=\"font-heading text-bluepen\">🔍 토큰 사기 탐지기</strong> — 토큰 컨트랙트 주소를 붙여넣어 위험을 확인하세요: <span class=\"text-accent font-semibold\">허니팟</span> (매수만 가능, 매도 불가), <span class=\"text-accent font-semibold\">높은 세금</span>, <span class=\"text-accent font-semibold\">숨겨진 프록시</span>, <span class=\"text-accent font-semibold\">비공개 소스</span>. AI가 19개 온체인 특징 + Honeypot.is API를 분석합니다. <em>용도: 구매 전 토큰 확인.</em>",
+    tab_approval_desc: "<strong class=\"font-heading text-greenpen\">🛡️ 승인 검사기</strong> — Uniswap, PancakeSwap, 1inch에서 스왑한 적 있나요? 각 스왑마다 DEX가 토큰을 인출할 수 있는 <span class=\"font-semibold\">approve</span> 권한을 부여합니다. 잊혀진 승인은 <span class=\"text-accent font-semibold\">치명적인 공격 경로</span>입니다 — DEX 컨트랙트가 해킹되면 공격자가 USDT, USDC, ETH를 모두 탈취합니다. 20만 온체인 블록 + 주요 DEX를 스캔하여 모든 활성 승인을 찾습니다. <em>용도: 정기 지갑 감사, 생소한 토큰 스왑 후.</em>",
+    tab_eip7702_desc: "<strong class=\"font-heading text-accent\">🔐 EIP-7702 위임 검사기</strong> — <span class=\"font-semibold\">Pectra</span> 업그레이드(2025) 이후, EIP-7702는 스마트 컨트랙트가 사용자의 EOA 지갑을 \"빌려\" 대신 거래에 서명할 수 있게 합니다.<br><span class=\"text-accent font-semibold\">⚠️ 공격 방식:</span> 수상한 사이트에서 \"지갑 연결\" 클릭 → 무해해 보이는 서명 → 컨트랙트가 지갑에 대한 완전한 위임 권한 획득 → <span class=\"text-accent font-semibold\">개인키 없이 모든 토큰 탈취.</span><br>🧠 <em>많은 사용자가 자신의 지갑이 위임되었는지 모릅니다. 이 검사기는 5개 체인(ETH, BSC, Base, Arbitrum, Polygon)을 동시에 스캔합니다 — 지갑에서 <code class=\"bg-accent/20 px-1 rounded text-xs\">0xef01...</code> 코드가 발견되면 활성 위임이 있는 것입니다.</em>",
   }
 };
 
@@ -513,7 +535,6 @@ function t(key) {
 }
 
 function applyLang() {
-  // Update all elements with data-i18n
   document.querySelectorAll('[data-i18n]').forEach(el => {
     const key = el.getAttribute('data-i18n');
     const text = t(key);
@@ -526,43 +547,41 @@ function applyLang() {
     }
   });
 
-  // Update highlighted text in hero
+  document.querySelectorAll('[data-i18n-html]').forEach(el => {
+    const key = el.getAttribute('data-i18n-html');
+    const html = t(key);
+    if (html !== undefined) {
+      el.innerHTML = html;
+    }
+  });
+
   const hl = document.getElementById('heroHighlight');
   if (hl) hl.textContent = t('hero_title_highlight');
 
-  // Update select options
   document.querySelectorAll('[data-i18n-option]').forEach(opt => {
     const key = opt.getAttribute('data-i18n-option');
     opt.textContent = t(key);
   });
 
-  // Update placeholders
   document.querySelectorAll('[data-i18n-placeholder]').forEach(el => {
     el.placeholder = t(el.getAttribute('data-i18n-placeholder'));
   });
 
-  // Update language switcher display
   const switcher = document.getElementById('langSwitcherText');
   if (switcher) switcher.textContent = currentLang.toUpperCase();
 
-  // Update HTML lang attribute
   document.documentElement.lang = currentLang === 'vi' ? 'vi' : currentLang === 'zh' ? 'zh' : currentLang === 'ko' ? 'ko' : 'en';
 
-  // Re-render active tab
   if (document.getElementById('panelScam') && !document.getElementById('panelScam').classList.contains('hidden')) {
-    // Re-apply the score label which is dynamically set
     const scoreLabel = document.querySelector('[data-i18n="scam_score_label"]');
     if (scoreLabel && document.getElementById('result').classList.contains('hidden') === false) {
       scoreLabel.textContent = t('scam_score_label');
     }
-    document.getElementById('scam_score_label').textContent = t('scam_score_label');
   }
 }
 
-// Apply on page load
 document.addEventListener('DOMContentLoaded', applyLang);
 
-// Language switcher UI
 function toggleLangMenu() {
   const menu = document.getElementById('langMenu');
   if (menu) menu.classList.toggle('hidden');

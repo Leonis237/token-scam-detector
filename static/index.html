@@ -242,15 +242,15 @@ tailwind.config = {
     <div class="flex justify-center gap-6 md:gap-10 mb-8">
       <div class="text-center">
         <div class="font-heading text-3xl md:text-4xl text-accent">30+</div>
-        <div class="text-xs text-pencil/50 uppercase tracking-wider">Tín hiệu scam</div>
+        <div class="text-xs text-pencil/50 uppercase tracking-wider" data-i18n="hero_stat1_label">Scam Signals</div>
       </div>
       <div class="text-center">
         <div class="font-heading text-3xl md:text-4xl text-bluepen">5</div>
-        <div class="text-xs text-pencil/50 uppercase tracking-wider">Chain</div>
+        <div class="text-xs text-pencil/50 uppercase tracking-wider" data-i18n="hero_stat2_label">Chains</div>
       </div>
       <div class="text-center">
         <div class="font-heading text-3xl md:text-4xl text-greenpen">~81%</div>
-        <div class="text-xs text-pencil/50 uppercase tracking-wider">F1 Score</div>
+        <div class="text-xs text-pencil/50 uppercase tracking-wider" data-i18n="hero_stat3_label">F1 Score</div>
       </div>
     </div>
 
@@ -293,7 +293,7 @@ tailwind.config = {
 
     <!-- Info box -->
     <div class="bg-blue-50 border-[3px] border-bluepen/30 rounded-xl p-4 mb-4">
-      <p class="text-sm text-pencil/80 leading-relaxed"><strong class="font-heading text-bluepen">🔍 Token Scam Detector</strong> — Dán địa chỉ contract token để kiểm tra rủi ro: <span class="text-accent font-semibold">honeypot</span> (chỉ mua được, không bán được), <span class="text-accent font-semibold">thuế cao</span> (mất % lớn khi bán), <span class="text-accent font-semibold">proxy ẩn</span> (owner nâng cấp logic bất kỳ lúc nào), <span class="text-accent font-semibold">mã nguồn đóng</span>. AI phân tích 19 đặc điểm on-chain + Honeypot.is API. <em>Dùng cho: trader kiểm tra token trước khi mua.</em></p>
+      <p class="text-sm text-pencil/80 leading-relaxed" data-i18n-html="tab_scam_desc"><strong class="font-heading text-bluepen">🔍 Token Scam Detector</strong> — Paste a token contract address to check for risks: <span class="text-accent font-semibold">honeypots</span> (buy OK, sell blocked), <span class="text-accent font-semibold">high taxes</span>, <span class="text-accent font-semibold">hidden proxies</span>, <span class="text-accent font-semibold">closed source</span>. AI analyzes 19 on-chain features + Honeypot.is API. <em>Use for: checking tokens before buying.</em></p>
     </div>
 
     <div class="mb-4">
@@ -401,7 +401,7 @@ tailwind.config = {
 
     <!-- Info box -->
     <div class="bg-greenpen/10 border-[3px] border-greenpen/30 rounded-xl p-4 mb-4">
-      <p class="text-sm text-pencil/80 leading-relaxed"><strong class="font-heading text-greenpen">🛡️ Approval Checker</strong> — Bạn đã từng swap trên Uniswap, PancakeSwap, hay 1inch? Mỗi lần swap bạn cấp quyền <span class="font-semibold">approve</span> cho DEX rút token. Nếu quên thu hồi (revoke), hacker exploit contract DEX là <span class="text-accent font-semibold">rút sạch token của bạn</span> — kể cả USDT, USDC, ETH. Quét on-chain 200K blocks + top DEX để tìm tất cả approval còn active. <em>Dùng cho: kiểm tra ví định kỳ, sau khi swap token lạ.</em></p>
+      <p class="text-sm text-pencil/80 leading-relaxed" data-i18n-html="tab_approval_desc"><strong class="font-heading text-greenpen">🛡️ Approval Checker</strong> — Ever swapped on Uniswap, PancakeSwap, or 1inch? Each swap grants <span class="font-semibold">approve</span> permission for the DEX to withdraw your tokens. Forgotten approvals are a <span class="text-accent font-semibold">critical exploit vector</span> — if a DEX contract gets hacked, attackers drain your USDT, USDC, ETH. Scans 200K on-chain blocks + top DEXes for all active approvals. <em>Use for: periodic wallet audits, after swapping obscure tokens.</em></p>
     </div>
 
     <div class="mb-4">
@@ -472,10 +472,10 @@ tailwind.config = {
 
     <!-- Info box -->
     <div class="bg-accent/10 border-[3px] border-accent/30 rounded-xl p-4 mb-4">
-      <p class="text-sm text-pencil/80 leading-relaxed">
-        <strong class="font-heading text-accent">🔐 EIP-7702 Delegation Checker</strong> — Sau bản nâng cấp <span class="font-semibold">Pectra</span> (2025), EIP-7702 cho phép smart contract "mượn" ví EOA (ví thường của bạn) để ký giao dịch thay bạn.
-        <br><span class="text-accent font-semibold">⚠️ Attack vector:</span> Bạn click "Connect Wallet" trên web lạ → ký 1 chữ ký trông vô hại → contract được delegate toàn quyền điều khiển ví → <span class="text-accent font-semibold">rút sạch token mà không cần private key.</span>
-        <br>🧠 <em>Nhiều người không biết ví mình đang bị delegate. Checker này quét 5 chain (ETH, BSC, Base, Arbitrum, Polygon) cùng lúc — nếu thấy code <code class="bg-accent/20 px-1 rounded text-xs">0xef01...</code> trong ví là có delegation.</em>
+      <p class="text-sm text-pencil/80 leading-relaxed" data-i18n-html="tab_eip7702_desc">
+        <strong class="font-heading text-accent">🔐 EIP-7702 Delegation Checker</strong> — After the <span class="font-semibold">Pectra</span> upgrade (2025), EIP-7702 lets smart contracts "borrow" your EOA wallet to sign transactions on your behalf.
+        <br><span class="text-accent font-semibold">⚠️ Attack vector:</span> You click "Connect Wallet" on a shady site → sign an innocent-looking signature → the contract gets full delegation over your wallet → <span class="text-accent font-semibold">drains all tokens without your private key.</span>
+        <br>🧠 <em>Many users don't know their wallet is delegated. This checker scans 5 chains (ETH, BSC, Base, Arbitrum, Polygon) simultaneously — if <code class="bg-accent/20 px-1 rounded text-xs">0xef01...</code> code appears in your wallet, you have an active delegation.</em>
       </p>
     </div>
 
