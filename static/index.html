@@ -3,13 +3,13 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<meta name="description" content="🛡️ Crypto Guardian — Kiểm tra token scam & quét approval ví. AI-powered, free forever. Hỗ trợ Ethereum, BSC, Base, Arbitrum, Polygon.">
-<meta property="og:title" content="Crypto Guardian | Scan Token Scam + Approval Checker">
+<meta name="description" content="🛡️ Leonis Guardian — Kiểm tra token scam & quét approval ví. AI-powered, free forever. Hỗ trợ Ethereum, BSC, Base, Arbitrum, Polygon.">
+<meta property="og:title" content="Leonis Guardian | Scan Token Scam + Approval Checker">
 <meta property="og:description" content="Dán địa chỉ token hoặc ví → kiểm tra scam, quét approval nguy hiểm. Miễn phí, không cần đăng ký.">
 <meta property="og:url" content="https://token-scam-detector.onrender.com">
 <meta name="twitter:card" content="summary_large_image">
 <meta name="twitter:creator" content="@Leonis237">
-<title>Crypto Guardian — Scan Token & Approval Checker</title>
+<title>Leonis Guardian — Scan Token & Approval Checker</title>
 
 <!-- Google Fonts -->
 <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -184,7 +184,7 @@ tailwind.config = {
 <nav class="sticky top-0 z-50 bg-paper/90 backdrop-blur-sm border-b-[3px] border-dashed border-pencil/20">
   <div class="max-w-5xl mx-auto px-6 py-3 flex items-center justify-between">
     <a href="#" class="font-heading text-xl text-pencil hover:text-accent transition-colors flex items-center gap-2">
-      <span class="text-2xl">🛡️</span>Crypto Guardian
+      <span class="text-2xl">🛡️</span>Leonis Guardian
     </a>
     <div class="hidden md:flex gap-5 text-sm">
       <a href="#scanner" class="hover:text-accent transition-colors relative">
@@ -547,7 +547,7 @@ tailwind.config = {
   <div class="space-y-3">
     <details class="group bg-white border-[3px] border-pencil shadow-sketch-sm wobbly-md p-5 cursor-pointer">
       <summary class="font-heading text-lg list-none flex justify-between items-center">
-        Tool này có chính xác không?
+        <span data-i18n="faq_q1">Tool này có chính xác không?</span>
         <span class="text-xl transition-transform group-open:rotate-180">▼</span>
       </summary>
       <p class="mt-3 text-sm text-pencil/65 border-t-[2px] border-dashed border-pencil/10 pt-3" data-i18n="faq_a1">Model neural network huấn luyện trên 200+ token với F1 score ~81% (cross-validation). Phát hiện honeypot, rug pull, high-tax tokens. Luôn luôn DYOR — đây là công cụ hỗ trợ, không phải lời khuyên tài chính.</p>
@@ -555,7 +555,7 @@ tailwind.config = {
 
     <details class="group bg-white border-[3px] border-pencil shadow-sketch-sm wobbly-md p-5 cursor-pointer">
       <summary class="font-heading text-lg list-none flex justify-between items-center">
-        Có mất phí không?
+        <span data-i18n="faq_q2">Có mất phí không?</span>
         <span class="text-xl transition-transform group-open:rotate-180">▼</span>
       </summary>
       <p class="mt-3 text-sm text-pencil/65 border-t-[2px] border-dashed border-pencil/10 pt-3" data-i18n="faq_a2">Hoàn toàn miễn phí. Dùng Honeypot.is API (free) + public RPC endpoints. Không cần đăng ký, không cần connect ví, không lưu data.</p>
@@ -563,7 +563,7 @@ tailwind.config = {
 
     <details class="group bg-white border-[3px] border-pencil shadow-sketch-sm wobbly-md p-5 cursor-pointer">
       <summary class="font-heading text-lg list-none flex justify-between items-center">
-        Approval Checker quét những gì?
+        <span data-i18n="faq_q3">Approval Checker quét những gì?</span>
         <span class="text-xl transition-transform group-open:rotate-180">▼</span>
       </summary>
       <p class="mt-3 text-sm text-pencil/65 border-t-[2px] border-dashed border-pencil/10 pt-3" data-i18n="faq_a3">Quét allowance của các token phổ biến (USDT, USDC, ETH, WBTC...) với các DEX/router lớn (Uniswap, 0x, 1inch, PancakeSwap...). Phát hiện unlimited approval với spender lạ. Hiện tại quét khoảng 8-10 token × 8 spender mỗi chain.</p>
@@ -571,7 +571,7 @@ tailwind.config = {
 
     <details class="group bg-white border-[3px] border-pencil shadow-sketch-sm wobbly-md p-5 cursor-pointer">
       <summary class="font-heading text-lg list-none flex justify-between items-center">
-        Có hỗ trợ Solana không?
+        <span data-i18n="faq_q4">Có hỗ trợ Solana không?</span>
         <span class="text-xl transition-transform group-open:rotate-180">▼</span>
       </summary>
       <p class="mt-3 text-sm text-pencil/65 border-t-[2px] border-dashed border-pencil/10 pt-3" data-i18n="faq_a4">Chưa. Honeypot.is chỉ hỗ trợ EVM chains. Solana sẽ được thêm khi có API phù hợp.</p>
@@ -602,7 +602,7 @@ tailwind.config = {
       <a href="https://honeypot.is" target="_blank" rel="noopener" class="hover:text-accent hover:line-through transition-colors">Honeypot.is</a>
     </div>
     <p class="text-xs text-pencil/40">
-      <span data-i18n="footer_disclaimer">© 2026 Crypto Guardian. Không phải lời khuyên tài chính. DYOR.</span> <span data-i18n="footer_built">Built with ✦ by</span> <a href="https://x.com/Leonis237" class="hover:text-accent transition-colors">@Leonis237</a>
+      <span data-i18n="footer_disclaimer">© 2026 Leonis Guardian. Không phải lời khuyên tài chính. DYOR.</span> <span data-i18n="footer_built">Built with ✦ by</span> <a href="https://x.com/Leonis237" class="hover:text-accent transition-colors">@Leonis237</a>
     </p>
   </div>
 </footer>
