@@ -278,6 +278,11 @@ def index():
     return send_from_directory("static", "index.html")
 
 
+@app.route("/guides/<path:filename>")
+def guide(filename):
+    return send_from_directory("static/guides", filename)
+
+
 @app.route("/api/check")
 def api_check():
     addr = request.args.get("address", "").strip()

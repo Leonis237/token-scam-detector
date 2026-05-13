@@ -1,0 +1,162 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>OpenClaw Installation Guide — Leonis Forge</title>
+<script src="https://cdn.tailwindcss.com"></script>
+<link href="https://fonts.googleapis.com/css2?family=Kalam:wght@400;700&family=Patrick+Hand&family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet">
+<style>
+  body { font-family: 'Patrick Hand', cursive; background: #faf9f6; }
+  .font-heading { font-family: 'Kalam', cursive; }
+  .font-mono { font-family: 'JetBrains Mono', monospace; }
+  .shadow-sketch { box-shadow: 4px 4px 0px 0px rgba(0,0,0,0.15); }
+  .shadow-sketch-sm { box-shadow: 3px 3px 0px 0px rgba(0,0,0,0.1); }
+  .wobbly { border-radius: 255px 15px 225px 15px/15px 225px 15px 255px; }
+  .wobbly-md { border-radius: 40px 10px 40px 10px/10px 40px 10px 40px; }
+  .btn-sketch:hover { transform: translate(2px, 2px); box-shadow: 1px 1px 0px 0px rgba(0,0,0,0.15); }
+  .tape { position: absolute; top: -10px; left: 50%; transform: translateX(-50%) rotate(-2deg); width: 60px; height: 22px; background: rgba(180, 170, 150, 0.4); border-radius: 2px; z-index: 5; }
+  code { font-family: 'JetBrains Mono', monospace; }
+  .step-num { width: 36px; height: 36px; display: inline-flex; align-items: center; justify-content: center; font-weight: bold; flex-shrink: 0; }
+</style>
+</head>
+<body class="min-h-screen">
+<div class="max-w-3xl mx-auto px-6 py-10">
+
+  <!-- Header -->
+  <div class="text-center mb-10">
+    <a href="/" class="inline-flex items-center gap-2 font-heading text-xl text-pencil hover:text-accent transition-colors mb-6">
+      <span class="text-2xl">🛡️</span>Leonis Forge
+    </a>
+    <h1 class="font-heading text-4xl md:text-5xl text-pencil mb-4">🦞 OpenClaw — Installation & Migration Guide</h1>
+    <p class="text-pencil/60 text-lg max-w-xl mx-auto">The original open-source AI agent by Nous Research. Now succeeded by <a href="/guides/hermes-agent.html" class="text-bluepen hover:underline">Hermes Agent</a> — we recommend migrating.</p>
+  </div>
+
+  <!-- What is OpenClaw -->
+  <div class="bg-white border-[3px] border-pencil shadow-sketch wobbly-md p-6 mb-8">
+    <h2 class="font-heading text-2xl mb-3">🤔 What is OpenClaw?</h2>
+    <p class="text-pencil/80 leading-relaxed mb-3">OpenClaw was the <strong>first popular open-source AI coding agent</strong> — it could run shell commands, read files, search the web, and complete complex tasks autonomously. It pioneered the "agent in your terminal" workflow that tools like Claude Code and Cursor later adopted.</p>
+    <p class="text-pencil/80 leading-relaxed">In 2025, OpenClaw was <strong>rebranded as Hermes Agent</strong> with major improvements: self-learning skills, persistent memory, multi-platform gateway, and 18+ LLM providers. OpenClaw is now in <strong>maintenance mode</strong> — it works, but active development has moved to Hermes.</p>
+  </div>
+
+  <!-- Install OpenClaw -->
+  <div class="bg-white border-[3px] border-pencil shadow-sketch wobbly-md p-6 mb-8">
+    <h2 class="font-heading text-2xl mb-4">📦 Installing OpenClaw</h2>
+
+    <div class="flex gap-4 mb-6">
+      <span class="step-num bg-accent text-white border-[2px] border-pencil shadow-sketch-sm rounded-full font-heading text-lg">1</span>
+      <div class="flex-1">
+        <h3 class="font-heading text-lg mb-1">Install via npm</h3>
+        <p class="text-sm text-pencil/60 mb-2">OpenClaw is distributed as an npm package:</p>
+        <div class="bg-gray-900 text-green-400 rounded-xl p-3 overflow-x-auto text-xs">
+          <code>npm install -g @nousresearch/openclaw</code>
+        </div>
+      </div>
+    </div>
+
+    <div class="flex gap-4 mb-6">
+      <span class="step-num bg-bluepen text-white border-[2px] border-pencil shadow-sketch-sm rounded-full font-heading text-lg">2</span>
+      <div class="flex-1">
+        <h3 class="font-heading text-lg mb-1">Set up API key</h3>
+        <p class="text-sm text-pencil/60 mb-2">Create a <code>~/.openclaw/.env</code> file with your LLM provider key:</p>
+        <div class="bg-gray-900 text-green-400 rounded-xl p-3 overflow-x-auto text-xs">
+          <code>mkdir -p ~/.openclaw</code><br>
+          <code>echo 'OPENROUTER_API_KEY=sk-or-...' >> ~/.openclaw/.env</code>
+        </div>
+        <p class="text-xs text-pencil/50 mt-2">Supports: OpenRouter, Anthropic, OpenAI.</p>
+      </div>
+    </div>
+
+    <div class="flex gap-4 mb-6">
+      <span class="step-num bg-greenpen text-white border-[2px] border-pencil shadow-sketch-sm rounded-full font-heading text-lg">3</span>
+      <div class="flex-1">
+        <h3 class="font-heading text-lg mb-1">Start the agent</h3>
+        <div class="bg-gray-900 text-green-400 rounded-xl p-3 overflow-x-auto text-xs mb-2">
+          <code>openclaw</code>
+        </div>
+        <div class="bg-gray-900 text-green-400 rounded-xl p-3 overflow-x-auto text-xs">
+          <code>openclaw chat -q "Write a hello world in Rust"</code>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Migration Guide -->
+  <div class="bg-white border-[3px] border-pencil shadow-sketch wobbly-md p-6 mb-8 relative">
+    <div class="tape"></div>
+    <h2 class="font-heading text-2xl mb-4">🔄 Migrating from OpenClaw → Hermes Agent</h2>
+    <p class="text-pencil/80 leading-relaxed mb-4">If you already have OpenClaw set up, migrating to Hermes takes <strong>one command</strong>:</p>
+
+    <div class="bg-yellowpen/10 border-[2px] border-yellowpen/30 rounded-xl p-4 mb-4">
+      <p class="text-xs font-heading text-pencil/60 mb-1">⚡ The migration command</p>
+      <div class="bg-gray-900 text-green-400 rounded-xl p-3 overflow-x-auto text-xs">
+        <code>hermes claw migrate</code>
+      </div>
+    </div>
+
+    <p class="text-sm text-pencil/80 mb-4"><strong>What it migrates:</strong></p>
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-3 mb-4">
+      <div class="bg-greenpen/5 border-[2px] border-greenpen/20 rounded-xl p-3">
+        <span class="font-heading text-greenpen">⚙️ Config</span>
+        <p class="text-xs text-pencil/60 mt-1">Your API keys, model settings, and preferences.</p>
+      </div>
+      <div class="bg-greenpen/5 border-[2px] border-greenpen/20 rounded-xl p-3">
+        <span class="font-heading text-greenpen">💬 Sessions</span>
+        <p class="text-xs text-pencil/60 mt-1">Past conversation history preserved.</p>
+      </div>
+      <div class="bg-greenpen/5 border-[2px] border-greenpen/20 rounded-xl p-3">
+        <span class="font-heading text-greenpen">🛠️ Tools</span>
+        <p class="text-xs text-pencil/60 mt-1">Custom tools and tool configurations.</p>
+      </div>
+      <div class="bg-greenpen/5 border-[2px] border-greenpen/20 rounded-xl p-3">
+        <span class="font-heading text-greenpen">📊 Cron jobs</span>
+        <p class="text-xs text-pencil/60 mt-1">Scheduled tasks moved over automatically.</p>
+      </div>
+    </div>
+
+    <div class="bg-accent/5 border-[2px] border-accent/20 rounded-xl p-3">
+      <p class="text-xs text-pencil/60"><strong>⚠️ Note:</strong> Migration is one-way and irreversible — back up <code>~/.openclaw/</code> first if you want to keep a copy. Run <code>hermes claw migrate</code> after installing Hermes Agent (see <a href="/guides/hermes-agent.html" class="text-bluepen hover:underline">Hermes guide</a>).</p>
+    </div>
+  </div>
+
+  <!-- Comparison -->
+  <div class="bg-white border-[3px] border-pencil shadow-sketch wobbly-md p-6 mb-8">
+    <h2 class="font-heading text-2xl mb-3">📊 OpenClaw vs Hermes Agent</h2>
+    <div class="overflow-x-auto">
+      <table class="w-full text-sm border-collapse">
+        <thead>
+          <tr class="border-b-[2px] border-pencil/30">
+            <th class="text-left py-2 pr-4 font-heading">Feature</th>
+            <th class="text-center py-2 px-4 font-heading">🦞 OpenClaw</th>
+            <th class="text-center py-2 px-4 font-heading bg-greenpen/10">🕊️ Hermes</th>
+          </tr>
+        </thead>
+        <tbody class="text-pencil/80">
+          <tr class="border-b border-pencil/10"><td class="py-2 pr-4">LLM Providers</td><td class="text-center py-2">3-4</td><td class="text-center py-2 bg-greenpen/5">18+</td></tr>
+          <tr class="border-b border-pencil/10"><td class="py-2 pr-4">Self-learning Skills</td><td class="text-center py-2">❌</td><td class="text-center py-2 bg-greenpen/5">✅</td></tr>
+          <tr class="border-b border-pencil/10"><td class="py-2 pr-4">Persistent Memory</td><td class="text-center py-2">❌</td><td class="text-center py-2 bg-greenpen/5">✅</td></tr>
+          <tr class="border-b border-pencil/10"><td class="py-2 pr-4">Multi-platform Gateway</td><td class="text-center py-2">❌</td><td class="text-center py-2 bg-greenpen/5">✅ (10+)</td></tr>
+          <tr class="border-b border-pencil/10"><td class="py-2 pr-4">Cron Scheduler</td><td class="text-center py-2">✅</td><td class="text-center py-2 bg-greenpen/5">✅</td></tr>
+          <tr class="border-b border-pencil/10"><td class="py-2 pr-4">Voice (STT/TTS)</td><td class="text-center py-2">❌</td><td class="text-center py-2 bg-greenpen/5">✅</td></tr>
+          <tr class="border-b border-pencil/10"><td class="py-2 pr-4">MCP Server Support</td><td class="text-center py-2">❌</td><td class="text-center py-2 bg-greenpen/5">✅</td></tr>
+          <tr class="border-b border-pencil/10"><td class="py-2 pr-4">Active Development</td><td class="text-center py-2">Maintenance only</td><td class="text-center py-2 bg-greenpen/5">✅ Active</td></tr>
+          <tr><td class="py-2 pr-4">Code Execution</td><td class="text-center py-2">✅</td><td class="text-center py-2 bg-greenpen/5">✅</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- Verdict -->
+  <div class="bg-greenpen/10 border-[3px] border-greenpen shadow-sketch-sm wobbly-md p-6 mb-8">
+    <h2 class="font-heading text-2xl text-greenpen mb-2">⭐ Our Verdict</h2>
+    <p class="text-pencil/80 leading-relaxed mb-2">OpenClaw was groundbreaking — it proved that open-source AI agents could compete with commercial tools. But <strong>Hermes Agent is the direct successor with every feature OpenClaw had, plus more</strong>.</p>
+    <p class="text-pencil/80 leading-relaxed">If you're starting fresh → <a href="/guides/hermes-agent.html" class="text-bluepen hover:underline font-heading">install Hermes Agent</a>. If you're on OpenClaw → <code class="bg-greenpen/20 px-1 rounded text-xs">hermes claw migrate</code> and you're done in seconds.</p>
+  </div>
+
+  <!-- Back -->
+  <div class="text-center">
+    <a href="/" class="inline-block font-heading bg-white border-[3px] border-pencil shadow-sketch px-6 py-2 wobbly-sm btn-sketch hover:bg-accent hover:text-white transition-colors">← Back to Leonis Forge</a>
+  </div>
+</div>
+</body>
+</html>

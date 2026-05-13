@@ -1,0 +1,193 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Hermes Agent Installation Guide — Leonis Forge</title>
+<script src="https://cdn.tailwindcss.com"></script>
+<link href="https://fonts.googleapis.com/css2?family=Kalam:wght@400;700&family=Patrick+Hand&family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet">
+<style>
+  body { font-family: 'Patrick Hand', cursive; background: #faf9f6; }
+  .font-heading { font-family: 'Kalam', cursive; }
+  .font-mono { font-family: 'JetBrains Mono', monospace; }
+  .shadow-sketch { box-shadow: 4px 4px 0px 0px rgba(0,0,0,0.15); }
+  .shadow-sketch-sm { box-shadow: 3px 3px 0px 0px rgba(0,0,0,0.1); }
+  .wobbly { border-radius: 255px 15px 225px 15px/15px 225px 15px 255px; }
+  .wobbly-md { border-radius: 40px 10px 40px 10px/10px 40px 10px 40px; }
+  .btn-sketch:hover { transform: translate(2px, 2px); box-shadow: 1px 1px 0px 0px rgba(0,0,0,0.15); }
+  .tape { position: absolute; top: -10px; left: 50%; transform: translateX(-50%) rotate(-2deg); width: 60px; height: 22px; background: rgba(180, 170, 150, 0.4); border-radius: 2px; z-index: 5; }
+  code { font-family: 'JetBrains Mono', monospace; }
+  .step-num { width: 36px; height: 36px; display: inline-flex; align-items: center; justify-content: center; font-weight: bold; flex-shrink: 0; }
+</style>
+</head>
+<body class="min-h-screen">
+<div class="max-w-3xl mx-auto px-6 py-10">
+
+  <!-- Header -->
+  <div class="text-center mb-10">
+    <a href="/" class="inline-flex items-center gap-2 font-heading text-xl text-pencil hover:text-accent transition-colors mb-6">
+      <span class="text-2xl">🛡️</span>Leonis Forge
+    </a>
+    <h1 class="font-heading text-4xl md:text-5xl text-pencil mb-4">🕊️ Hermes Agent — Full Installation Guide</h1>
+    <p class="text-pencil/60 text-lg max-w-xl mx-auto">Open-source AI agent by <strong>Nous Research</strong>. Self-learning, multi-platform, 18+ LLM providers. Runs on Linux, macOS, and WSL.</p>
+    <div class="flex justify-center gap-4 mt-4">
+      <a href="https://github.com/NousResearch/hermes-agent" target="_blank" class="font-heading text-sm bg-white border-[3px] border-pencil shadow-sketch-sm px-4 py-1.5 wobbly btn-sketch hover:bg-accent hover:text-white transition-colors">⭐ GitHub</a>
+      <a href="https://hermes-agent.nousresearch.com/docs/" target="_blank" class="font-heading text-sm bg-white border-[3px] border-pencil shadow-sketch-sm px-4 py-1.5 wobbly btn-sketch hover:bg-accent hover:text-white transition-colors">📖 Official Docs</a>
+    </div>
+  </div>
+
+  <!-- What is Hermes -->
+  <div class="bg-white border-[3px] border-pencil shadow-sketch wobbly-md p-6 mb-8">
+    <h2 class="font-heading text-2xl mb-3">🤔 What is Hermes Agent?</h2>
+    <p class="text-pencil/80 leading-relaxed mb-2">Hermes Agent is an <strong>AI assistant that runs on your computer</strong> — it can write code, manage files, search the web, send messages, and learn from experience. Think of it as a supercharged terminal assistant that remembers everything and gets better over time.</p>
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-3 mt-4">
+      <div class="bg-greenpen/5 border-[2px] border-greenpen/20 rounded-xl p-3">
+        <span class="font-heading text-greenpen">🧠 Self-learning skills</span>
+        <p class="text-xs text-pencil/60 mt-1">Saves successful workflows as reusable skills. The more you use it, the smarter it gets at your specific tasks.</p>
+      </div>
+      <div class="bg-bluepen/5 border-[2px] border-bluepen/20 rounded-xl p-3">
+        <span class="font-heading text-bluepen">💬 Multi-platform</span>
+        <p class="text-xs text-pencil/60 mt-1">Same agent on Telegram, Discord, Slack, WhatsApp, Signal, and CLI. All with full tool access.</p>
+      </div>
+      <div class="bg-accent/5 border-[2px] border-accent/20 rounded-xl p-3">
+        <span class="font-heading text-accent">🔌 18+ providers</span>
+        <p class="text-xs text-pencil/60 mt-1">DeepSeek, OpenAI, Anthropic, local models — swap anytime. Not locked into one provider.</p>
+      </div>
+      <div class="bg-yellowpen/5 border-[2px] border-yellowpen/20 rounded-xl p-3">
+        <span class="font-heading text-yellowpen">💾 Persistent memory</span>
+        <p class="text-xs text-pencil/60 mt-1">Remembers who you are, your preferences, and past projects across sessions.</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- Prerequisites -->
+  <div class="bg-white border-[3px] border-pencil shadow-sketch wobbly-md p-6 mb-8">
+    <h2 class="font-heading text-2xl mb-3">✅ Prerequisites</h2>
+    <div class="space-y-2 text-pencil/80">
+      <p><span class="font-heading">1.</span> <strong>Linux, macOS, or WSL</strong> (Windows Subsystem for Linux). Pure Windows not supported — use WSL.</p>
+      <p><span class="font-heading">2.</span> <strong>Python 3.10+</strong> and <strong>Node.js 18+</strong></p>
+      <p><span class="font-heading">3.</span> <strong>An LLM API key</strong> — at least one of: DeepSeek, OpenAI, Anthropic, OpenRouter, or local model</p>
+      <p><span class="font-heading">4.</span> <strong>curl + bash</strong> (included on most systems)</p>
+    </div>
+  </div>
+
+  <!-- Step by Step -->
+  <div class="bg-white border-[3px] border-pencil shadow-sketch wobbly-md p-6 mb-8">
+    <h2 class="font-heading text-2xl mb-4">🚀 Step-by-Step Installation</h2>
+
+    <!-- Step 1 -->
+    <div class="flex gap-4 mb-6">
+      <span class="step-num bg-accent text-white border-[2px] border-pencil shadow-sketch-sm rounded-full font-heading text-lg">1</span>
+      <div class="flex-1">
+        <h3 class="font-heading text-lg mb-1">Install Hermes Agent</h3>
+        <p class="text-sm text-pencil/60 mb-2">Run this single command in your terminal:</p>
+        <div class="bg-gray-900 text-green-400 rounded-xl p-3 overflow-x-auto text-xs">
+          <code>curl -fsSL https://raw.githubusercontent.com/NousResearch/hermes-agent/main/scripts/install.sh | bash</code>
+        </div>
+        <p class="text-xs text-pencil/50 mt-2 italic">This downloads and installs everything automatically. Takes ~2-3 minutes.</p>
+      </div>
+    </div>
+
+    <!-- Step 2 -->
+    <div class="flex gap-4 mb-6">
+      <span class="step-num bg-bluepen text-white border-[2px] border-pencil shadow-sketch-sm rounded-full font-heading text-lg">2</span>
+      <div class="flex-1">
+        <h3 class="font-heading text-lg mb-1">Set up your API key</h3>
+        <p class="text-sm text-pencil/60 mb-2">Hermes needs an LLM API key to work. Choose one:</p>
+
+        <details class="mb-2">
+          <summary class="cursor-pointer font-heading text-bluepen hover:text-accent transition-colors">💎 DeepSeek (cheapest, great for coding)</summary>
+          <div class="mt-2 bg-gray-900 text-green-400 rounded-xl p-3 overflow-x-auto text-xs mb-2">
+            <code>hermes config set model.provider deepseek</code><br>
+            <code>hermes config set model.default deepseek-v4-pro</code><br>
+            <code>echo 'DEEPSEEK_API_KEY=sk-your-key-here' >> ~/.hermes/.env</code>
+          </div>
+          <p class="text-xs text-pencil/50">Get key: <a href="https://platform.deepseek.com" target="_blank" class="text-bluepen hover:underline">platform.deepseek.com</a></p>
+        </details>
+
+        <details class="mb-2">
+          <summary class="cursor-pointer font-heading text-bluepen hover:text-accent transition-colors">🧠 OpenAI (GPT-4o, o3)</summary>
+          <div class="mt-2 bg-gray-900 text-green-400 rounded-xl p-3 overflow-x-auto text-xs mb-2">
+            <code>hermes config set model.provider openai</code><br>
+            <code>hermes config set model.default gpt-4o</code><br>
+            <code>echo 'OPENAI_API_KEY=sk-proj-...' >> ~/.hermes/.env</code>
+          </div>
+        </details>
+
+        <details class="mb-2">
+          <summary class="cursor-pointer font-heading text-bluepen hover:text-accent transition-colors">🔷 Anthropic (Claude Sonnet)</summary>
+          <div class="mt-2 bg-gray-900 text-green-400 rounded-xl p-3 overflow-x-auto text-xs mb-2">
+            <code>hermes config set model.provider anthropic</code><br>
+            <code>hermes config set model.default claude-sonnet-4</code><br>
+            <code>echo 'ANTHROPIC_API_KEY=sk-ant-...' >> ~/.hermes/.env</code>
+          </div>
+        </details>
+
+        <details>
+          <summary class="cursor-pointer font-heading text-bluepen hover:text-accent transition-colors">🌐 OpenRouter (access 200+ models)</summary>
+          <div class="mt-2 bg-gray-900 text-green-400 rounded-xl p-3 overflow-x-auto text-xs mb-2">
+            <code>hermes config set model.provider openrouter</code><br>
+            <code>hermes config set model.default deepseek/deepseek-chat</code><br>
+            <code>echo 'OPENROUTER_API_KEY=sk-or-...' >> ~/.hermes/.env</code>
+          </div>
+          <p class="text-xs text-pencil/50">Get key: <a href="https://openrouter.ai/keys" target="_blank" class="text-bluepen hover:underline">openrouter.ai/keys</a></p>
+        </details>
+      </div>
+    </div>
+
+    <!-- Step 3 -->
+    <div class="flex gap-4 mb-6">
+      <span class="step-num bg-greenpen text-white border-[2px] border-pencil shadow-sketch-sm rounded-full font-heading text-lg">3</span>
+      <div class="flex-1">
+        <h3 class="font-heading text-lg mb-1">Verify installation</h3>
+        <p class="text-sm text-pencil/60 mb-2">Check that everything works:</p>
+        <div class="bg-gray-900 text-green-400 rounded-xl p-3 overflow-x-auto text-xs mb-2">
+          <code>hermes doctor</code>
+        </div>
+        <p class="text-xs text-pencil/50">This checks that Hermes is installed correctly and your API key works.</p>
+      </div>
+    </div>
+
+    <!-- Step 4 -->
+    <div class="flex gap-4 mb-6">
+      <span class="step-num bg-yellowpen text-white border-[2px] border-pencil shadow-sketch-sm rounded-full font-heading text-lg">4</span>
+      <div class="flex-1">
+        <h3 class="font-heading text-lg mb-1">Start chatting!</h3>
+        <p class="text-sm text-pencil/60 mb-2">Launch the interactive CLI:</p>
+        <div class="bg-gray-900 text-green-400 rounded-xl p-3 overflow-x-auto text-xs mb-2">
+          <code>hermes</code>
+        </div>
+        <p class="text-xs text-pencil/60">Or ask a single question:</p>
+        <div class="bg-gray-900 text-green-400 rounded-xl p-3 overflow-x-auto text-xs">
+          <code>hermes chat -q "What is the best way to learn Rust in 2026?"</code>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Tips -->
+  <div class="bg-white border-[3px] border-pencil shadow-sketch wobbly-md p-6 mb-8">
+    <h2 class="font-heading text-2xl mb-3">💡 Pro Tips</h2>
+    <div class="space-y-3 text-sm text-pencil/80">
+      <p><strong>🔧 Change model anytime:</strong> <code class="bg-muted/30 px-1 rounded text-xs">hermes model</code> — interactive picker, no config editing.</p>
+      <p><strong>🔄 Run on messaging apps:</strong> <code class="bg-muted/30 px-1 rounded text-xs">hermes gateway setup</code> — connect Telegram, Discord, Slack, etc.</p>
+      <p><strong>📚 Install skills:</strong> <code class="bg-muted/30 px-1 rounded text-xs">hermes skills browse</code> — community skills for crypto, coding, content.</p>
+      <p><strong>⏰ Schedule tasks:</strong> <code class="bg-muted/30 px-1 rounded text-xs">/cron</code> in chat — runs code, checks prices, sends reports on schedule.</p>
+      <p><strong>🧪 Environment isolation:</strong> <code class="bg-muted/30 px-1 rounded text-xs">hermes -w</code> — worktree mode, safe for parallel coding agents.</p>
+      <p><strong>🔑 Key in .bashrc not working?</strong> Move API keys to <code class="bg-muted/30 px-1 rounded text-xs">~/.hermes/.env</code> — bashrc only loads in interactive shells.</p>
+    </div>
+  </div>
+
+  <!-- Review Box -->
+  <div class="bg-greenpen/10 border-[3px] border-greenpen shadow-sketch-sm wobbly-md p-6 mb-8">
+    <h2 class="font-heading text-2xl text-greenpen mb-2">⭐ Our Take</h2>
+    <p class="text-pencil/80 leading-relaxed">Hermes Agent is the <strong>best open-source AI agent</strong> we've tested. The skills system is a genuine innovation — it actually learns from experience instead of starting fresh every session. Multi-platform gateway means one agent handles Telegram, Discord, and CLI all at once. Active development, 18+ providers, great docs. If you're getting into AI agents, start here.</p>
+  </div>
+
+  <!-- Back -->
+  <div class="text-center">
+    <a href="/" class="inline-block font-heading bg-white border-[3px] border-pencil shadow-sketch px-6 py-2 wobbly-sm btn-sketch hover:bg-accent hover:text-white transition-colors">← Back to Leonis Forge</a>
+  </div>
+</div>
+</body>
+</html>
