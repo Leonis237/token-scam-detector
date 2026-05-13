@@ -3,12 +3,13 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>OpenClaw Installation Guide — Leonis Forge</title>
+<title>OpenClaw Guide — Leonis Forge</title>
 <script src="https://cdn.tailwindcss.com"></script>
 <link href="https://fonts.googleapis.com/css2?family=Kalam:wght@400;700&family=Patrick+Hand&family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet">
 <style>
   body { font-family: 'Patrick Hand', cursive; background: #faf9f6; }
   .font-heading { font-family: 'Kalam', cursive; }
+  .font-body { font-family: 'Patrick Hand', cursive; }
   .font-mono { font-family: 'JetBrains Mono', monospace; }
   .shadow-sketch { box-shadow: 4px 4px 0px 0px rgba(0,0,0,0.15); }
   .shadow-sketch-sm { box-shadow: 3px 3px 0px 0px rgba(0,0,0,0.1); }
@@ -18,9 +19,20 @@
   .tape { position: absolute; top: -10px; left: 50%; transform: translateX(-50%) rotate(-2deg); width: 60px; height: 22px; background: rgba(180, 170, 150, 0.4); border-radius: 2px; z-index: 5; }
   code { font-family: 'JetBrains Mono', monospace; }
   .step-num { width: 36px; height: 36px; display: inline-flex; align-items: center; justify-content: center; font-weight: bold; flex-shrink: 0; }
+  .lang-btn { cursor: pointer; padding: 2px 8px; border-radius: 9999px; font-size: 12px; border: 2px solid transparent; }
+  .lang-btn.active { border-color: #e74c3c; background: #fef2f2; color: #991b1b; }
 </style>
 </head>
 <body class="min-h-screen">
+
+<!-- Language Selector -->
+<div class="fixed top-4 right-4 z-50 flex gap-1 bg-white/90 backdrop-blur border-2 border-pencil/20 rounded-full px-2 py-1 shadow-sketch-sm">
+  <button onclick="setLang('en')" class="lang-btn" data-lang-btn="en">EN</button>
+  <button onclick="setLang('vi')" class="lang-btn" data-lang-btn="vi">VI</button>
+  <button onclick="setLang('zh')" class="lang-btn" data-lang-btn="zh">ZH</button>
+  <button onclick="setLang('ko')" class="lang-btn" data-lang-btn="ko">KO</button>
+</div>
+
 <div class="max-w-3xl mx-auto px-6 py-10">
 
   <!-- Header -->
@@ -28,50 +40,50 @@
     <a href="/" class="inline-flex items-center gap-2 font-heading text-xl text-pencil hover:text-accent transition-colors mb-6">
       <img src="https://github.com/Leonis237.png" alt="Leonis" class="w-7 h-7 rounded-full border-2 border-pencil">Leonis Forge
     </a>
-    <h1 class="font-heading text-4xl md:text-5xl text-pencil mb-4">🦞 OpenClaw — Installation & Migration Guide</h1>
-    <p class="text-pencil/60 text-lg max-w-xl mx-auto">The original open-source AI agent gateway. Maintained fork continues development — but we recommend <a href="/guides/hermes-agent.html" class="text-bluepen hover:underline">Hermes Agent</a> for new users.</p>
+    <h1 class="font-heading text-4xl md:text-5xl text-pencil mb-4" data-i18n="oc_title">🦞 OpenClaw — Installation & Migration Guide</h1>
+    <p class="text-pencil/60 text-lg max-w-xl mx-auto" data-i18n-html="oc_subtitle">The original open-source AI agent gateway. Maintained fork continues development — but we recommend <a href="/guides/hermes-agent.html" class="text-bluepen hover:underline">Hermes Agent</a> for new users.</p>
   </div>
 
   <!-- What is OpenClaw -->
   <div class="bg-white border-[3px] border-pencil shadow-sketch wobbly-md p-6 mb-8">
-    <h2 class="font-heading text-2xl mb-3">🤔 What is OpenClaw?</h2>
-    <p class="text-pencil/80 leading-relaxed mb-3">OpenClaw was the <strong>first popular open-source AI agent gateway</strong> — it could run shell commands, connect to messaging platforms, call LLMs, and schedule cron jobs. It pioneered the "AI agent in your terminal + chat apps" paradigm.</p>
-    <p class="text-pencil/80 leading-relaxed"><strong>Current status:</strong> The original NousResearch project was rebranded as <a href="/guides/hermes-agent.html" class="text-bluepen hover:underline">Hermes Agent</a>. A maintained community fork continues at <a href="https://github.com/openclaw/openclaw" target="_blank" class="text-bluepen hover:underline">openclaw/openclaw</a> (v2026.5.7). It still works great for gateway/messaging use cases.</p>
+    <h2 class="font-heading text-2xl mb-3" data-i18n="oc_what_title">🤔 What is OpenClaw?</h2>
+    <p class="text-pencil/80 leading-relaxed mb-3" data-i18n-html="oc_what_desc1">OpenClaw was the <strong>first popular open-source AI agent gateway</strong> — it could run shell commands, connect to messaging platforms, call LLMs, and schedule cron jobs. It pioneered the "AI agent in your terminal + chat apps" paradigm.</p>
+    <p class="text-pencil/80 leading-relaxed" data-i18n-html="oc_what_desc2"><strong>Current status:</strong> The original NousResearch project was rebranded as <a href="/guides/hermes-agent.html" class="text-bluepen hover:underline">Hermes Agent</a>. A maintained community fork continues at <a href="https://github.com/openclaw/openclaw" target="_blank" class="text-bluepen hover:underline">openclaw/openclaw</a> (v2026.5.7). It still works great for gateway/messaging use cases.</p>
   </div>
 
   <!-- Install OpenClaw -->
   <div class="bg-white border-[3px] border-pencil shadow-sketch wobbly-md p-6 mb-8">
-    <h2 class="font-heading text-2xl mb-4">📦 Installing OpenClaw</h2>
+    <h2 class="font-heading text-2xl mb-4" data-i18n="oc_install_title">📦 Installing OpenClaw</h2>
 
     <div class="flex gap-4 mb-6">
       <span class="step-num bg-accent text-white border-[2px] border-pencil shadow-sketch-sm rounded-full font-heading text-lg">1</span>
       <div class="flex-1">
-        <h3 class="font-heading text-lg mb-1">Install via npm</h3>
-        <p class="text-sm text-pencil/60 mb-2">OpenClaw is distributed as an npm package:</p>
+        <h3 class="font-heading text-lg mb-1" data-i18n="oc_s1_title">Install via npm</h3>
+        <p class="text-sm text-pencil/60 mb-2" data-i18n="oc_s1_desc">OpenClaw is distributed as an npm package:</p>
         <div class="bg-gray-900 text-green-400 rounded-xl p-3 overflow-x-auto text-xs">
           <code>npm install -g openclaw</code>
         </div>
-        <p class="text-xs text-pencil/50 mt-2">Current version: 2026.5.7 · Repository: <a href="https://github.com/openclaw/openclaw" target="_blank" class="text-bluepen hover:underline">openclaw/openclaw</a> (maintained fork of the original NousResearch project)</p>
+        <p class="text-xs text-pencil/50 mt-2" data-i18n-html="oc_s1_note">Current version: 2026.5.7 · Repository: <a href="https://github.com/openclaw/openclaw" target="_blank" class="text-bluepen hover:underline">openclaw/openclaw</a> (maintained fork of the original NousResearch project)</p>
       </div>
     </div>
 
     <div class="flex gap-4 mb-6">
       <span class="step-num bg-bluepen text-white border-[2px] border-pencil shadow-sketch-sm rounded-full font-heading text-lg">2</span>
       <div class="flex-1">
-        <h3 class="font-heading text-lg mb-1">Set up API key</h3>
-        <p class="text-sm text-pencil/60 mb-2">Create a <code>~/.openclaw/.env</code> file with your LLM provider key:</p>
+        <h3 class="font-heading text-lg mb-1" data-i18n="oc_s2_title">Set up API key</h3>
+        <p class="text-sm text-pencil/60 mb-2" data-i18n-html="oc_s2_desc">Create a <code>~/.openclaw/.env</code> file with your LLM provider key:</p>
         <div class="bg-gray-900 text-green-400 rounded-xl p-3 overflow-x-auto text-xs">
           <code>mkdir -p ~/.openclaw</code><br>
           <code>echo 'OPENROUTER_API_KEY=sk-or-...' >> ~/.openclaw/.env</code>
         </div>
-        <p class="text-xs text-pencil/50 mt-2">Supports: OpenRouter, Anthropic, OpenAI.</p>
+        <p class="text-xs text-pencil/50 mt-2" data-i18n="oc_s2_note">Supports: OpenRouter, Anthropic, OpenAI.</p>
       </div>
     </div>
 
     <div class="flex gap-4 mb-6">
       <span class="step-num bg-greenpen text-white border-[2px] border-pencil shadow-sketch-sm rounded-full font-heading text-lg">3</span>
       <div class="flex-1">
-        <h3 class="font-heading text-lg mb-1">Start the agent</h3>
+        <h3 class="font-heading text-lg mb-1" data-i18n="oc_s3_title">Start the agent</h3>
         <div class="bg-gray-900 text-green-400 rounded-xl p-3 overflow-x-auto text-xs mb-2">
           <code>openclaw</code>
         </div>
@@ -85,63 +97,63 @@
   <!-- Migration Guide -->
   <div class="bg-white border-[3px] border-pencil shadow-sketch wobbly-md p-6 mb-8 relative">
     <div class="tape"></div>
-    <h2 class="font-heading text-2xl mb-4">🔄 Migrating from OpenClaw → Hermes Agent</h2>
-    <p class="text-pencil/80 leading-relaxed mb-4">If you already have OpenClaw set up, migrating to Hermes takes <strong>one command</strong>:</p>
+    <h2 class="font-heading text-2xl mb-4" data-i18n="oc_migrate_title">🔄 Migrating from OpenClaw → Hermes Agent</h2>
+    <p class="text-pencil/80 leading-relaxed mb-4" data-i18n-html="oc_migrate_desc">If you already have OpenClaw set up, migrating to Hermes takes <strong>one command</strong>:</p>
 
     <div class="bg-yellowpen/10 border-[2px] border-yellowpen/30 rounded-xl p-4 mb-4">
-      <p class="text-xs font-heading text-pencil/60 mb-1">⚡ The migration command</p>
+      <p class="text-xs font-heading text-pencil/60 mb-1" data-i18n="oc_migrate_cmd_label">⚡ The migration command</p>
       <div class="bg-gray-900 text-green-400 rounded-xl p-3 overflow-x-auto text-xs">
         <code>hermes claw migrate</code>
       </div>
     </div>
 
-    <p class="text-sm text-pencil/80 mb-4"><strong>What it migrates:</strong></p>
+    <p class="text-sm text-pencil/80 mb-4" data-i18n="oc_migrate_what"><strong>What it migrates:</strong></p>
     <div class="grid grid-cols-1 md:grid-cols-2 gap-3 mb-4">
       <div class="bg-greenpen/5 border-[2px] border-greenpen/20 rounded-xl p-3">
-        <span class="font-heading text-greenpen">⚙️ Config</span>
-        <p class="text-xs text-pencil/60 mt-1">Your API keys, model settings, and preferences.</p>
+        <span class="font-heading text-greenpen" data-i18n="oc_migrate_config">⚙️ Config</span>
+        <p class="text-xs text-pencil/60 mt-1" data-i18n="oc_migrate_config_desc">Your API keys, model settings, and preferences.</p>
       </div>
       <div class="bg-greenpen/5 border-[2px] border-greenpen/20 rounded-xl p-3">
-        <span class="font-heading text-greenpen">💬 Sessions</span>
-        <p class="text-xs text-pencil/60 mt-1">Past conversation history preserved.</p>
+        <span class="font-heading text-greenpen" data-i18n="oc_migrate_sessions">💬 Sessions</span>
+        <p class="text-xs text-pencil/60 mt-1" data-i18n="oc_migrate_sessions_desc">Past conversation history preserved.</p>
       </div>
       <div class="bg-greenpen/5 border-[2px] border-greenpen/20 rounded-xl p-3">
-        <span class="font-heading text-greenpen">🛠️ Tools</span>
-        <p class="text-xs text-pencil/60 mt-1">Custom tools and tool configurations.</p>
+        <span class="font-heading text-greenpen" data-i18n="oc_migrate_tools">🛠️ Tools</span>
+        <p class="text-xs text-pencil/60 mt-1" data-i18n="oc_migrate_tools_desc">Custom tools and tool configurations.</p>
       </div>
       <div class="bg-greenpen/5 border-[2px] border-greenpen/20 rounded-xl p-3">
-        <span class="font-heading text-greenpen">📊 Cron jobs</span>
-        <p class="text-xs text-pencil/60 mt-1">Scheduled tasks moved over automatically.</p>
+        <span class="font-heading text-greenpen" data-i18n="oc_migrate_cron">📊 Cron jobs</span>
+        <p class="text-xs text-pencil/60 mt-1" data-i18n="oc_migrate_cron_desc">Scheduled tasks moved over automatically.</p>
       </div>
     </div>
 
     <div class="bg-accent/5 border-[2px] border-accent/20 rounded-xl p-3">
-      <p class="text-xs text-pencil/60"><strong>⚠️ Note:</strong> Migration is one-way and irreversible — back up <code>~/.openclaw/</code> first if you want to keep a copy. Run <code>hermes claw migrate</code> after installing Hermes Agent (see <a href="/guides/hermes-agent.html" class="text-bluepen hover:underline">Hermes guide</a>).</p>
+      <p class="text-xs text-pencil/60" data-i18n-html="oc_migrate_warn"><strong>⚠️ Note:</strong> Migration is one-way and irreversible — back up <code>~/.openclaw/</code> first if you want to keep a copy. Run <code>hermes claw migrate</code> after installing Hermes Agent (see <a href="/guides/hermes-agent.html" class="text-bluepen hover:underline">Hermes guide</a>).</p>
     </div>
   </div>
 
   <!-- Comparison -->
   <div class="bg-white border-[3px] border-pencil shadow-sketch wobbly-md p-6 mb-8">
-    <h2 class="font-heading text-2xl mb-3">📊 OpenClaw vs Hermes Agent</h2>
+    <h2 class="font-heading text-2xl mb-3" data-i18n="oc_compare_title">📊 OpenClaw vs Hermes Agent</h2>
     <div class="overflow-x-auto">
       <table class="w-full text-sm border-collapse">
         <thead>
           <tr class="border-b-[2px] border-pencil/30">
-            <th class="text-left py-2 pr-4 font-heading">Feature</th>
+            <th class="text-left py-2 pr-4 font-heading" data-i18n="oc_table_feature">Feature</th>
             <th class="text-center py-2 px-4 font-heading">🦞 OpenClaw</th>
-            <th class="text-center py-2 px-4 font-heading bg-greenpen/10">🕊️ Hermes</th>
+            <th class="text-center py-2 px-4 font-heading bg-greenpen/10">☤ Hermes</th>
           </tr>
         </thead>
         <tbody class="text-pencil/80">
-          <tr class="border-b border-pencil/10"><td class="py-2 pr-4">LLM Providers</td><td class="text-center py-2">3-4</td><td class="text-center py-2 bg-greenpen/5">18+</td></tr>
-          <tr class="border-b border-pencil/10"><td class="py-2 pr-4">Self-learning Skills</td><td class="text-center py-2">❌</td><td class="text-center py-2 bg-greenpen/5">✅</td></tr>
-          <tr class="border-b border-pencil/10"><td class="py-2 pr-4">Persistent Memory</td><td class="text-center py-2">❌</td><td class="text-center py-2 bg-greenpen/5">✅</td></tr>
-          <tr class="border-b border-pencil/10"><td class="py-2 pr-4">Multi-platform Gateway</td><td class="text-center py-2">❌</td><td class="text-center py-2 bg-greenpen/5">✅ (10+)</td></tr>
-          <tr class="border-b border-pencil/10"><td class="py-2 pr-4">Cron Scheduler</td><td class="text-center py-2">✅</td><td class="text-center py-2 bg-greenpen/5">✅</td></tr>
-          <tr class="border-b border-pencil/10"><td class="py-2 pr-4">Voice (STT/TTS)</td><td class="text-center py-2">❌</td><td class="text-center py-2 bg-greenpen/5">✅</td></tr>
-          <tr class="border-b border-pencil/10"><td class="py-2 pr-4">MCP Server Support</td><td class="text-center py-2">❌</td><td class="text-center py-2 bg-greenpen/5">✅</td></tr>
-          <tr class="border-b border-pencil/10"><td class="py-2 pr-4">Active Development</td><td class="text-center py-2">Community maintained</td><td class="text-center py-2 bg-greenpen/5">✅ Active (Nous)</td></tr>
-          <tr><td class="py-2 pr-4">Code Execution</td><td class="text-center py-2">✅</td><td class="text-center py-2 bg-greenpen/5">✅</td></tr>
+          <tr class="border-b border-pencil/10"><td class="py-2 pr-4" data-i18n="oc_row_providers">LLM Providers</td><td class="text-center py-2">3-4</td><td class="text-center py-2 bg-greenpen/5">18+</td></tr>
+          <tr class="border-b border-pencil/10"><td class="py-2 pr-4" data-i18n="oc_row_skills">Self-learning Skills</td><td class="text-center py-2">❌</td><td class="text-center py-2 bg-greenpen/5">✅</td></tr>
+          <tr class="border-b border-pencil/10"><td class="py-2 pr-4" data-i18n="oc_row_memory">Persistent Memory</td><td class="text-center py-2">❌</td><td class="text-center py-2 bg-greenpen/5">✅</td></tr>
+          <tr class="border-b border-pencil/10"><td class="py-2 pr-4" data-i18n="oc_row_gateway">Multi-platform Gateway</td><td class="text-center py-2">❌</td><td class="text-center py-2 bg-greenpen/5">✅ (10+)</td></tr>
+          <tr class="border-b border-pencil/10"><td class="py-2 pr-4" data-i18n="oc_row_cron">Cron Scheduler</td><td class="text-center py-2">✅</td><td class="text-center py-2 bg-greenpen/5">✅</td></tr>
+          <tr class="border-b border-pencil/10"><td class="py-2 pr-4" data-i18n="oc_row_voice">Voice (STT/TTS)</td><td class="text-center py-2">❌</td><td class="text-center py-2 bg-greenpen/5">✅</td></tr>
+          <tr class="border-b border-pencil/10"><td class="py-2 pr-4" data-i18n="oc_row_mcp">MCP Server Support</td><td class="text-center py-2">❌</td><td class="text-center py-2 bg-greenpen/5">✅</td></tr>
+          <tr class="border-b border-pencil/10"><td class="py-2 pr-4" data-i18n="oc_row_dev">Active Development</td><td class="text-center py-2" data-i18n="oc_cell_community">Community maintained</td><td class="text-center py-2 bg-greenpen/5" data-i18n="oc_cell_active">✅ Active (Nous)</td></tr>
+          <tr><td class="py-2 pr-4" data-i18n="oc_row_code">Code Execution</td><td class="text-center py-2">✅</td><td class="text-center py-2 bg-greenpen/5">✅</td></tr>
         </tbody>
       </table>
     </div>
@@ -149,15 +161,31 @@
 
   <!-- Verdict -->
   <div class="bg-greenpen/10 border-[3px] border-greenpen shadow-sketch-sm wobbly-md p-6 mb-8">
-    <h2 class="font-heading text-2xl text-greenpen mb-2">⭐ Our Verdict</h2>
-    <p class="text-pencil/80 leading-relaxed mb-2">OpenClaw pioneered the AI agent gateway concept and <strong>still works well today</strong> — a community fork keeps it updated (v2026.5.7). But <strong>Hermes Agent took the core ideas and added game-changing features</strong>: self-learning skills, persistent memory, 18+ providers, voice, and MCP support.</p>
-    <p class="text-pencil/80 leading-relaxed">If you need a battle-tested gateway for messaging channels → OpenClaw works great. If you want the future of AI agents → <a href="/guides/hermes-agent.html" class="text-bluepen hover:underline font-heading">install Hermes Agent</a>. If you're on OpenClaw → <code class="bg-greenpen/20 px-1 rounded text-xs">hermes claw migrate</code> and you're done in seconds.</p>
+    <h2 class="font-heading text-2xl text-greenpen mb-2" data-i18n="oc_verdict_title">⭐ Our Verdict</h2>
+    <p class="text-pencil/80 leading-relaxed mb-2" data-i18n-html="oc_verdict1">OpenClaw pioneered the AI agent gateway concept and <strong>still works well today</strong> — a community fork keeps it updated (v2026.5.7). But <strong>Hermes Agent took the core ideas and added game-changing features</strong>: self-learning skills, persistent memory, 18+ providers, voice, and MCP support.</p>
+    <p class="text-pencil/80 leading-relaxed" data-i18n-html="oc_verdict2">If you need a battle-tested gateway for messaging channels → OpenClaw works great. If you want the future of AI agents → <a href="/guides/hermes-agent.html" class="text-bluepen hover:underline font-heading">install Hermes Agent</a>. If you're on OpenClaw → <code class="bg-greenpen/20 px-1 rounded text-xs">hermes claw migrate</code> and you're done in seconds.</p>
   </div>
 
   <!-- Back -->
   <div class="text-center">
-    <a href="/" class="inline-block font-heading bg-white border-[3px] border-pencil shadow-sketch px-6 py-2 wobbly-sm btn-sketch hover:bg-accent hover:text-white transition-colors">← Back to Leonis Forge</a>
+    <a href="/" class="inline-block font-heading bg-white border-[3px] border-pencil shadow-sketch px-6 py-2 wobbly-sm btn-sketch hover:bg-accent hover:text-white transition-colors" data-i18n="oc_btn_back">← Back to Leonis Forge</a>
   </div>
 </div>
+
+<script src="/static/i18n.js"></script>
+<script>
+function updateLangBtns(lang) {
+  document.querySelectorAll('[data-lang-btn]').forEach(b => {
+    b.classList.toggle('active', b.dataset.langBtn === lang);
+  });
+}
+const _origSetLang2 = setLang;
+setLang = function(lang) {
+  _origSetLang2(lang);
+  updateLangBtns(lang);
+};
+const saved = localStorage.getItem('lang') || 'en';
+updateLangBtns(saved);
+</script>
 </body>
 </html>
