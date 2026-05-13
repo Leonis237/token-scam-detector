@@ -176,6 +176,7 @@ tailwind.config = {
   ::-webkit-scrollbar-track { background: #fdfbf7; }
   ::-webkit-scrollbar-thumb { background: #e5e0d8; border-radius: 4px; }
 </style>
+<script src="/static/i18n.js"></script>
 </head>
 <body class="font-body text-pencil">
 
@@ -187,17 +188,29 @@ tailwind.config = {
     </a>
     <div class="hidden md:flex gap-5 text-sm">
       <a href="#scanner" class="hover:text-accent transition-colors relative">
-        Scan
+        <span data-i18n="nav_scan">Scan</span>
         <span class="absolute -bottom-1 left-0 right-0 h-0.5 bg-accent scale-x-0 hover:scale-x-100 transition-transform"></span>
       </a>
-      <a href="#approvals" class="hover:text-accent transition-colors">Approvals</a>
-      <a href="#features" class="hover:text-accent transition-colors">Features</a>
-      <a href="#how" class="hover:text-accent transition-colors">How</a>
-      <a href="#faq" class="hover:text-accent transition-colors">FAQ</a>
+      <a href="#approvals" class="hover:text-accent transition-colors"><span data-i18n="nav_approvals">Approvals</span></a>
+      <a href="#features" class="hover:text-accent transition-colors"><span data-i18n="nav_features">Features</span></a>
+      <a href="#how" class="hover:text-accent transition-colors"><span data-i18n="nav_how">How</span></a>
+      <a href="#faq" class="hover:text-accent transition-colors"><span data-i18n="nav_faq">FAQ</span></a>
     </div>
-    <a href="#scanner" class="font-heading text-sm bg-white border-[3px] border-pencil shadow-sketch px-4 py-1.5 wobbly-sm btn-sketch hover:bg-accent hover:text-white transition-colors hidden md:inline-block">
-      Scan now ✦
-    </a>
+    <div class="hidden md:flex items-center gap-3">
+      <a href="#scanner" class="font-heading text-sm bg-white border-[3px] border-pencil shadow-sketch px-4 py-1.5 wobbly-sm btn-sketch hover:bg-accent hover:text-white transition-colors" data-i18n="nav_cta">Scan now ✦</a>
+      <div class="relative">
+        <button onclick="toggleLangMenu()" class="font-heading text-sm bg-white border-[2px] border-pencil/30 shadow-sketch-sm px-2.5 py-1 rounded-full hover:bg-muted transition-colors flex items-center gap-1">
+          <span id="langSwitcherText">EN</span>
+          <span class="text-xs">▾</span>
+        </button>
+        <div id="langMenu" class="hidden absolute right-0 top-full mt-1 bg-white border-[3px] border-pencil shadow-sketch rounded-xl overflow-hidden z-50 min-w-[90px]">
+          <button onclick="setLang('en');closeLangMenu()" class="block w-full text-left px-3 py-1.5 hover:bg-accent/10 text-sm">🇬🇧 English</button>
+          <button onclick="setLang('vi');closeLangMenu()" class="block w-full text-left px-3 py-1.5 hover:bg-accent/10 text-sm">🇻🇳 Tiếng Việt</button>
+          <button onclick="setLang('zh');closeLangMenu()" class="block w-full text-left px-3 py-1.5 hover:bg-accent/10 text-sm">🇨🇳 中文</button>
+          <button onclick="setLang('ko');closeLangMenu()" class="block w-full text-left px-3 py-1.5 hover:bg-accent/10 text-sm">🇰🇷 한국어</button>
+        </div>
+      </div>
+    </div>
   </div>
 </nav>
 
@@ -210,19 +223,19 @@ tailwind.config = {
   <div class="max-w-3xl mx-auto text-center relative z-10">
     <!-- Post-it badge -->
     <div class="inline-block bg-postit border-[3px] border-pencil shadow-sketch-sm px-5 py-1.5 wobbly-sm -rotate-1 mb-6">
-      <span class="font-heading text-sm text-pencil">🛡️ Miễn phí · Không cần đăng ký</span>
+      <span class="font-heading text-sm text-pencil" data-i18n="hero_badge">🛡️ Miễn phí · Không cần đăng ký</span>
     </div>
 
     <h1 class="font-heading text-5xl md:text-6xl leading-tight mb-4 text-pencil">
-      Đừng để ví <span class="text-accent squiggly">dính chưởng</span><br>
+      <span data-i18n="hero_title1">Đừng để ví </span><span class="text-accent squiggly" id="heroHighlight" data-i18n="hero_title_highlight">dính chưởng</span><br>
       <span class="relative">
-        Check trước khi quá muộn
+        <span data-i18n="hero_title2">Check trước khi quá muộn</span>
         <span class="hidden md:inline absolute -right-8 -top-2 text-3xl animate-bounce">!</span>
       </span>
     </h1>
 
     <p class="text-lg md:text-xl text-pencil/65 max-w-xl mx-auto mb-8">
-      Dán địa chỉ token — AI quét 30+ tín hiệu scam. Dán địa chỉ ví — kiểm tra approvals nguy hiểm. Tất cả trong 1 tool.
+      <span data-i18n="hero_sub">Dán địa chỉ token — AI quét 30+ tín hiệu scam. Dán địa chỉ ví — kiểm tra approvals nguy hiểm. Tất cả trong 1 tool.</span>
     </p>
 
     <!-- Stats -->
@@ -242,7 +255,7 @@ tailwind.config = {
     </div>
 
     <a href="#scanner" class="inline-block font-heading text-lg bg-white border-[3px] border-pencil shadow-sketch-lg px-8 py-3 wobbly btn-sketch hover:bg-accent hover:text-white transition-colors">
-      Bắt đầu quét ngay →
+      <span data-i18n="hero_cta">Bắt đầu quét ngay →</span>
     </a>
   </div>
 </section>
@@ -254,27 +267,27 @@ tailwind.config = {
   <div class="flex gap-1 mb-0 border-b-[3px] border-dashed border-pencil/20 pb-0">
     <button id="tabScam" onclick="switchTab('scam')"
       class="font-heading text-lg px-5 py-2 border-[3px] border-b-0 border-pencil rounded-t-2xl bg-white -mb-[3px] relative z-10 transition-colors">
-      🔍 Scan Token Scam
+      <span data-i18n="tab_scam">🔍 Scan Token Scam</span>
     </button>
     <button id="tabApproval" onclick="switchTab('approval')"
       class="font-heading text-lg px-5 py-2 border-[3px] border-b-0 border-muted rounded-t-2xl bg-muted/40 text-pencil/50 transition-colors">
-      🛡️ Approval Checker
+      <span data-i18n="tab_approval">🛡️ Approval Checker</span>
     </button>
   </div>
 
   <!-- ═══ SCAM DETECTOR TAB ═══ -->
   <div id="panelScam" class="bg-white border-[3px] border-pencil shadow-sketch-sm wobbly-md p-6 md:p-8">
     <div class="mb-4">
-      <label class="font-heading text-sm block mb-1 text-pencil/70">Địa chỉ contract token</label>
+      <label class="font-heading text-sm block mb-1 text-pencil/70" data-i18n="scam_label_addr">Địa chỉ contract token</label>
       <input type="text" id="address"
         class="input-sketch w-full border-[3px] border-pencil rounded-xl px-4 py-3 bg-white transition-colors"
-        placeholder="0x87230146E138d3F296a9a77e497A2A83012e9Bc5"
+        placeholder="0x87230146E138d3F296a9a77e497A2A83012e9Bc5" data-i18n-placeholder="scam_placeholder"
         autocomplete="off" spellcheck="false">
     </div>
 
     <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
       <div>
-        <label class="font-heading text-sm block mb-1 text-pencil/70">Chain</label>
+        <label class="font-heading text-sm block mb-1 text-pencil/70" data-i18n="scam_label_chain">Chain</label>
         <select id="chain"
           class="input-sketch w-full border-[3px] border-pencil rounded-xl px-4 py-3 bg-white appearance-none cursor-pointer">
           <option value="56">🟡 BNB Smart Chain</option>
@@ -287,7 +300,7 @@ tailwind.config = {
       <div class="flex items-end">
         <button id="checkBtn" onclick="checkToken()"
           class="font-heading text-lg w-full bg-white border-[3px] border-pencil shadow-sketch px-6 py-3 wobbly-sm btn-sketch hover:bg-accent hover:text-white transition-colors">
-          🔍 Scan Token
+          <span data-i18n="scam_btn">🔍 Scan Token</span>
         </button>
       </div>
     </div>
@@ -313,7 +326,7 @@ tailwind.config = {
 
       <!-- Score bar -->
       <div class="flex justify-between text-sm text-pencil/60 mb-1">
-        <span>Xác suất scam</span>
+        <span data-i18n="scam_score_label">Xác suất scam</span>
         <span id="scorePct" class="font-heading">0%</span>
       </div>
       <div class="h-5 bg-muted/50 rounded-full overflow-hidden border-[2px] border-pencil/20 mb-4">
@@ -323,27 +336,27 @@ tailwind.config = {
       <!-- Info grid -->
       <div class="grid grid-cols-2 md:grid-cols-3 gap-3 mb-4">
         <div class="bg-postit/60 border-[2px] border-pencil/20 rounded-xl p-3">
-          <div class="text-xs text-pencil/50 uppercase tracking-wide">Token</div>
+          <div class="text-xs text-pencil/50 uppercase tracking-wide" data-i18n="info_token">Token</div>
           <div id="infoToken" class="text-sm font-heading mt-0.5">—</div>
         </div>
         <div class="bg-postit/60 border-[2px] border-pencil/20 rounded-xl p-3">
-          <div class="text-xs text-pencil/50 uppercase tracking-wide">Chain</div>
+          <div class="text-xs text-pencil/50 uppercase tracking-wide" data-i18n="info_chain">Chain</div>
           <div id="infoChain" class="text-sm font-heading mt-0.5">—</div>
         </div>
         <div class="bg-postit/60 border-[2px] border-pencil/20 rounded-xl p-3">
-          <div class="text-xs text-pencil/50 uppercase tracking-wide">Risk Level</div>
+          <div class="text-xs text-pencil/50 uppercase tracking-wide" data-i18n="info_risk">Risk Level</div>
           <div id="infoRisk" class="text-sm font-heading mt-0.5">—</div>
         </div>
         <div class="bg-postit/60 border-[2px] border-pencil/20 rounded-xl p-3">
-          <div class="text-xs text-pencil/50 uppercase tracking-wide">Sell Tax</div>
+          <div class="text-xs text-pencil/50 uppercase tracking-wide" data-i18n="info_tax">Sell Tax</div>
           <div id="infoTax" class="text-sm font-heading mt-0.5">—</div>
         </div>
         <div class="bg-postit/60 border-[2px] border-pencil/20 rounded-xl p-3">
-          <div class="text-xs text-pencil/50 uppercase tracking-wide">Source Code</div>
+          <div class="text-xs text-pencil/50 uppercase tracking-wide" data-i18n="info_source">Source Code</div>
           <div id="infoSource" class="text-sm font-heading mt-0.5">—</div>
         </div>
         <div class="bg-postit/60 border-[2px] border-pencil/20 rounded-xl p-3">
-          <div class="text-xs text-pencil/50 uppercase tracking-wide">Proxy</div>
+          <div class="text-xs text-pencil/50 uppercase tracking-wide" data-i18n="info_proxy">Proxy</div>
           <div id="infoProxy" class="text-sm font-heading mt-0.5">—</div>
         </div>
       </div>
@@ -359,7 +372,7 @@ tailwind.config = {
       <!-- Honeypot link -->
       <a id="honeypotLink" href="#" target="_blank" rel="noopener"
         class="block text-center text-sm text-bluepen hover:text-accent transition-colors underline decoration-dashed underline-offset-4">
-        Xem báo cáo đầy đủ trên Honeypot.is →
+        <span data-i18n="honeypot_link">Xem báo cáo đầy đủ trên Honeypot.is →</span>
       </a>
     </div>
   </div>
@@ -367,16 +380,16 @@ tailwind.config = {
   <!-- ═══ APPROVAL CHECKER TAB ═══ -->
   <div id="panelApproval" class="hidden bg-white border-[3px] border-pencil shadow-sketch-sm wobbly-md p-6 md:p-8">
     <div class="mb-4">
-      <label class="font-heading text-sm block mb-1 text-pencil/70">Địa chỉ ví cần kiểm tra</label>
+      <label class="font-heading text-sm block mb-1 text-pencil/70" data-i18n="approval_label_addr">Địa chỉ ví cần kiểm tra</label>
       <input type="text" id="walletAddr"
         class="input-sketch w-full border-[3px] border-pencil rounded-xl px-4 py-3 bg-white transition-colors"
-        placeholder="0x36F50C8c..."
+        placeholder="0x36F50C8c..." data-i18n-placeholder="approval_placeholder"
         autocomplete="off" spellcheck="false">
     </div>
 
     <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
       <div>
-        <label class="font-heading text-sm block mb-1 text-pencil/70">Chain</label>
+        <label class="font-heading text-sm block mb-1 text-pencil/70" data-i18n="approval_label_chain">Chain</label>
         <select id="approvalChain"
           class="input-sketch w-full border-[3px] border-pencil rounded-xl px-4 py-3 bg-white appearance-none cursor-pointer">
           <option value="1">💎 Ethereum</option>
@@ -389,7 +402,7 @@ tailwind.config = {
       <div class="flex items-end">
         <button id="approvalBtn" onclick="checkApprovals()"
           class="font-heading text-lg w-full bg-white border-[3px] border-pencil shadow-sketch px-6 py-3 wobbly-sm btn-sketch hover:bg-bluepen hover:text-white transition-colors">
-          🛡️ Quét Approvals
+          <span data-i18n="approval_btn">🛡️ Quét Approvals</span>
         </button>
       </div>
     </div>
@@ -408,22 +421,22 @@ tailwind.config = {
       <div class="grid grid-cols-3 gap-3 mb-4">
         <div class="bg-white border-[3px] border-pencil shadow-sketch-sm rounded-xl p-3 text-center">
           <div class="font-heading text-2xl text-pencil" id="totalActive">0</div>
-          <div class="text-xs text-pencil/50">Approvals active</div>
+          <div class="text-xs text-pencil/50" data-i18n="approval_summary_active">Approvals active</div>
         </div>
         <div class="bg-accent/10 border-[3px] border-accent shadow-sketch-sm rounded-xl p-3 text-center">
           <div class="font-heading text-2xl text-accent" id="highRisk">0</div>
-          <div class="text-xs text-pencil/50">Rủi ro cao</div>
+          <div class="text-xs text-pencil/50" data-i18n="approval_summary_risk">Rủi ro cao</div>
         </div>
         <div class="bg-accent/10 border-[3px] border-accent shadow-sketch-sm rounded-xl p-3 text-center">
           <div class="font-heading text-2xl text-accent" id="unlimited">0</div>
-          <div class="text-xs text-pencil/50">Không giới hạn</div>
+          <div class="text-xs text-pencil/50" data-i18n="approval_summary_unlimited">Không giới hạn</div>
         </div>
       </div>
 
       <!-- Approvals list -->
       <div id="approvalsList" class="space-y-3"></div>
 
-      <p class="text-xs text-pencil/40 text-center mt-4">
+      <p class="text-xs text-pencil/40 text-center mt-4" data-i18n="approval_note">
         Quét top token + DEX phổ biến. Hỗ trợ thêm token khi có nhu cầu.
       </p>
     </div>
@@ -434,8 +447,8 @@ tailwind.config = {
 <!-- ════════════════ FEATURES ════════════════ -->
 <section class="max-w-5xl mx-auto px-6 pb-20" id="features">
   <div class="text-center mb-10">
-    <span class="inline-block bg-postit border-[2px] border-pencil/30 shadow-sketch-sm px-4 py-1 wobbly-sm -rotate-1 font-heading text-sm mb-4">✨ Tại sao nên dùng?</span>
-    <h2 class="font-heading text-4xl md:text-5xl text-pencil">Mọi thứ để giữ ví an toàn</h2>
+    <span class="inline-block bg-postit border-[2px] border-pencil/30 shadow-sketch-sm px-4 py-1 wobbly-sm -rotate-1 font-heading text-sm mb-4" data-i18n="features_badge">✨ Tại sao nên dùng?</span>
+    <h2 class="font-heading text-4xl md:text-5xl text-pencil" data-i18n="features_title">Mọi thứ để giữ ví an toàn</h2>
   </div>
 
   <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
@@ -443,39 +456,39 @@ tailwind.config = {
     <div class="relative bg-white border-[3px] border-pencil shadow-sketch-sm wobbly-md p-6 card-hover">
       <div class="tape"></div>
       <div class="text-3xl mb-3">🔍</div>
-      <h3 class="font-heading text-xl mb-2">30+ Tín Hiệu Scam</h3>
-      <p class="text-sm text-pencil/65">Honeypot, high tax, proxy, closed source, siphoned wallets — tất cả được AI phân tích.</p>
+      <h3 class="font-heading text-xl mb-2" data-i18n="feat1_title">30+ Tín Hiệu Scam</h3>
+      <p class="text-sm text-pencil/65" data-i18n="feat1_desc">Honeypot, high tax, proxy, closed source, siphoned wallets — tất cả được AI phân tích.</p>
     </div>
 
     <div class="relative bg-white border-[3px] border-pencil shadow-sketch-sm wobbly-md p-6 card-hover">
       <div class="text-3xl mb-3">🛡️</div>
-      <h3 class="font-heading text-xl mb-2">Approval Checker</h3>
-      <p class="text-sm text-pencil/65">Quét ví tìm token approvals nguy hiểm. Phát hiện unlimited allowance với DEX lạ.</p>
+      <h3 class="font-heading text-xl mb-2" data-i18n="feat2_title">Approval Checker</h3>
+      <p class="text-sm text-pencil/65" data-i18n="feat2_desc">Quét ví tìm token approvals nguy hiểm. Phát hiện unlimited allowance với DEX lạ.</p>
     </div>
 
     <div class="relative bg-postit border-[3px] border-pencil shadow-sketch-sm wobbly-md p-6 card-hover">
       <div class="tape" style="transform: translateX(-50%) rotate(1deg); width: 50px;"></div>
       <div class="text-3xl mb-3">🌐</div>
-      <h3 class="font-heading text-xl mb-2">5 Chain Hỗ Trợ</h3>
-      <p class="text-sm text-pencil/65">Ethereum, BSC, Base, Arbitrum, Polygon. Nhiều chain hơn sắp ra mắt.</p>
+      <h3 class="font-heading text-xl mb-2" data-i18n="feat3_title">5 Chain Hỗ Trợ</h3>
+      <p class="text-sm text-pencil/65" data-i18n="feat3_desc">Ethereum, BSC, Base, Arbitrum, Polygon. Nhiều chain hơn sắp ra mắt.</p>
     </div>
 
     <div class="relative bg-white border-[3px] border-pencil shadow-sketch-sm wobbly-md p-6 card-hover">
       <div class="text-3xl mb-3">⚡</div>
-      <h3 class="font-heading text-xl mb-2">Kết Quả Tức Thì</h3>
-      <p class="text-sm text-pencil/65">Dữ liệu on-chain real-time. Kết quả scam detection trong dưới 5 giây.</p>
+      <h3 class="font-heading text-xl mb-2" data-i18n="feat4_title">Kết Quả Tức Thì</h3>
+      <p class="text-sm text-pencil/65" data-i18n="feat4_desc">Dữ liệu on-chain real-time. Kết quả scam detection trong dưới 5 giây.</p>
     </div>
 
     <div class="relative bg-white border-[3px] border-pencil shadow-sketch-sm wobbly-md p-6 card-hover">
       <div class="text-3xl mb-3">🤖</div>
-      <h3 class="font-heading text-xl mb-2">AI-Powered</h3>
-      <p class="text-sm text-pencil/65">Neural network huấn luyện trên 200+ token. Cập nhật liên tục, F1 ~81%.</p>
+      <h3 class="font-heading text-xl mb-2" data-i18n="feat5_title">AI-Powered</h3>
+      <p class="text-sm text-pencil/65" data-i18n="feat5_desc">Neural network huấn luyện trên 200+ token. Cập nhật liên tục, F1 ~81%.</p>
     </div>
 
     <div class="relative bg-white border-[3px] border-pencil shadow-sketch-sm wobbly-md p-6 card-hover">
       <div class="text-3xl mb-3">💯</div>
-      <h3 class="font-heading text-xl mb-2">Miễn Phí Mãi Mãi</h3>
-      <p class="text-sm text-pencil/65">Không cần đăng ký, không cần connect ví. Dùng public RPC — zero cost.</p>
+      <h3 class="font-heading text-xl mb-2" data-i18n="feat6_title">Miễn Phí Mãi Mãi</h3>
+      <p class="text-sm text-pencil/65" data-i18n="feat6_desc">Không cần đăng ký, không cần connect ví. Dùng public RPC — zero cost.</p>
     </div>
   </div>
 </section>
@@ -483,8 +496,8 @@ tailwind.config = {
 <!-- ════════════════ HOW IT WORKS ════════════════ -->
 <section class="max-w-3xl mx-auto px-6 pb-20" id="how">
   <div class="text-center mb-10">
-    <span class="inline-block bg-postit border-[2px] border-pencil/30 shadow-sketch-sm px-4 py-1 wobbly-sm rotate-1 font-heading text-sm mb-4">📋 Quy trình</span>
-    <h2 class="font-heading text-4xl md:text-5xl text-pencil">Cách hoạt động</h2>
+    <span class="inline-block bg-postit border-[2px] border-pencil/30 shadow-sketch-sm px-4 py-1 wobbly-sm rotate-1 font-heading text-sm mb-4" data-i18n="how_badge">📋 Quy trình</span>
+    <h2 class="font-heading text-4xl md:text-5xl text-pencil" data-i18n="how_title">Cách hoạt động</h2>
   </div>
 
   <div class="grid grid-cols-1 md:grid-cols-3 gap-8 relative">
@@ -493,28 +506,28 @@ tailwind.config = {
 
     <div class="text-center">
       <div class="inline-flex items-center justify-center w-16 h-16 border-[3px] border-pencil bg-white shadow-sketch-sm rounded-full mb-4 relative z-10 font-heading text-2xl">1</div>
-      <h4 class="font-heading text-lg mb-1">Dán địa chỉ</h4>
-      <p class="text-sm text-pencil/60">Copy contract token hoặc địa chỉ ví. Hỗ trợ mọi EVM chain.</p>
+      <h4 class="font-heading text-lg mb-1" data-i18n="how_step1_title">Dán địa chỉ</h4>
+      <p class="text-sm text-pencil/60" data-i18n="how_step1_desc">Copy contract token hoặc địa chỉ ví. Hỗ trợ mọi EVM chain.</p>
     </div>
 
     <div class="text-center">
       <div class="inline-flex items-center justify-center w-16 h-16 border-[3px] border-pencil bg-white shadow-sketch-sm rounded-full mb-4 relative z-10 font-heading text-2xl">2</div>
-      <h4 class="font-heading text-lg mb-1">AI Quét</h4>
-      <p class="text-sm text-pencil/60">Model phân tích 30+ tín hiệu + on-chain data. Dưới 5 giây.</p>
+      <h4 class="font-heading text-lg mb-1" data-i18n="how_step2_title">AI Quét</h4>
+      <p class="text-sm text-pencil/60" data-i18n="how_step2_desc">Model phân tích 30+ tín hiệu + on-chain data. Dưới 5 giây.</p>
     </div>
 
     <div class="text-center">
       <div class="inline-flex items-center justify-center w-16 h-16 border-[3px] border-pencil bg-accent text-white shadow-sketch-sm rounded-full mb-4 relative z-10 font-heading text-2xl">3</div>
-      <h4 class="font-heading text-lg mb-1">Nhận Kết Quả</h4>
-      <p class="text-sm text-pencil/60">Scam score, red flags, approvals nguy hiểm — tất cả rõ ràng.</p>
+      <h4 class="font-heading text-lg mb-1" data-i18n="how_step3_title">Nhận Kết Quả</h4>
+      <p class="text-sm text-pencil/60" data-i18n="how_step3_desc">Scam score, red flags, approvals nguy hiểm — tất cả rõ ràng.</p>
     </div>
   </div>
 </section>
 
 <!-- ════════════════ CHAINS ════════════════ -->
 <section class="max-w-3xl mx-auto px-6 pb-20 text-center">
-  <span class="inline-block bg-postit border-[2px] border-pencil/30 shadow-sketch-sm px-4 py-1 wobbly-sm -rotate-1 font-heading text-sm mb-4">⛓️ Networks</span>
-  <h2 class="font-heading text-4xl text-pencil mb-8">Multi-Chain</h2>
+  <span class="inline-block bg-postit border-[2px] border-pencil/30 shadow-sketch-sm px-4 py-1 wobbly-sm -rotate-1 font-heading text-sm mb-4" data-i18n="chains_badge">⛓️ Networks</span>
+  <h2 class="font-heading text-4xl text-pencil mb-8" data-i18n="chains_title">Multi-Chain</h2>
   <div class="flex flex-wrap justify-center gap-3">
     <span class="border-[3px] border-pencil bg-white shadow-sketch-sm px-5 py-2 rounded-full text-sm font-heading">🟡 BNB Chain</span>
     <span class="border-[3px] border-pencil bg-white shadow-sketch-sm px-5 py-2 rounded-full text-sm font-heading">💎 Ethereum</span>
@@ -527,8 +540,8 @@ tailwind.config = {
 <!-- ════════════════ FAQ ════════════════ -->
 <section class="max-w-2xl mx-auto px-6 pb-20" id="faq">
   <div class="text-center mb-10">
-    <span class="inline-block bg-postit border-[2px] border-pencil/30 shadow-sketch-sm px-4 py-1 wobbly-sm rotate-1 font-heading text-sm mb-4">❓ Hỏi đáp</span>
-    <h2 class="font-heading text-4xl text-pencil">Câu Hỏi Thường Gặp</h2>
+    <span class="inline-block bg-postit border-[2px] border-pencil/30 shadow-sketch-sm px-4 py-1 wobbly-sm rotate-1 font-heading text-sm mb-4" data-i18n="faq_badge">❓ Hỏi đáp</span>
+    <h2 class="font-heading text-4xl text-pencil" data-i18n="faq_title">Câu Hỏi Thường Gặp</h2>
   </div>
 
   <div class="space-y-3">
@@ -537,7 +550,7 @@ tailwind.config = {
         Tool này có chính xác không?
         <span class="text-xl transition-transform group-open:rotate-180">▼</span>
       </summary>
-      <p class="mt-3 text-sm text-pencil/65 border-t-[2px] border-dashed border-pencil/10 pt-3">Model neural network huấn luyện trên 200+ token với F1 score ~81% (cross-validation). Phát hiện honeypot, rug pull, high-tax tokens. Luôn luôn DYOR — đây là công cụ hỗ trợ, không phải lời khuyên tài chính.</p>
+      <p class="mt-3 text-sm text-pencil/65 border-t-[2px] border-dashed border-pencil/10 pt-3" data-i18n="faq_a1">Model neural network huấn luyện trên 200+ token với F1 score ~81% (cross-validation). Phát hiện honeypot, rug pull, high-tax tokens. Luôn luôn DYOR — đây là công cụ hỗ trợ, không phải lời khuyên tài chính.</p>
     </details>
 
     <details class="group bg-white border-[3px] border-pencil shadow-sketch-sm wobbly-md p-5 cursor-pointer">
@@ -545,7 +558,7 @@ tailwind.config = {
         Có mất phí không?
         <span class="text-xl transition-transform group-open:rotate-180">▼</span>
       </summary>
-      <p class="mt-3 text-sm text-pencil/65 border-t-[2px] border-dashed border-pencil/10 pt-3">Hoàn toàn miễn phí. Dùng Honeypot.is API (free) + public RPC endpoints. Không cần đăng ký, không cần connect ví, không lưu data.</p>
+      <p class="mt-3 text-sm text-pencil/65 border-t-[2px] border-dashed border-pencil/10 pt-3" data-i18n="faq_a2">Hoàn toàn miễn phí. Dùng Honeypot.is API (free) + public RPC endpoints. Không cần đăng ký, không cần connect ví, không lưu data.</p>
     </details>
 
     <details class="group bg-white border-[3px] border-pencil shadow-sketch-sm wobbly-md p-5 cursor-pointer">
@@ -553,7 +566,7 @@ tailwind.config = {
         Approval Checker quét những gì?
         <span class="text-xl transition-transform group-open:rotate-180">▼</span>
       </summary>
-      <p class="mt-3 text-sm text-pencil/65 border-t-[2px] border-dashed border-pencil/10 pt-3">Quét allowance của các token phổ biến (USDT, USDC, ETH, WBTC...) với các DEX/router lớn (Uniswap, 0x, 1inch, PancakeSwap...). Phát hiện unlimited approval với spender lạ. Hiện tại quét khoảng 8-10 token × 8 spender mỗi chain.</p>
+      <p class="mt-3 text-sm text-pencil/65 border-t-[2px] border-dashed border-pencil/10 pt-3" data-i18n="faq_a3">Quét allowance của các token phổ biến (USDT, USDC, ETH, WBTC...) với các DEX/router lớn (Uniswap, 0x, 1inch, PancakeSwap...). Phát hiện unlimited approval với spender lạ. Hiện tại quét khoảng 8-10 token × 8 spender mỗi chain.</p>
     </details>
 
     <details class="group bg-white border-[3px] border-pencil shadow-sketch-sm wobbly-md p-5 cursor-pointer">
@@ -561,7 +574,7 @@ tailwind.config = {
         Có hỗ trợ Solana không?
         <span class="text-xl transition-transform group-open:rotate-180">▼</span>
       </summary>
-      <p class="mt-3 text-sm text-pencil/65 border-t-[2px] border-dashed border-pencil/10 pt-3">Chưa. Honeypot.is chỉ hỗ trợ EVM chains. Solana sẽ được thêm khi có API phù hợp.</p>
+      <p class="mt-3 text-sm text-pencil/65 border-t-[2px] border-dashed border-pencil/10 pt-3" data-i18n="faq_a4">Chưa. Honeypot.is chỉ hỗ trợ EVM chains. Solana sẽ được thêm khi có API phù hợp.</p>
     </details>
   </div>
 </section>
@@ -570,8 +583,8 @@ tailwind.config = {
 <section class="max-w-2xl mx-auto px-6 pb-20">
   <div class="bg-postit border-[3px] border-pencil shadow-sketch-lg wobbly-md p-6 text-center relative">
     <div class="tape" style="width: 70px;"></div>
-    <h3 class="font-heading text-2xl mb-2">🚀 Built on OpenGradient</h3>
-    <p class="text-sm text-pencil/70 mb-4">Model scam detection được host trên OpenGradient Model Hub — nền tảng AI phi tập trung. Mỗi lần inference kiếm $OPG cho creator.</p>
+    <h3 class="font-heading text-2xl mb-2" data-i18n="og_badge">🚀 Built on OpenGradient</h3>
+    <p class="text-sm text-pencil/70 mb-4"><span data-i18n="og_desc">Model scam detection được host trên OpenGradient Model Hub — nền tảng AI phi tập trung. Mỗi lần inference kiếm $OPG cho creator.</span></p>
     <a href="https://hub.opengradient.ai" target="_blank" rel="noopener"
       class="inline-block font-heading bg-white border-[3px] border-pencil shadow-sketch px-6 py-2 wobbly-sm btn-sketch hover:bg-bluepen hover:text-white transition-colors text-sm">
       Xem Model trên Hub →
@@ -589,7 +602,7 @@ tailwind.config = {
       <a href="https://honeypot.is" target="_blank" rel="noopener" class="hover:text-accent hover:line-through transition-colors">Honeypot.is</a>
     </div>
     <p class="text-xs text-pencil/40">
-      © 2026 Crypto Guardian. Không phải lời khuyên tài chính. DYOR. Built with ✦ by <a href="https://x.com/Leonis237" class="hover:text-accent transition-colors">@Leonis237</a>
+      <span data-i18n="footer_disclaimer">© 2026 Crypto Guardian. Không phải lời khuyên tài chính. DYOR.</span> <span data-i18n="footer_built">Built with ✦ by</span> <a href="https://x.com/Leonis237" class="hover:text-accent transition-colors">@Leonis237</a>
     </p>
   </div>
 </footer>
@@ -626,7 +639,7 @@ async function checkToken() {
   document.getElementById('redFlags').classList.add('hidden');
 
   if (!addr) {
-    showError('Vui lòng nhập địa chỉ contract token');
+    showError(t('err_no_addr'));
     return;
   }
 
@@ -652,7 +665,7 @@ async function checkToken() {
     const c = colors[data.verdict];
     banner.className = `border-[3px] shadow-sketch-sm wobbly p-5 text-center mb-4 ${c.bg} ${c.border}`;
     document.getElementById('verdictIcon').textContent = c.icon;
-    document.getElementById('verdictText').textContent = c.text;
+    document.getElementById('verdictText').textContent = t('verdict_' + data.verdict);
     document.getElementById('verdictText').className = `font-heading text-2xl ${c.textColor}`;
 
     // Score bar
@@ -681,7 +694,7 @@ async function checkToken() {
     document.getElementById('result').scrollIntoView({ behavior: 'smooth', block: 'center' });
 
   } catch (e) {
-    showError('Lỗi mạng. Vui lòng thử lại.');
+    showError(t('err_network'));
   } finally {
     document.getElementById('spinner').classList.add('hidden');
     document.getElementById('checkBtn').disabled = false;
@@ -702,7 +715,7 @@ async function checkApprovals() {
   document.getElementById('approvalError').classList.add('hidden');
 
   if (!wallet || !wallet.startsWith('0x') || wallet.length !== 42) {
-    document.getElementById('approvalError').textContent = 'Địa chỉ ví không hợp lệ (cần 0x + 40 ký tự hex)';
+    document.getElementById('approvalError').textContent = t('err_invalid_wallet');
     document.getElementById('approvalError').classList.remove('hidden');
     return;
   }
@@ -728,7 +741,7 @@ async function checkApprovals() {
     // Approval list
     const list = document.getElementById('approvalsList');
     if (data.approvals.length === 0) {
-      list.innerHTML = '<div class="bg-greenpen/10 border-[3px] border-greenpen rounded-xl p-5 text-center"><span class="font-heading text-xl text-greenpen">✅ Ví sạch!</span><p class="text-sm text-pencil/60 mt-1">Không phát hiện approval rủi ro nào.</p></div>';
+      list.innerHTML = '<div class="bg-greenpen/10 border-[3px] border-greenpen rounded-xl p-5 text-center"><span class="font-heading text-xl text-greenpen">' + t('approval_clean') + '</span><p class="text-sm text-pencil/60 mt-1">' + t('approval_clean_sub') + '</p></div>';
     } else {
       list.innerHTML = data.approvals.map(a => {
         const riskColors = a.risk === 'high' ? 'border-accent bg-accent/5' : (a.risk === 'medium' ? 'border-yellowpen bg-yellowpen/5' : 'border-greenpen/30 bg-greenpen/5');
@@ -741,11 +754,11 @@ async function checkApprovals() {
                 <span class="text-xs text-pencil/40 ml-2">→ ${a.spender}</span>
               </div>
               <span class="text-xs px-2 py-0.5 rounded-full font-heading ${riskBadge}">
-                ${a.risk === 'high' ? '⚠ Rủi ro cao' : (a.risk === 'medium' ? '⚡ Trung bình' : '✅ An toàn')}
+                ${a.risk === 'high' ? t('approval_risk_high') : (a.risk === 'medium' ? t('approval_risk_medium') : t('approval_risk_low'))}
               </span>
             </div>
             <div class="flex gap-4 text-xs text-pencil/50">
-              ${a.unlimited ? '<span class="text-accent font-heading">∞ Unlimited</span>' : '<span>Allowance: ' + a.allowance + '</span>'}
+              ${a.unlimited ? '<span class="text-accent font-heading">' + t('approval_unlimited') + '</span>' : '<span>Allowance: ' + a.allowance + '</span>'}
               <span>Spender: ${a.spender_address.slice(0,10)}...${a.spender_address.slice(-6)}</span>
             </div>
           </div>`;
@@ -756,7 +769,7 @@ async function checkApprovals() {
     document.getElementById('approvalResult').scrollIntoView({ behavior: 'smooth', block: 'center' });
 
   } catch (e) {
-    document.getElementById('approvalError').textContent = 'Lỗi mạng hoặc RPC không phản hồi. Thử lại sau.';
+    document.getElementById('approvalError').textContent = t('err_rpc');
     document.getElementById('approvalError').classList.remove('hidden');
   } finally {
     document.getElementById('approvalSpinner').classList.add('hidden');
