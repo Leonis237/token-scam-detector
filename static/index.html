@@ -200,6 +200,7 @@ tailwind.config = {
       <a href="#how" class="hover:text-accent transition-colors"><span data-i18n="nav_how">How</span></a>
       <a href="#faq" class="hover:text-accent transition-colors"><span data-i18n="nav_faq">FAQ</span></a>
       <a href="#ecosystem" class="hover:text-bluepen transition-colors text-bluepen font-heading">Minara</a>
+      <a href="#guides" class="hover:text-accent transition-colors font-heading">Guides</a>
     </div>
     <div class="hidden md:flex items-center gap-3">
       <a href="#scanner" class="font-heading text-sm bg-white border-[3px] border-pencil shadow-sketch px-4 py-1.5 wobbly-sm btn-sketch hover:bg-accent hover:text-white transition-colors" data-i18n="nav_cta">Scan now ✦</a>
@@ -664,6 +665,72 @@ tailwind.config = {
         Try Minara →
       </a>
       <p class="text-xs text-pencil/40 italic mt-2">→ Step 2: Trade the safe ones with AI</p>
+    </div>
+  </div>
+</section>
+
+<!-- ════════════════ GUIDES ════════════════ -->
+<section class="max-w-3xl mx-auto px-6 pb-20" id="guides">
+  <div class="text-center mb-8">
+    <span class="inline-block bg-postit border-[2px] border-pencil/30 shadow-sketch-sm px-4 py-1 wobbly-sm -rotate-1 font-heading text-sm mb-4">📚 Guides</span>
+    <h2 class="font-heading text-3xl md:text-4xl text-pencil mb-3">Install & Run Your Own AI Agent</h2>
+    <p class="text-pencil/60 text-sm max-w-lg mx-auto">Step-by-step guides to set up autonomous AI agents on your machine. Open-source, free, runs on any LLM.</p>
+  </div>
+
+  <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+    <!-- Hermes Agent card -->
+    <div class="bg-white border-[3px] border-pencil shadow-sketch-sm wobbly-md p-6 relative">
+      <div class="tape"></div>
+      <div class="flex items-center gap-2 mb-1">
+        <span class="text-2xl">🕊️</span>
+        <h3 class="font-heading text-xl">Hermes Agent</h3>
+        <span class="text-xs bg-greenpen/10 border-[2px] border-greenpen/20 text-greenpen px-2 py-0.5 rounded-full font-heading">⭐ Recommended</span>
+      </div>
+      <p class="text-xs text-pencil/40 mb-3">by Nous Research · Open-source (MIT)</p>
+
+      <p class="text-sm text-pencil/70 mb-3 leading-relaxed">Open-source AI agent that <strong>learns from experience</strong>. Self-improving skills, persistent memory across sessions, runs on Telegram/Discord/Slack/CLI. Works with <strong>18+ LLM providers</strong> (DeepSeek, OpenAI, Anthropic, local models).</p>
+
+      <div class="bg-muted/30 border-[2px] border-pencil/20 rounded-xl p-3 mb-3">
+        <p class="text-xs font-heading text-pencil/60 mb-1">🚀 Quick Install (Linux/macOS/WSL)</p>
+        <code class="text-xs bg-white border-[2px] border-pencil/20 px-2 py-1 rounded block font-mono break-all">curl -fsSL https://raw.githubusercontent.com/NousResearch/hermes-agent/main/scripts/install.sh | bash</code>
+      </div>
+
+      <div class="flex gap-2 flex-wrap mb-3">
+        <span class="text-xs bg-greenpen/10 border-[2px] border-greenpen/20 px-2 py-0.5 rounded-full">🧠 Self-learning</span>
+        <span class="text-xs bg-greenpen/10 border-[2px] border-greenpen/20 px-2 py-0.5 rounded-full">💬 Multi-platform</span>
+        <span class="text-xs bg-greenpen/10 border-[2px] border-greenpen/20 px-2 py-0.5 rounded-full">🔌 18+ providers</span>
+        <span class="text-xs bg-greenpen/10 border-[2px] border-greenpen/20 px-2 py-0.5 rounded-full">⏰ Cron jobs</span>
+      </div>
+
+      <p class="text-xs text-pencil/50 italic mb-2">💡 <strong>Our take:</strong> Best open-source agent we've used. Skills system means it gets better over time. Multi-platform gateway is killer for teams. Active development, great docs.</p>
+
+      <div class="flex gap-3">
+        <a href="https://hermes-agent.nousresearch.com/docs/" target="_blank" rel="noopener" class="font-heading text-sm bg-greenpen text-white border-[3px] border-greenpen shadow-sketch px-4 py-1.5 wobbly-sm hover:bg-greenpen/90 transition-colors">📖 Full Guide →</a>
+        <a href="https://github.com/NousResearch/hermes-agent" target="_blank" rel="noopener" class="font-heading text-sm bg-white border-[3px] border-pencil shadow-sketch px-4 py-1.5 wobbly-sm hover:bg-accent hover:text-white transition-colors">⭐ GitHub</a>
+      </div>
+    </div>
+
+    <!-- OpenClaw card -->
+    <div class="bg-white border-[3px] border-pencil shadow-sketch-sm wobbly-md p-6 relative">
+      <div class="tape"></div>
+      <div class="flex items-center gap-2 mb-1">
+        <span class="text-2xl">🦞</span>
+        <h3 class="font-heading text-xl">OpenClaw</h3>
+        <span class="text-xs bg-muted/50 border-[2px] border-pencil/20 text-pencil/50 px-2 py-0.5 rounded-full">Legacy</span>
+      </div>
+      <p class="text-xs text-pencil/40 mb-3">Original autonomous agent · Predecessor to Hermes</p>
+
+      <p class="text-sm text-pencil/70 mb-3 leading-relaxed">The OG open-source AI agent. <strong>Now succeeded by Hermes Agent</strong> — Hermes includes all OpenClaw features plus self-learning skills, persistent memory, multi-platform gateway, and 18+ providers.</p>
+
+      <div class="bg-yellowpen/10 border-[2px] border-yellowpen/30 rounded-xl p-3 mb-3">
+        <p class="text-xs font-heading text-pencil/60 mb-1">🔄 Migration to Hermes</p>
+        <code class="text-xs bg-white border-[2px] border-pencil/20 px-2 py-1 rounded block font-mono break-all">hermes claw migrate</code>
+        <p class="text-xs text-pencil/50 mt-1">Seamless migration — brings over your config, sessions, and tools.</p>
+      </div>
+
+      <div class="flex gap-3">
+        <a href="https://github.com/NousResearch/OpenClaw" target="_blank" rel="noopener" class="font-heading text-sm bg-white border-[3px] border-pencil shadow-sketch px-4 py-1.5 wobbly-sm hover:bg-accent hover:text-white transition-colors">🔧 GitHub (Archived) →</a>
+      </div>
     </div>
   </div>
 </section>
