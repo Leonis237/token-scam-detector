@@ -301,8 +301,37 @@ def api_approvals():
 
     chain_name = CHAIN_NAMES.get(chain_id, chain_id)
 
-    # Step 1: Query Approval event logs from the last 1M blocks (~6 months on ETH)
-    approval_pairs = query_approval_logs(chain_id, wallet)
+    # Step 1: Query recent Approval logs (200K blocks)
+    approval_pairs = query_approval_logs(chain_id, wallet, max_blocks=200000)
+
+    # Step 2: Also check popular tokens against common spenders (catches old approvals)
+    popular_tokens = [
+        "0xdac17f958d2ee523a2206206994597c13d831ec7",  # USDT
+        "0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48",  # USDC
+        "0xc02aaa39b223fe8d0a0e5c4f27ead9083c756cc2",  # WETH
+        "0x2260fac5e5542a773aa44fbcfedf7c193bc2c599",  # WBTC
+        "0x6b175474e89094c44da98b954eedeac495271d0f",  # DAI
+        "0x6982508145454ce325ddbe47a25d4ec3d2311933b",  # PEPE
+        "0x95ad61b0a150d79219dcf64e1e6cc01f0b64c4ce",  # SHIB
+        "0x514910771af9ca656af840dff83e8264ecf986ca",  # LINK
+        "0x1f9840a85d5af5bf1d1762f925bdaddc4201f984",  # UNI
+    ]
+    common_spenders = [
+        "0xdef1c0ded9bec7f1a1670819833240f027b25eff",  # 0x Protocol
+        "0x1111111254fb6c44bac0bed2854e76f90643097d",  # 1inch
+        "0x3fc91a3afd70395cd496c647d5a6cc9d4b2b7fad",  # Uniswap Universal
+        "0x7a250d5630b4cf539739df2c5dacb4c659f2488d",  # Uniswap V2
+        "0x68b3465833fb72a70ecdf485e0e4c7bd8665fc45",  # Uniswap V3
+    ]
+
+    seen_pairs = set((t.lower(), s.lower()) for t, s in approval_pairs)
+    for token_addr in popular_tokens:
+        for spender_addr in common_spenders:
+            pair = (token_addr.lower(), spender_addr.lower())
+            if pair in seen_pairs:
+                continue
+            seen_pairs.add(pair)
+            approval_pairs.append((token_addr, spender_addr))
 
     # Step 2: Check current allowance for each (token, spender) pair
     approvals = []
