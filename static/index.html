@@ -254,9 +254,18 @@ tailwind.config = {
       </div>
     </div>
 
-    <a href="#scanner" class="inline-block font-heading text-lg bg-white border-[3px] border-pencil shadow-sketch-lg px-8 py-3 wobbly btn-sketch hover:bg-accent hover:text-white transition-colors">
-      <span data-i18n="hero_cta">Bắt đầu quét ngay →</span>
-    </a>
+    <!-- Unified Search -->
+    <div class="max-w-xl mx-auto mt-4">
+      <div class="flex items-center gap-2 bg-white border-[3px] border-pencil shadow-sketch-lg rounded-full overflow-hidden px-2 py-1.5">
+        <input type="text" id="heroSearch"
+          class="flex-1 border-none outline-none bg-transparent px-4 py-2 font-body text-lg text-pencil placeholder-pencil/30"
+          placeholder="Dán địa chỉ token hoặc ví...">
+        <button onclick="heroSearch()"
+          class="font-heading bg-accent text-white border-[2px] border-pencil shadow-sketch-sm px-6 py-2 rounded-full btn-sketch hover:bg-pencil transition-colors whitespace-nowrap">
+          <span data-i18n="hero_cta">Quét ngay →</span>
+        </button>
+      </div>
+    </div>
   </div>
 </section>
 
@@ -528,6 +537,19 @@ tailwind.config = {
   </div>
 </section>
 
+
+<!-- ════════════════ SCAM ALERTS ════════════════ -->
+<section class="max-w-3xl mx-auto px-6 pb-20" id="alerts">
+  <div class="text-center mb-8">
+    <span class="inline-block bg-postit border-[2px] border-pencil/30 shadow-sketch-sm px-4 py-1 wobbly-sm -rotate-1 font-heading text-sm mb-4" data-i18n="alerts_badge">🚨 Cảnh báo</span>
+    <h2 class="font-heading text-4xl text-pencil" data-i18n="alerts_title">Scam Alerts Mới Nhất</h2>
+  </div>
+  <div id="alertsList" class="space-y-3">
+    <div class="text-center py-4 text-pencil/40 font-body">Đang tải...</div>
+  </div>
+  <p class="text-xs text-pencil/30 text-center mt-4" data-i18n="alerts_source">Nguồn: Rekt.news — cập nhật tự động</p>
+</section>
+
 <!-- ════════════════ HOW IT WORKS ════════════════ -->
 <section class="max-w-3xl mx-auto px-6 pb-20" id="how">
   <div class="text-center mb-10">
@@ -618,7 +640,7 @@ tailwind.config = {
 <section class="max-w-2xl mx-auto px-6 pb-20">
   <div class="bg-postit border-[3px] border-pencil shadow-sketch-lg wobbly-md p-6 text-center relative">
     <div class="tape" style="width: 70px;"></div>
-    <h3 class="font-heading text-2xl mb-2" data-i18n="og_badge">🚀 Built on OpenGradient</h3>
+    <h3 class="font-heading text-2xl mb-2" data-i18n="og_badge">📋 Model on OpenGradient</h3>
     <p class="text-sm text-pencil/70 mb-4"><span data-i18n="og_desc">Model scam detection được host trên OpenGradient Model Hub — nền tảng AI phi tập trung. Mỗi lần inference kiếm $OPG cho creator.</span></p>
     <a href="https://hub.opengradient.ai" target="_blank" rel="noopener"
       class="inline-block font-heading bg-white border-[3px] border-pencil shadow-sketch px-6 py-2 wobbly-sm btn-sketch hover:bg-bluepen hover:text-white transition-colors text-sm">
@@ -871,10 +893,108 @@ async function checkEIP7702() {
   }
 }
 
+// ── Unified Hero Search ──
+async function heroSearch() {
+  const query = document.getElementById('heroSearch').value.trim();
+  if (!query || !query.startsWith('0x')) return;
+
+  // Auto-detect: wallet has no contract code → likely EOA → check approvals
+  // Simple heuristic: if 42 chars (0x + 40 hex), try token scam first, fallback to wallet
+  if (query.length === 42) {
+    // Try token scam check
+    document.getElementById('address').value = query;
+    switchTab('scam');
+    await checkToken();
+
+    // Also try wallet approvals in background
+    document.getElementById('walletAddr').value = query;
+    setTimeout(() => {
+      switchTab('approval');
+      checkApprovals();
+    }, 2000);
+  } else {
+    showError('Địa chỉ không hợp lệ (cần 0x + 40 ký tự)');
+  }
+}
+
+// ── Scam Type Tags ──
+function showScamTypes(types) {
+  const container = document.getElementById('scamTypes');
+  if (!types || types.length === 0) {
+    container.classList.add('hidden');
+    return;
+  }
+  container.classList.remove('hidden');
+  const tagLabels = {
+    'honeypot': '🐍 Honeypot',
+    'high-tax': '💸 Thuế cao',
+    'closed-source': '🔒 Closed source',
+    'proxy': '🔄 Proxy',
+    'new-token': '🆕 Token mới'
+  };
+  container.innerHTML = types.map(t =>
+    '<span class="bg-accent/10 border-[2px] border-accent/30 text-accent text-xs px-3 py-0.5 rounded-full font-heading">' + (tagLabels[t] || t) + '</span>'
+  ).join('');
+}
+
+// ── Scam Alerts Feed ──
+async function loadAlerts() {
+  try {
+    const resp = await fetch('/api/alerts');
+    const data = await resp.json();
+    const container = document.getElementById('alertsList');
+    if (!data.alerts || data.alerts.length === 0) {
+      container.innerHTML = '<div class="text-center py-4 text-pencil/40">No recent alerts</div>';
+      return;
+    }
+    container.innerHTML = data.alerts.map(a => {
+      const dateStr = a.date ? new Date(a.date).toLocaleDateString('vi-VN') : '';
+      return '<a href="' + a.url + '" target="_blank" rel="noopener" class="block bg-white border-[3px] border-pencil shadow-sketch-sm wobbly-md p-4 card-hover hover:border-accent transition-colors">'
+        + '<div class="flex justify-between items-start gap-2">'
+        + '<span class="font-heading text-lg truncate">' + a.title + '</span>'
+        + '<span class="text-xs text-pencil/40 whitespace-nowrap">' + dateStr + '</span>'
+        + '</div>'
+        + '<p class="text-xs text-pencil/50 mt-1 line-clamp-2">' + (a.description || '') + '</p>'
+        + '</a>';
+    }).join('');
+  } catch(e) {
+    document.getElementById('alertsList').innerHTML = '<div class="text-center py-4 text-pencil/40">Alerts unavailable</div>';
+  }
+}
+
+// Load alerts on page load
+document.addEventListener('DOMContentLoaded', () => {
+  setTimeout(loadAlerts, 500);
+});
+
+// Patch checkToken to show scam types
+const origCheckToken = checkToken;
+checkToken = async function() {
+  await origCheckToken();
+  // The result is already rendered; we need to hook into the response
+  // We'll use a proxy fetch
+};
+
+// Override the checkToken to also show scam types
+const origFetch = window.fetch;
+window.fetch = async function(...args) {
+  const resp = await origFetch.apply(this, args);
+  if (args[0] && args[0].includes('/api/check')) {
+    const cloned = resp.clone();
+    cloned.json().then(data => {
+      if (data.scam_types) {
+        showScamTypes(data.scam_types);
+      }
+    }).catch(() => {});
+  }
+  return resp;
+};
+
 // ── Enter key triggers ──
 document.getElementById('address').addEventListener('keydown', e => { if (e.key === 'Enter') checkToken(); });
 document.getElementById('walletAddr').addEventListener('keydown', e => { if (e.key === 'Enter') checkApprovals(); });
 document.getElementById('eip7702Wallet').addEventListener('keydown', e => { if (e.key === 'Enter') checkEIP7702(); });
+document.getElementById('heroSearch').addEventListener('keydown', e => { if (e.key === 'Enter') heroSearch(); });
 </script>
 </body>
 </html>

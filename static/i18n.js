@@ -99,9 +99,9 @@ const I18N = {
     faq_q4: "Có hỗ trợ Solana không?",
     faq_a4: "Chưa. Honeypot.is chỉ hỗ trợ EVM chains. Solana sẽ được thêm khi có API phù hợp.",
 
-    og_badge: "🚀 Built on OpenGradient",
-    og_desc: "Model scam detection được host trên OpenGradient Model Hub — nền tảng AI phi tập trung. Mỗi lần inference kiếm $OPG cho creator.",
-    og_link: "Xem Model trên Hub →",
+    og_badge: "📋 Model on OpenGradient",
+    og_desc: "Model được liệt kê trên OpenGradient Model Hub — kiếm $OPG khi người khác sử dụng model trên mạng lưới.",
+    og_link: "Xem trên Hub →",
 
     footer_built: "Built with ✦ by",
     footer_disclaimer: "© 2026 Crypto Guardian. Không phải lời khuyên tài chính. DYOR.",
@@ -121,6 +121,9 @@ const I18N = {
     eip7702_found_sub: "chain có EIP-7702 delegation đang hoạt động.",
     eip7702_clean_short: "Sạch",
     eip7702_delegated_short: "Có delegation",
+    alerts_badge: "🚨 Cảnh báo",
+    alerts_title: "Scam Alerts Mới Nhất",
+    alerts_source: "Nguồn: Rekt.news — cập nhật tự động",
   },
 
   en: {
@@ -222,9 +225,9 @@ const I18N = {
     faq_q4: "Does it support Solana?",
     faq_a4: "Not yet. Honeypot.is only supports EVM chains. Solana will be added when suitable APIs become available.",
 
-    og_badge: "🚀 Built on OpenGradient",
-    og_desc: "The scam detection model is hosted on OpenGradient Model Hub — a decentralized AI platform. Model creators earn $OPG from every inference.",
-    og_link: "View Model on Hub →",
+    og_badge: "📋 Model on OpenGradient",
+    og_desc: "Model listed on OpenGradient Model Hub — earn $OPG when others use it on the network.",
+    og_link: "View on Hub →",
 
     footer_built: "Built with ✦ by",
     footer_disclaimer: "© 2026 Crypto Guardian. Not financial advice. DYOR.",
@@ -248,6 +251,9 @@ const I18N = {
     eip7702_found_sub: "chains have active EIP-7702 delegations.",
     eip7702_clean_short: "Clean",
     eip7702_delegated_short: "Delegated",
+    alerts_badge: "🚨 Alerts",
+    alerts_title: "Latest Scam Alerts",
+    alerts_source: "Source: Rekt.news — auto-updated",
   },
 
   zh: {
@@ -350,8 +356,8 @@ const I18N = {
     faq_a4: "暂不支持。Honeypot.is 仅支持 EVM 链。待有合适的 API 后添加 Solana。",
 
     og_badge: "🚀 基于 OpenGradient",
-    og_desc: "骗局检测模型托管在 OpenGradient Model Hub — 去中心化 AI 平台。模型创建者从每次推理中赚取 $OPG。",
-    og_link: "在 Hub 上查看模型 →",
+    og_desc: "模型列在 OpenGradient Model Hub 上 — 当其他人在网络上使用模型时赚取 $OPG。",
+    og_link: "在 Hub 上查看 →",
 
     footer_built: "由 ✦ 构建",
     footer_disclaimer: "© 2026 Crypto Guardian。非财务建议。DYOR。",
@@ -375,6 +381,9 @@ const I18N = {
     eip7702_found_sub: "条链有活跃的 EIP-7702 委托。",
     eip7702_clean_short: "干净",
     eip7702_delegated_short: "已委托",
+    alerts_badge: "🚨 警报",
+    alerts_title: "最新骗局警报",
+    alerts_source: "来源: Rekt.news — 自动更新",
   },
 
   ko: {
@@ -477,8 +486,8 @@ const I18N = {
     faq_a4: "아직 아닙니다. Honeypot.is는 EVM 체인만 지원합니다. 적절한 API가 제공되면 솔라나를 추가할 예정입니다.",
 
     og_badge: "🚀 OpenGradient 기반",
-    og_desc: "사기 감지 모델이 OpenGradient Model Hub에 호스팅되어 있습니다 — 탈중앙화 AI 플랫폼. 모델 제작자는 모든 추론에서 $OPG를 얻습니다.",
-    og_link: "Hub에서 모델 보기 →",
+    og_desc: "모델이 OpenGradient Model Hub에 등록되어 있습니다 — 다른 사람이 네트워크에서 사용할 때 $OPG를 얻습니다.",
+    og_link: "Hub에서 보기 →",
 
     footer_built: "✦ 제작:",
     footer_disclaimer: "© 2026 Crypto Guardian. 재정적 조언이 아닙니다. DYOR.",

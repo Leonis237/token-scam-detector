@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """Leonis Guardian — Token Scam Detector + Approval Checker + EIP-7702 Checker."""
-import json, time, pickle, urllib.request, os
+import json, time, pickle, urllib.request, os, re, xml.etree.ElementTree as ET
 import numpy as np
 import onnxruntime as ort
 from pathlib import Path
@@ -253,14 +253,19 @@ def api_check():
     verdict = "scam" if prob > 0.7 else ("suspicious" if prob > 0.4 else "safe")
 
     red_flags = []
+    scam_types = []
     if features[1] > 0.5:
         red_flags.append("HONEYPOT — buy OK, sell blocked")
+        scam_types.append("honeypot")
     if features[3] > 15:
         red_flags.append(f"High sell tax: {features[3]:.0f}%")
+        scam_types.append("high-tax")
     if features[5] < 0.5:
         red_flags.append("Contract NOT verified (closed source)")
+        scam_types.append("closed-source")
     if features[6] > 0.5:
         red_flags.append("Proxy — owner can upgrade logic")
+        scam_types.append("proxy")
     if features[8] > 50:
         red_flags.append(f"{int(features[8])} failed sell txs")
     if features[9] > 0:
@@ -269,6 +274,7 @@ def api_check():
         red_flags.append(f"{int(features[12])} security flags")
     if features[18] < 7:
         red_flags.append(f"Very new: {features[18]:.0f} days")
+        scam_types.append("new-token")
 
     return jsonify({
         "address": addr,
@@ -284,6 +290,7 @@ def api_check():
         "verdict": verdict,
         "score": round(prob * 100, 1),
         "red_flags": red_flags,
+        "scam_types": scam_types,
         "honeypot_url": f"https://honeypot.is/{chain_name}?address={addr}",
     })
 
@@ -454,6 +461,34 @@ def api_eip7702():
         "delegations_found": delegations_found,
         "chains": results,
     })
+
+
+@app.route("/api/alerts")
+def api_alerts():
+    """Return recent crypto scam alerts from Rekt.news RSS."""
+    try:
+        req = urllib.request.Request("https://rekt.news/feed")
+        req.add_header("User-Agent", "LeonisGuardian/1.0")
+        with urllib.request.urlopen(req, timeout=10) as resp:
+            root = ET.fromstring(resp.read().decode("utf-8"))
+    except Exception:
+        return jsonify({"alerts": [], "error": "RSS unavailable"})
+
+    ns = {"atom": "http://www.w3.org/2005/Atom"}
+    alerts = []
+    for entry in root.findall(".//item")[:6]:
+        title = entry.find("title")
+        link = entry.find("link")
+        desc = entry.find("description")
+        date = entry.find("pubDate")
+        alerts.append({
+            "title": title.text.strip() if title is not None and title.text else "?",
+            "url": link.text.strip() if link is not None and link.text else "#",
+            "description": (desc.text or "")[:200] if desc is not None else "",
+            "date": date.text if date is not None else "",
+        })
+
+    return jsonify({"alerts": alerts, "source": "Rekt.news"})
 
 
 if __name__ == "__main__":
