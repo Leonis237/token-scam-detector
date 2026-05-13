@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Crypto Guardian — Token Scam Detector + Approval Checker."""
+"""Leonis Guardian — Token Scam Detector + Approval Checker + EIP-7702 Checker."""
 import json, time, pickle, urllib.request, os
 import numpy as np
 import onnxruntime as ort
@@ -12,66 +12,33 @@ DIR = Path(__file__).parent
 CHAIN_NAMES = {"1": "eth", "56": "bsc", "8453": "base", "42161": "arbitrum", "137": "polygon"}
 LOG_TRANSFORM_COLS = [8, 9, 17]
 
-# RPC endpoints for allowance checks
+# RPC endpoints
 RPC_URLS = {
-    "1": "https://eth.llamarpc.com",
-    "56": "https://binance.llamarpc.com",
-    "8453": "https://base.llamarpc.com",
-    "42161": "https://arbitrum.llamarpc.com",
-    "137": "https://polygon.llamarpc.com",
+    "1": "https://ethereum-rpc.publicnode.com",
+    "56": "https://bsc-rpc.publicnode.com",
+    "8453": "https://base-rpc.publicnode.com",
+    "42161": "https://arbitrum-one-rpc.publicnode.com",
+    "137": "https://polygon-bor-rpc.publicnode.com",
 }
 
-# Known DEX/spender contracts to check allowances against
+# Approval event signature: keccak256("Approval(address,address,uint256)")
+APPROVAL_TOPIC = "0x8c5be1e5ebec7d5bd14f71427d1e84f3dd0314c0f7b2291e5b200ac8c7c3b925"
+
+# Known DEX/spender contracts for labeling
 KNOWN_SPENDERS = {
-    "1": [
-        ("0xdef1c0ded9bec7f1a1670819833240f027b25eff", "0x Protocol"),
-        ("0x1111111254fb6c44bac0bed2854e76f90643097d", "1inch Router v4"),
-        ("0x3fc91a3afd70395cd496c647d5a6cc9d4b2b7fad", "Uniswap Universal Router"),
-        ("0x881d40237659c251811cec9c364ef91dc08d300c", "Metamask Swap"),
-        ("0x7a250d5630b4cf539739df2c5dacb4c659f2488d", "Uniswap V2 Router"),
-        ("0x68b3465833fb72a70ecdf485e0e4c7bd8665fc45", "Uniswap V3 Router"),
-        ("0x6131b5fae19ea4f9d964eac0408e4408b66337b5", "KyberSwap"),
-        ("0x216b4b4ba9f3e719726886d34a177484278bfcae", "Paraswap"),
-    ],
-    "56": [
-        ("0x10ed43c718714eb63d5aa57b78b54704e256024e", "PancakeSwap Router"),
-        ("0x13f4ea83d0bd40e75c8222255bc855a974568dd4", "PancakeSwap V3"),
-        ("0xdef1c0ded9bec7f1a1670819833240f027b25eff", "0x Protocol"),
-        ("0x1111111254fb6c44bac0bed2854e76f90643097d", "1inch Router"),
-    ],
-    "8453": [
-        ("0xdef1c0ded9bec7f1a1670819833240f027b25eff", "0x Protocol"),
-        ("0x3fc91a3afd70395cd496c647d5a6cc9d4b2b7fad", "Uniswap Universal Router"),
-    ],
-    "42161": [
-        ("0xdef1c0ded9bec7f1a1670819833240f027b25eff", "0x Protocol"),
-        ("0x3fc91a3afd70395cd496c647d5a6cc9d4b2b7fad", "Uniswap Universal Router"),
-    ],
-    "137": [
-        ("0xdef1c0ded9bec7f1a1670819833240f027b25eff", "0x Protocol"),
-        ("0xa5e0829caced8ffdd4de3c43696c57f7d7a678ff", "QuickSwap Router"),
-    ],
-}
-
-# Common tokens per chain (top by TVL)
-COMMON_TOKENS = {
-    "1": [
-        ("0xdac17f958d2ee523a2206206994597c13d831ec7", "USDT"),
-        ("0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48", "USDC"),
-        ("0xc02aaa39b223fe8d0a0e5c4f27ead9083c756cc2", "WETH"),
-        ("0x2260fac5e5542a773aa44fbcfedf7c193bc2c599", "WBTC"),
-        ("0x6b175474e89094c44da98b954eedeac495271d0f", "DAI"),
-        ("0x95ad61b0a150d79219dcf64e1e6cc01f0b64c4ce", "SHIB"),
-        ("0x7d1afa7b718fb893db30a3abc0cfc608aacfebb0", "MATIC"),
-        ("0x514910771af9ca656af840dff83e8264ecf986ca", "LINK"),
-    ],
-    "56": [
-        ("0x55d398326f99059ff775485246999027b3197955", "USDT"),
-        ("0x8ac76a51cc950d9822d68b83fe1ad97b32cd580d", "USDC"),
-        ("0xbb4cdb9cbd36b01bd1cbaebf2de08d9173bc095c", "WBNB"),
-        ("0x0e09fabb73bd3ade0a17ecc321fd13a19e81ce82", "CAKE"),
-        ("0x2170ed0880ac9a755fd29b2688956bd959f933f8", "ETH"),
-    ],
+    "0xdef1c0ded9bec7f1a1670819833240f027b25eff": "0x Protocol",
+    "0x1111111254fb6c44bac0bed2854e76f90643097d": "1inch Router",
+    "0x3fc91a3afd70395cd496c647d5a6cc9d4b2b7fad": "Uniswap Universal Router",
+    "0x881d40237659c251811cec9c364ef91dc08d300c": "Metamask Swap",
+    "0x7a250d5630b4cf539739df2c5dacb4c659f2488d": "Uniswap V2 Router",
+    "0x68b3465833fb72a70ecdf485e0e4c7bd8665fc45": "Uniswap V3 Router",
+    "0x6131b5fae19ea4f9d964eac0408e4408b66337b5": "KyberSwap",
+    "0x216b4b4ba9f3e719726886d34a177484278bfcae": "Paraswap",
+    "0x10ed43c718714eb63d5aa57b78b54704e256024e": "PancakeSwap Router",
+    "0x13f4ea83d0bd40e75c8222255bc855a974568dd4": "PancakeSwap V3",
+    "0xa5e0829caced8ffdd4de3c43696c57f7d7a678ff": "QuickSwap Router",
+    "0x1b02da8cb0d097eb8d57a175b88c7d8b47997506": "SushiSwap Router",
+    "0xe592427a0aece92de3edee1f18e0157c05861564": "Uniswap V3 Router 2",
 }
 
 MODEL_PATH = DIR / "scam_detector_v3.onnx"
@@ -85,26 +52,96 @@ else:
 
 
 def rpc_call(chain_id, method, params):
-    """Make a JSON-RPC call to a public RPC endpoint."""
     url = RPC_URLS.get(chain_id)
     if not url:
         return None
     data = json.dumps({"jsonrpc": "2.0", "id": 1, "method": method, "params": params}).encode()
-    req = urllib.request.Request(url, data=data, headers={"Content-Type": "application/json"})
+    req = urllib.request.Request(url, data=data, headers={
+        "Content-Type": "application/json",
+        "User-Agent": "LeonisGuardian/1.0"
+    })
     try:
-        with urllib.request.urlopen(req, timeout=10) as resp:
+        with urllib.request.urlopen(req, timeout=15) as resp:
             return json.loads(resp.read().decode())
     except Exception:
         return None
 
 
+def get_token_info(chain_id, token_addr):
+    """Get token name and symbol via eth_call."""
+    # name()
+    name_data = "0x06fdde03"
+    name_result = rpc_call(chain_id, "eth_call", [{"to": token_addr, "data": name_data}, "latest"])
+    name = "?"
+    if name_result and "result" in name_result:
+        try:
+            decoded = bytes.fromhex(name_result["result"][2:]).decode("utf-8", errors="ignore").strip("\x00")
+            if decoded:
+                name = decoded[:32]
+        except Exception:
+            pass
+
+    # symbol()
+    sym_data = "0x95d89b41"
+    sym_result = rpc_call(chain_id, "eth_call", [{"to": token_addr, "data": sym_data}, "latest"])
+    symbol = "?"
+    if sym_result and "result" in sym_result:
+        try:
+            decoded = bytes.fromhex(sym_result["result"][2:]).decode("utf-8", errors="ignore").strip("\x00")
+            if decoded:
+                symbol = decoded[:16]
+        except Exception:
+            pass
+
+    return name, symbol
+
+
+def query_approval_logs(chain_id, wallet, blocks=50000):
+    """Query Approval event logs for a wallet address."""
+    block_result = rpc_call(chain_id, "eth_blockNumber", [])
+    if not block_result or "result" not in block_result:
+        return []
+    latest = int(block_result["result"], 16)
+    from_block = max(0, latest - blocks)
+
+    # wallet as indexed topic (left-padded to 32 bytes)
+    owner_topic = "0x" + wallet[2:].lower().rjust(64, "0")
+
+    result = rpc_call(chain_id, "eth_getLogs", [{
+        "fromBlock": hex(from_block),
+        "toBlock": hex(latest),
+        "topics": [APPROVAL_TOPIC, owner_topic],
+    }])
+
+    if not result or "result" not in result:
+        return []
+
+    logs = result["result"]
+    approvals = []
+    seen = set()
+
+    for log in logs:
+        token = log["address"]
+        # topic[2] = spender (indexed), topic[3] = value (indexed)
+        if len(log.get("topics", [])) >= 3:
+            spender = "0x" + log["topics"][2][26:]  # last 20 bytes
+        else:
+            continue
+
+        pair = (token.lower(), spender.lower())
+        if pair in seen:
+            continue
+        seen.add(pair)
+
+        approvals.append((token, spender))
+
+    return approvals
+
+
 def check_allowance(chain_id, token_addr, wallet, spender):
     """Check ERC20 allowance via eth_call."""
-    # allowance(address owner, address spender) → 0xdd62ed3e
     data = "0xdd62ed3e" + wallet[2:].lower().rjust(64, "0") + spender[2:].lower().rjust(64, "0")
-    result = rpc_call(chain_id, "eth_call", [
-        {"to": token_addr, "data": data}, "latest"
-    ])
+    result = rpc_call(chain_id, "eth_call", [{"to": token_addr, "data": data}, "latest"])
     if result and "result" in result and result["result"]:
         return int(result["result"], 16)
     return 0
@@ -113,7 +150,7 @@ def check_allowance(chain_id, token_addr, wallet, spender):
 def query_honeypot(addr, chain_id):
     url = f"https://api.honeypot.is/v2/IsHoneypot?address={addr}&chainID={chain_id}"
     req = urllib.request.Request(url)
-    req.add_header("User-Agent", "CryptoGuardian/1.0")
+    req.add_header("User-Agent", "LeonisGuardian/1.0")
     try:
         with urllib.request.urlopen(req, timeout=15) as resp:
             return json.loads(resp.read().decode())
@@ -256,50 +293,57 @@ def api_approvals():
         return jsonify({"error": "Invalid wallet address"}), 400
 
     if chain_id not in RPC_URLS:
-        return jsonify({"error": f"Chain {chain_id} not supported for approval checks"}), 400
+        return jsonify({"error": f"Chain {chain_id} not supported"}), 400
 
     chain_name = CHAIN_NAMES.get(chain_id, chain_id)
-    spenders = KNOWN_SPENDERS.get(chain_id, [])
-    tokens = COMMON_TOKENS.get(chain_id, [])
 
+    # Step 1: Query Approval event logs from the last 50K blocks
+    approval_pairs = query_approval_logs(chain_id, wallet)
+
+    # Step 2: Check current allowance for each (token, spender) pair
     approvals = []
     total_active = 0
     high_risk = 0
     unlimited_count = 0
 
-    for token_addr, token_symbol in tokens:
-        for spender_addr, spender_name in spenders:
-            try:
-                allowance = check_allowance(chain_id, token_addr, wallet, spender_addr)
-            except Exception:
-                continue
+    for token_addr, spender_addr in approval_pairs:
+        try:
+            allowance = check_allowance(chain_id, token_addr, wallet, spender_addr)
+        except Exception:
+            continue
 
-            if allowance is None or allowance == 0:
-                continue
+        if allowance == 0:
+            continue
 
-            total_active += 1
-            is_unlimited = allowance > 10**30  # practically unlimited
-            if is_unlimited:
-                unlimited_count += 1
+        total_active += 1
+        is_unlimited = allowance > 10**30
 
-            risk = "low"
-            if is_unlimited:
-                risk = "high"
-            elif allowance > 10**20:
-                risk = "medium"
+        if is_unlimited:
+            unlimited_count += 1
 
-            if risk == "high":
-                high_risk += 1
+        risk = "high" if is_unlimited else "low"
 
-            approvals.append({
-                "token": token_symbol,
-                "token_address": token_addr,
-                "spender": spender_name,
-                "spender_address": spender_addr,
-                "allowance": str(allowance),
-                "unlimited": is_unlimited,
-                "risk": risk,
-            })
+        if risk == "high":
+            high_risk += 1
+
+        spender_name = KNOWN_SPENDERS.get(spender_addr.lower(), "Unknown Contract")
+        token_name, token_symbol = get_token_info(chain_id, token_addr)
+        if token_name == "?":
+            token_name = token_symbol if token_symbol != "?" else token_addr[:10] + "..."
+
+        approvals.append({
+            "token": token_name,
+            "token_symbol": token_symbol,
+            "token_address": token_addr,
+            "spender": spender_name,
+            "spender_address": spender_addr,
+            "allowance": str(allowance),
+            "unlimited": is_unlimited,
+            "risk": risk,
+        })
+
+    # Sort: high risk first, then by token name
+    approvals.sort(key=lambda a: (0 if a["risk"] == "high" else 1, a["token"]))
 
     return jsonify({
         "wallet": wallet,
@@ -309,9 +353,73 @@ def api_approvals():
         "high_risk": high_risk,
         "unlimited": unlimited_count,
         "approvals": approvals,
-        "scanned_tokens": len(tokens),
-        "scanned_spenders": len(spenders),
-        "note": "Scanning top tokens + known DEX contracts. Limited to {} tokens and {} spenders.".format(len(tokens), len(spenders)),
+        "scanned_logs": len(approval_pairs),
+        "method": "on-chain eth_getLogs + eth_call",
+    })
+
+
+@app.route("/api/eip7702")
+def api_eip7702():
+    wallet = request.args.get("wallet", "").strip()
+
+    if not wallet or not wallet.startswith("0x") or len(wallet) != 42:
+        return jsonify({"error": "Invalid wallet address"}), 400
+
+    results = []
+    total_scanned = 0
+    delegations_found = 0
+
+    for chain_id, chain_name in CHAIN_NAMES.items():
+        total_scanned += 1
+        try:
+            code_result = rpc_call(chain_id, "eth_getCode", [wallet, "latest"])
+        except Exception:
+            results.append({
+                "chain": chain_name,
+                "chain_id": chain_id,
+                "status": "error",
+                "delegated": False,
+                "code": None,
+            })
+            continue
+
+        if not code_result or "result" not in code_result:
+            results.append({
+                "chain": chain_name,
+                "chain_id": chain_id,
+                "status": "error",
+                "delegated": False,
+                "code": None,
+            })
+            continue
+
+        code = code_result["result"]
+        is_delegated = code != "0x" and len(code) > 2
+
+        if is_delegated:
+            delegations_found += 1
+            delegated_to = None
+            if code.startswith("0xef01"):
+                # EIP-7702 delegation: 0xef01 + 20-byte address
+                try:
+                    delegated_to = "0x" + code[6:46]
+                except Exception:
+                    pass
+
+        results.append({
+            "chain": chain_name,
+            "chain_id": chain_id,
+            "status": "clean" if not is_delegated else "delegated",
+            "delegated": is_delegated,
+            "code": code if is_delegated else None,
+            "delegated_to": delegated_to if is_delegated else None,
+        })
+
+    return jsonify({
+        "wallet": wallet,
+        "total_scanned": total_scanned,
+        "delegations_found": delegations_found,
+        "chains": results,
     })
 
 

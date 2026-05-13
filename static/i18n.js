@@ -110,6 +110,17 @@ const I18N = {
     err_network: "Lỗi mạng. Vui lòng thử lại.",
     err_invalid_wallet: "Địa chỉ ví không hợp lệ (cần 0x + 40 ký tự hex)",
     err_rpc: "Lỗi mạng hoặc RPC không phản hồi. Thử lại sau.",
+
+    tab_eip7702: "🔐 EIP-7702 Checker",
+    eip7702_desc: "EIP-7702 cho phép ví EOA ủy quyền thực thi giao dịch cho smart contract. Kiểm tra ví của bạn có đang bị ủy quyền không — phát hiện sớm để ngăn chặn rủi ro.",
+    eip7702_label_addr: "Địa chỉ ví cần kiểm tra",
+    eip7702_btn: "🔐 Kiểm tra EIP-7702",
+    eip7702_clean: "✅ Ví sạch!",
+    eip7702_clean_sub: "Không phát hiện EIP-7702 delegation trên tất cả chain.",
+    eip7702_found: "🚨 Phát hiện delegation!",
+    eip7702_found_sub: "chain có EIP-7702 delegation đang hoạt động.",
+    eip7702_clean_short: "Sạch",
+    eip7702_delegated_short: "Có delegation",
   },
 
   en: {
@@ -221,7 +232,22 @@ const I18N = {
     err_no_addr: "Please enter a contract address",
     err_network: "Network error. Please try again.",
     err_invalid_wallet: "Invalid wallet address (needs 0x + 40 hex chars)",
+    
+    err_no_addr: "Please enter a contract address",
+    err_network: "Network error. Please try again.",
+    err_invalid_wallet: "Invalid wallet address (needs 0x + 40 hex chars)",
     err_rpc: "Network or RPC error. Try again later.",
+
+    tab_eip7702: "🔐 EIP-7702 Checker",
+    eip7702_desc: "EIP-7702 allows EOA wallets to delegate transaction execution to smart contracts. Check if your wallet has any active delegations — early detection prevents risks.",
+    eip7702_label_addr: "Wallet address to check",
+    eip7702_btn: "🔐 Check EIP-7702",
+    eip7702_clean: "✅ Wallet Clean!",
+    eip7702_clean_sub: "No EIP-7702 delegations detected on any chain.",
+    eip7702_found: "🚨 Delegation Detected!",
+    eip7702_found_sub: "chains have active EIP-7702 delegations.",
+    eip7702_clean_short: "Clean",
+    eip7702_delegated_short: "Delegated",
   },
 
   zh: {
@@ -333,7 +359,22 @@ const I18N = {
     err_no_addr: "请输入合约地址",
     err_network: "网络错误。请重试。",
     err_invalid_wallet: "无效的钱包地址（需要 0x + 40 个十六进制字符）",
+    
+    err_no_addr: "请输入合约地址",
+    err_network: "网络错误。请重试。",
+    err_invalid_wallet: "无效的钱包地址（需要 0x + 40 个十六进制字符）",
     err_rpc: "网络或 RPC 错误。请稍后重试。",
+
+    tab_eip7702: "🔐 EIP-7702 检查",
+    eip7702_desc: "EIP-7702 允许 EOA 钱包将交易执行委托给智能合约。检查您的钱包是否有活跃的委托 — 及早发现以防止风险。",
+    eip7702_label_addr: "要检查的钱包地址",
+    eip7702_btn: "🔐 检查 EIP-7702",
+    eip7702_clean: "✅ 钱包安全！",
+    eip7702_clean_sub: "所有链上未检测到 EIP-7702 委托。",
+    eip7702_found: "🚨 发现委托！",
+    eip7702_found_sub: "条链有活跃的 EIP-7702 委托。",
+    eip7702_clean_short: "干净",
+    eip7702_delegated_short: "已委托",
   },
 
   ko: {

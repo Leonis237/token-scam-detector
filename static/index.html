@@ -273,6 +273,10 @@ tailwind.config = {
       class="font-heading text-lg px-5 py-2 border-[3px] border-b-0 border-muted rounded-t-2xl bg-muted/40 text-pencil/50 transition-colors">
       <span data-i18n="tab_approval">🛡️ Approval Checker</span>
     </button>
+    <button id="tabEIP7702" onclick="switchTab('eip7702')"
+      class="font-heading text-lg px-5 py-2 border-[3px] border-b-0 border-muted rounded-t-2xl bg-muted/40 text-pencil/50 transition-colors">
+      <span data-i18n="tab_eip7702">🔐 EIP-7702 Checker</span>
+    </button>
   </div>
 
   <!-- ═══ SCAM DETECTOR TAB ═══ -->
@@ -439,6 +443,37 @@ tailwind.config = {
       <p class="text-xs text-pencil/40 text-center mt-4" data-i18n="approval_note">
         Quét top token + DEX phổ biến. Hỗ trợ thêm token khi có nhu cầu.
       </p>
+    </div>
+  </div>
+
+  <!-- ═══ EIP-7702 CHECKER TAB ═══ -->
+  <div id="panelEIP7702" class="hidden bg-white border-[3px] border-pencil shadow-sketch-sm wobbly-md p-6 md:p-8">
+    <p class="text-sm text-pencil/60 mb-4" data-i18n="eip7702_desc">EIP-7702 cho phép ví EOA ủy quyền thực thi giao dịch cho smart contract. Kiểm tra ví của bạn có đang bị ủy quyền không — phát hiện sớm để ngăn chặn rủi ro.</p>
+
+    <div class="mb-4">
+      <label class="font-heading text-sm block mb-1 text-pencil/70" data-i18n="eip7702_label_addr">Địa chỉ ví cần kiểm tra</label>
+      <input type="text" id="eip7702Wallet"
+        class="input-sketch w-full border-[3px] border-pencil rounded-xl px-4 py-3 bg-white transition-colors"
+        placeholder="0x36F50C8c..."
+        autocomplete="off" spellcheck="false">
+    </div>
+
+    <button id="eip7702Btn" onclick="checkEIP7702()"
+      class="font-heading text-lg w-full bg-white border-[3px] border-pencil shadow-sketch px-6 py-3 wobbly-sm btn-sketch hover:bg-bluepen hover:text-white transition-colors mb-4">
+      <span data-i18n="eip7702_btn">🔐 Kiểm tra EIP-7702</span>
+    </button>
+
+    <div id="eip7702Spinner" class="hidden text-center py-6">
+      <span class="inline-block w-3 h-3 bg-bluepen rounded-full mx-1 animate-bounce" style="animation-delay:0s"></span>
+      <span class="inline-block w-3 h-3 bg-greenpen rounded-full mx-1 animate-bounce" style="animation-delay:0.15s"></span>
+      <span class="inline-block w-3 h-3 bg-accent rounded-full mx-1 animate-bounce" style="animation-delay:0.3s"></span>
+    </div>
+
+    <div id="eip7702Error" class="hidden bg-accent/10 border-[3px] border-accent rounded-xl p-4 text-accent text-sm mt-3"></div>
+
+    <div id="eip7702Result" class="hidden fade-in mt-4">
+      <div id="eip7702Verdict" class="border-[3px] border-pencil shadow-sketch-sm wobbly p-5 text-center mb-4"></div>
+      <div id="eip7702Chains" class="grid grid-cols-2 md:grid-cols-3 gap-3"></div>
     </div>
   </div>
 
@@ -611,22 +646,26 @@ tailwind.config = {
 <script>
 // ── Tab switching ──
 function switchTab(tab) {
-  const scamPanel = document.getElementById('panelScam');
-  const approvalPanel = document.getElementById('panelApproval');
-  const scamTab = document.getElementById('tabScam');
-  const approvalTab = document.getElementById('tabApproval');
+  const panels = {
+    scam: document.getElementById('panelScam'),
+    approval: document.getElementById('panelApproval'),
+    eip7702: document.getElementById('panelEIP7702'),
+  };
+  const tabs = {
+    scam: document.getElementById('tabScam'),
+    approval: document.getElementById('tabApproval'),
+    eip7702: document.getElementById('tabEIP7702'),
+  };
 
-  if (tab === 'scam') {
-    scamPanel.classList.remove('hidden');
-    approvalPanel.classList.add('hidden');
-    scamTab.className = 'font-heading text-lg px-5 py-2 border-[3px] border-b-0 border-pencil rounded-t-2xl bg-white -mb-[3px] relative z-10 text-pencil';
-    approvalTab.className = 'font-heading text-lg px-5 py-2 border-[3px] border-b-0 border-muted rounded-t-2xl bg-muted/40 text-pencil/50';
-  } else {
-    scamPanel.classList.add('hidden');
-    approvalPanel.classList.remove('hidden');
-    scamTab.className = 'font-heading text-lg px-5 py-2 border-[3px] border-b-0 border-muted rounded-t-2xl bg-muted/40 text-pencil/50';
-    approvalTab.className = 'font-heading text-lg px-5 py-2 border-[3px] border-b-0 border-pencil rounded-t-2xl bg-white -mb-[3px] relative z-10 text-pencil';
-  }
+  // Hide all, deactivate all
+  Object.values(panels).forEach(p => p.classList.add('hidden'));
+  Object.values(tabs).forEach(t => {
+    t.className = 'font-heading text-lg px-5 py-2 border-[3px] border-b-0 border-muted rounded-t-2xl bg-muted/40 text-pencil/50 transition-colors';
+  });
+
+  // Show selected
+  panels[tab].classList.remove('hidden');
+  tabs[tab].className = 'font-heading text-lg px-5 py-2 border-[3px] border-b-0 border-pencil rounded-t-2xl bg-white -mb-[3px] relative z-10 text-pencil';
 }
 
 // ── Scam Detection ──
@@ -777,9 +816,65 @@ async function checkApprovals() {
   }
 }
 
+// ── EIP-7702 Checker ──
+async function checkEIP7702() {
+  const wallet = document.getElementById('eip7702Wallet').value.trim();
+
+  document.getElementById('eip7702Result').classList.add('hidden');
+  document.getElementById('eip7702Error').classList.add('hidden');
+
+  if (!wallet || !wallet.startsWith('0x') || wallet.length !== 42) {
+    document.getElementById('eip7702Error').textContent = t('err_invalid_wallet');
+    document.getElementById('eip7702Error').classList.remove('hidden');
+    return;
+  }
+
+  document.getElementById('eip7702Spinner').classList.remove('hidden');
+  document.getElementById('eip7702Btn').disabled = true;
+
+  try {
+    const resp = await fetch(`/api/eip7702?wallet=${encodeURIComponent(wallet)}`);
+    const data = await resp.json();
+
+    if (data.error) {
+      document.getElementById('eip7702Error').textContent = data.error;
+      document.getElementById('eip7702Error').classList.remove('hidden');
+      return;
+    }
+
+    const verdictDiv = document.getElementById('eip7702Verdict');
+    if (data.delegations_found === 0) {
+      verdictDiv.className = 'border-[3px] border-greenpen bg-greenpen/5 shadow-sketch-sm wobbly p-5 text-center mb-4';
+      verdictDiv.innerHTML = '<span class="font-heading text-2xl text-greenpen">' + t('eip7702_clean') + '</span><p class="text-sm text-pencil/60 mt-1">' + t('eip7702_clean_sub') + '</p>';
+    } else {
+      verdictDiv.className = 'border-[3px] border-accent bg-accent/5 shadow-sketch-sm wobbly p-5 text-center mb-4';
+      verdictDiv.innerHTML = '<span class="font-heading text-2xl text-accent">' + t('eip7702_found') + '</span><p class="text-sm text-pencil/60 mt-1">' + data.delegations_found + ' ' + t('eip7702_found_sub') + '</p>';
+    }
+
+    const chainsDiv = document.getElementById('eip7702Chains');
+    chainsDiv.innerHTML = data.chains.map(c => {
+      const icon = c.status === 'clean' ? '✅' : (c.status === 'error' ? '⚠️' : '🚨');
+      const bgClass = c.status === 'clean' ? 'bg-greenpen/5 border-greenpen/30' : (c.status === 'error' ? 'bg-yellowpen/5 border-yellowpen/30' : 'bg-accent/5 border-accent');
+      const label = c.status === 'clean' ? t('eip7702_clean_short') : (c.status === 'error' ? 'Error' : t('eip7702_delegated_short'));
+      return '<div class="border-[2px] ' + bgClass + ' rounded-xl p-3 text-center"><div class="text-lg">' + icon + '</div><div class="font-heading text-sm">' + c.chain.toUpperCase() + '</div><div class="text-xs text-pencil/50">' + label + '</div></div>';
+    }).join('');
+
+    document.getElementById('eip7702Result').classList.remove('hidden');
+    document.getElementById('eip7702Result').scrollIntoView({ behavior: 'smooth', block: 'center' });
+
+  } catch (e) {
+    document.getElementById('eip7702Error').textContent = t('err_network');
+    document.getElementById('eip7702Error').classList.remove('hidden');
+  } finally {
+    document.getElementById('eip7702Spinner').classList.add('hidden');
+    document.getElementById('eip7702Btn').disabled = false;
+  }
+}
+
 // ── Enter key triggers ──
 document.getElementById('address').addEventListener('keydown', e => { if (e.key === 'Enter') checkToken(); });
 document.getElementById('walletAddr').addEventListener('keydown', e => { if (e.key === 'Enter') checkApprovals(); });
+document.getElementById('eip7702Wallet').addEventListener('keydown', e => { if (e.key === 'Enter') checkEIP7702(); });
 </script>
 </body>
 </html>
