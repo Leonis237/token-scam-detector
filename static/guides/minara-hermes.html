@@ -1,0 +1,206 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Minara on Hermes Guide — Leonis Forge</title>
+<script src="https://cdn.tailwindcss.com"></script>
+<link href="https://fonts.googleapis.com/css2?family=Kalam:wght@400;700&family=Patrick+Hand&family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet">
+<style>
+  body { font-family: 'Patrick Hand', cursive; background: #faf9f6; }
+  .font-heading { font-family: 'Kalam', cursive; }
+  .font-body { font-family: 'Patrick Hand', cursive; }
+  .font-mono { font-family: 'JetBrains Mono', monospace; }
+  .shadow-sketch { box-shadow: 4px 4px 0px 0px rgba(0,0,0,0.15); }
+  .shadow-sketch-sm { box-shadow: 3px 3px 0px 0px rgba(0,0,0,0.1); }
+  .wobbly { border-radius: 255px 15px 225px 15px/15px 225px 15px 255px; }
+  .wobbly-md { border-radius: 40px 10px 40px 10px/10px 40px 10px 40px; }
+  .btn-sketch:hover { transform: translate(2px, 2px); box-shadow: 1px 1px 0px 0px rgba(0,0,0,0.15); }
+  .tape { position: absolute; top: -10px; left: 50%; transform: translateX(-50%) rotate(-2deg); width: 60px; height: 22px; background: rgba(180, 170, 150, 0.4); border-radius: 2px; z-index: 5; }
+  code { font-family: 'JetBrains Mono', monospace; }
+  .step-num { width: 36px; height: 36px; display: inline-flex; align-items: center; justify-content: center; font-weight: bold; flex-shrink: 0; }
+  .lang-btn { cursor: pointer; padding: 2px 8px; border-radius: 9999px; font-size: 12px; border: 2px solid transparent; }
+  .lang-btn.active { border-color: #e74c3c; background: #fef2f2; color: #991b1b; }
+</style>
+</head>
+<body class="min-h-screen">
+
+<!-- Language Selector -->
+<div class="fixed top-4 right-4 z-50 flex gap-1 bg-white/90 backdrop-blur border-2 border-pencil/20 rounded-full px-2 py-1 shadow-sketch-sm">
+  <button onclick="setLang('en')" class="lang-btn" data-lang-btn="en">EN</button>
+  <button onclick="setLang('vi')" class="lang-btn" data-lang-btn="vi">VI</button>
+  <button onclick="setLang('zh')" class="lang-btn" data-lang-btn="zh">ZH</button>
+  <button onclick="setLang('ko')" class="lang-btn" data-lang-btn="ko">KO</button>
+</div>
+
+<div class="max-w-3xl mx-auto px-6 py-10">
+
+  <!-- Header -->
+  <div class="text-center mb-10">
+    <a href="/" class="inline-flex items-center gap-2 font-heading text-xl text-pencil hover:text-accent transition-colors mb-6">
+      <img src="https://github.com/Leonis237.png" alt="Leonis" class="w-7 h-7 rounded-full border-2 border-pencil">Leonis Forge
+    </a>
+    <h1 class="font-heading text-4xl md:text-5xl text-pencil mb-4" data-i18n="mr_title">👩 Minara — Install on Hermes Agent</h1>
+    <p class="text-pencil/60 text-lg max-w-xl mx-auto" data-i18n-html="mr_subtitle">AI-powered crypto trading assistant. Swap, perps, autopilot, market analysis — directly from Hermes Agent.</p>
+    <div class="flex justify-center gap-4 mt-4">
+      <a href="https://minara.ai/vi/app/trade/perps/BTC?r=1MPQ6Z" target="_blank" class="font-heading text-sm bg-white border-[3px] border-pencil shadow-sketch-sm px-4 py-1.5 wobbly btn-sketch hover:bg-accent hover:text-white transition-colors" data-i18n="mr_btn_minara">🌐 Minara Website</a>
+      <a href="https://github.com/Minara-AI/skills" target="_blank" class="font-heading text-sm bg-white border-[3px] border-pencil shadow-sketch-sm px-4 py-1.5 wobbly btn-sketch hover:bg-accent hover:text-white transition-colors" data-i18n="mr_btn_github">📦 Skills Repo</a>
+    </div>
+  </div>
+
+  <!-- What is Minara -->
+  <div class="bg-white border-[3px] border-pencil shadow-sketch wobbly-md p-6 mb-8">
+    <h2 class="font-heading text-2xl mb-3" data-i18n="mr_what_title">🤔 What is Minara?</h2>
+    <p class="text-pencil/80 leading-relaxed mb-2" data-i18n-html="mr_what_desc">Minara is an <strong>AI crypto financial officer</strong> that runs as a Hermes skill. Once installed, you can trade, check balances, analyze markets, and run autopilot strategies — all from Hermes Agent. Supports EVM chains, Solana, and Hyperliquid.</p>
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-3 mt-4">
+      <div class="bg-greenpen/5 border-[2px] border-greenpen/20 rounded-xl p-3">
+        <span class="font-heading text-greenpen" data-i18n="mr_feat_swap">💱 Spot trading</span>
+        <p class="text-xs text-pencil/60 mt-1" data-i18n="mr_feat_swap_desc">Swap, buy, sell tokens across 18+ chains. Limit orders supported.</p>
+      </div>
+      <div class="bg-bluepen/5 border-[2px] border-bluepen/20 rounded-xl p-3">
+        <span class="font-heading text-bluepen" data-i18n="mr_feat_perps">📈 Perpetual futures</span>
+        <p class="text-xs text-pencil/60 mt-1" data-i18n="mr_feat_perps_desc">Long/short on Hyperliquid. Up to 50x leverage. Strategy autopilot.</p>
+      </div>
+      <div class="bg-accent/5 border-[2px] border-accent/20 rounded-xl p-3">
+        <span class="font-heading text-accent" data-i18n="mr_feat_ai">🧠 AI analysis</span>
+        <p class="text-xs text-pencil/60 mt-1" data-i18n="mr_feat_ai_desc">Ask, research, trending tokens — live market intelligence from one command.</p>
+      </div>
+      <div class="bg-yellowpen/5 border-[2px] border-yellowpen/20 rounded-xl p-3">
+        <span class="font-heading text-yellowpen" data-i18n="mr_feat_wallet">👛 Wallet management</span>
+        <p class="text-xs text-pencil/60 mt-1" data-i18n="mr_feat_wallet_desc">Balance, deposit, withdraw, transfer. Credit card on-ramp via MoonPay.</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- Prerequisites -->
+  <div class="bg-white border-[3px] border-pencil shadow-sketch wobbly-md p-6 mb-8">
+    <h2 class="font-heading text-2xl mb-3" data-i18n="mr_prereq_title">✅ Prerequisites</h2>
+    <div class="space-y-2 text-pencil/80">
+      <p><span class="font-heading">1.</span> <span data-i18n-html="mr_prereq_1"><strong>Hermes Agent installed</strong> — see <a href="/guides/hermes-agent.html" class="text-bluepen hover:underline">Hermes guide</a> if you haven't yet.</span></p>
+      <p><span class="font-heading">2.</span> <span data-i18n-html="mr_prereq_2"><strong>Node.js 18+</strong> and <strong>npm</strong></span></p>
+      <p><span class="font-heading">3.</span> <span data-i18n="mr_prereq_3">A Minara account — free to create, credit card or crypto deposit to trade</span></p>
+    </div>
+  </div>
+
+  <!-- One-click Install -->
+  <div class="bg-white border-[3px] border-pencil shadow-sketch wobbly-md p-6 mb-8 relative">
+    <div class="tape"></div>
+    <h2 class="font-heading text-2xl mb-4" data-i18n="mr_install_title">⚡ One-Click Install</h2>
+    <p class="text-sm text-pencil/60 mb-3" data-i18n="mr_install_desc">Run this single command. It installs the Minara CLI, downloads the skill, and sets up routing rules:</p>
+    <div class="bg-gray-900 text-green-400 rounded-xl p-3 overflow-x-auto text-xs mb-3">
+      <code>curl -fsSL https://raw.githubusercontent.com/Minara-AI/skills/main/scripts/hermes-minara-skill-setup.sh | bash</code>
+    </div>
+    <div class="bg-greenpen/10 border-[2px] border-greenpen/20 rounded-xl p-3">
+      <p class="text-xs text-pencil/60" data-i18n="mr_install_note">This script handles everything: CLI install, skill download, memory routing, and login flow. Takes ~1-2 minutes.</p>
+    </div>
+  </div>
+
+  <!-- Manual Install -->
+  <div class="bg-white border-[3px] border-pencil shadow-sketch wobbly-md p-6 mb-8">
+    <h2 class="font-heading text-2xl mb-3" data-i18n="mr_manual_title">🛠️ Manual Installation</h2>
+    <p class="text-sm text-pencil/60 mb-4" data-i18n="mr_manual_desc">If the one-click script is blocked by your environment, follow these steps:</p>
+
+    <!-- Step 1 -->
+    <div class="flex gap-4 mb-6">
+      <span class="step-num bg-accent text-white border-[2px] border-pencil shadow-sketch-sm rounded-full font-heading text-lg">1</span>
+      <div class="flex-1">
+        <h3 class="font-heading text-lg mb-1" data-i18n="mr_m1_title">Install Minara CLI</h3>
+        <p class="text-sm text-pencil/60 mb-2" data-i18n="mr_m1_desc">Minara is distributed as an npm package:</p>
+        <div class="bg-gray-900 text-green-400 rounded-xl p-3 overflow-x-auto text-xs">
+          <code>npm install -g minara@latest</code>
+        </div>
+      </div>
+    </div>
+
+    <!-- Step 2 -->
+    <div class="flex gap-4 mb-6">
+      <span class="step-num bg-bluepen text-white border-[2px] border-pencil shadow-sketch-sm rounded-full font-heading text-lg">2</span>
+      <div class="flex-1">
+        <h3 class="font-heading text-lg mb-1" data-i18n="mr_m2_title">Download the skill</h3>
+        <div class="bg-gray-900 text-green-400 rounded-xl p-3 overflow-x-auto text-xs">
+          <code>mkdir -p ~/.hermes/skills</code><br>
+          <code>git clone --depth 1 https://github.com/Minara-AI/skills.git /tmp/minara-repo</code><br>
+          <code>cp -r /tmp/minara-repo/skills/minara ~/.hermes/skills/minara</code><br>
+          <code>rm -rf /tmp/minara-repo</code>
+        </div>
+      </div>
+    </div>
+
+    <!-- Step 3 -->
+    <div class="flex gap-4 mb-6">
+      <span class="step-num bg-greenpen text-white border-[2px] border-pencil shadow-sketch-sm rounded-full font-heading text-lg">3</span>
+      <div class="flex-1">
+        <h3 class="font-heading text-lg mb-1" data-i18n="mr_m3_title">Login to Minara</h3>
+        <div class="bg-gray-900 text-green-400 rounded-xl p-3 overflow-x-auto text-xs mb-2">
+          <code>minara login --device</code>
+        </div>
+        <p class="text-xs text-pencil/50" data-i18n="mr_m3_note">Open the URL shown in terminal, enter the code. Login completes automatically.</p>
+      </div>
+    </div>
+
+    <!-- Step 4 -->
+    <div class="flex gap-4 mb-6">
+      <span class="step-num bg-yellowpen text-white border-[2px] border-pencil shadow-sketch-sm rounded-full font-heading text-lg">4</span>
+      <div class="flex-1">
+        <h3 class="font-heading text-lg mb-1" data-i18n="mr_m4_title">Verify</h3>
+        <div class="bg-gray-900 text-green-400 rounded-xl p-3 overflow-x-auto text-xs mb-2">
+          <code>minara account</code><br>
+          <code>minara balance</code>
+        </div>
+        <p class="text-xs text-pencil/50" data-i18n="mr_m4_note">Should show your account info and balances. Restart Hermes Agent to load the skill.</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- Quick Start -->
+  <div class="bg-white border-[3px] border-pencil shadow-sketch wobbly-md p-6 mb-8">
+    <h2 class="font-heading text-2xl mb-3" data-i18n="mr_quick_title">🚀 Quick Start Commands</h2>
+    <div class="space-y-3 text-sm text-pencil/80">
+      <p><strong data-i18n="mr_cmd_balance">Check balance:</strong> <code class="bg-muted/30 px-1 rounded text-xs">minara balance</code></p>
+      <p><strong data-i18n="mr_cmd_trending">Trending tokens:</strong> <code class="bg-muted/30 px-1 rounded text-xs">minara discover trending --type tokens</code></p>
+      <p><strong data-i18n="mr_cmd_ask">AI analysis:</strong> <code class="bg-muted/30 px-1 rounded text-xs">minara ask "Should I buy ETH right now?"</code></p>
+      <p><strong data-i18n="mr_cmd_swap">Buy crypto:</strong> <code class="bg-muted/30 px-1 rounded text-xs">minara swap -s buy -t ETH -a 100</code></p>
+      <p><strong data-i18n="mr_cmd_autopilot">Autopilot:</strong> <code class="bg-muted/30 px-1 rounded text-xs">minara perps autopilot</code></p>
+    </div>
+  </div>
+
+  <!-- Common Issues -->
+  <div class="bg-white border-[3px] border-pencil shadow-sketch wobbly-md p-6 mb-8">
+    <h2 class="font-heading text-2xl mb-3" data-i18n="mr_issues_title">🔧 Common Issues</h2>
+    <div class="space-y-3 text-sm text-pencil/80">
+      <p><strong data-i18n="mr_issue_1_title">"Command not found: minara":</strong> <span data-i18n="mr_issue_1_fix">Ensure Node.js/npm are installed. Check that npm global bin is in PATH.</span></p>
+      <p><strong data-i18n="mr_issue_2_title">Script blocked by policy:</strong> <span data-i18n="mr_issue_2_fix">Use the manual installation steps above.</span></p>
+      <p><strong data-i18n="mr_issue_3_title">Login times out:</strong> <span data-i18n="mr_issue_3_fix">Device codes expire after 15 min. Run <code>minara logout</code> and try <code>minara login --device</code> again.</span></p>
+      <p><strong data-i18n="mr_issue_4_title">Skill not loading in Hermes:</strong> <span data-i18n="mr_issue_4_fix">Verify <code>~/.hermes/skills/minara/SKILL.md</code> exists. Restart Hermes Agent.</span></p>
+    </div>
+  </div>
+
+  <!-- Review Box -->
+  <div class="bg-greenpen/10 border-[3px] border-greenpen shadow-sketch-sm wobbly-md p-6 mb-8">
+    <h2 class="font-heading text-2xl text-greenpen mb-2" data-i18n="mr_review_title">⭐ Our Take</h2>
+    <p class="text-pencil/80 leading-relaxed" data-i18n="mr_review_text">Minara turns Hermes Agent into a full crypto trading terminal. The autopilot strategies are the killer feature — Strategy 5 hits 308% APR. Combined with Hermes skills and cron jobs, you can build fully autonomous trading workflows. Free account, pay-as-you-go for premium features.</p>
+  </div>
+
+  <!-- Back -->
+  <div class="text-center">
+    <a href="/" class="inline-block font-heading bg-white border-[3px] border-pencil shadow-sketch px-6 py-2 wobbly-sm btn-sketch hover:bg-accent hover:text-white transition-colors" data-i18n="mr_btn_back">← Back to Leonis Forge</a>
+  </div>
+</div>
+
+<script src="/static/i18n.js"></script>
+<script>
+function updateLangBtns(lang) {
+  document.querySelectorAll('[data-lang-btn]').forEach(b => {
+    b.classList.toggle('active', b.dataset.langBtn === lang);
+  });
+}
+const _origM = setLang;
+setLang = function(lang) {
+  _origM(lang);
+  updateLangBtns(lang);
+};
+const saved = localStorage.getItem('lang') || 'en';
+updateLangBtns(saved);
+</script>
+</body>
+</html>
