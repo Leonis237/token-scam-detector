@@ -1,4 +1,4 @@
-// i18n — Leonis Guardian multi-language support
+// i18n — Leonis Forge multi-language support
 const I18N = {
   vi: {
     nav_scan: "Scan",
@@ -105,7 +105,7 @@ const I18N = {
     og_link: "Xem trên Hub →",
 
     footer_built: "Built with ✦ by",
-    footer_disclaimer: "© 2026 Crypto Guardian. Không phải lời khuyên tài chính. DYOR.",
+    footer_disclaimer: "© 2026 Leonis Forge. Không phải lời khuyên tài chính. DYOR.",
 
     err_no_addr: "Vui lòng nhập địa chỉ contract token",
     err_network: "Lỗi mạng. Vui lòng thử lại.",
@@ -235,7 +235,7 @@ const I18N = {
     og_link: "View on Hub →",
 
     footer_built: "Built with ✦ by",
-    footer_disclaimer: "© 2026 Crypto Guardian. Not financial advice. DYOR.",
+    footer_disclaimer: "© 2026 Leonis Forge. Not financial advice. DYOR.",
 
     err_no_addr: "Please enter a contract address",
     err_network: "Network error. Please try again.",
@@ -365,7 +365,7 @@ const I18N = {
     og_link: "在 Hub 上查看 →",
 
     footer_built: "由 ✦ 构建",
-    footer_disclaimer: "© 2026 Crypto Guardian。非财务建议。DYOR。",
+    footer_disclaimer: "© 2026 Leonis Forge。非财务建议。DYOR。",
 
     err_no_addr: "请输入合约地址",
     err_network: "网络错误。请重试。",
@@ -495,7 +495,7 @@ const I18N = {
     og_link: "Hub에서 보기 →",
 
     footer_built: "✦ 제작:",
-    footer_disclaimer: "© 2026 Crypto Guardian. 재정적 조언이 아닙니다. DYOR.",
+    footer_disclaimer: "© 2026 Leonis Forge. 재정적 조언이 아닙니다. DYOR.",
 
     err_no_addr: "컨트랙트 주소를 입력하세요",
     err_network: "네트워크 오류. 다시 시도해주세요.",

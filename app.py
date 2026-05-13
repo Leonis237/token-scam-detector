@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Leonis Guardian — Token Scam Detector + Approval Checker + EIP-7702 Checker."""
+"""Leonis Forge — Token Scam Detector + Approval Checker + EIP-7702 Checker."""
 import json, time, pickle, urllib.request, os, re, xml.etree.ElementTree as ET
 import numpy as np
 import onnxruntime as ort
