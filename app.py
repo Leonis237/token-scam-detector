@@ -96,44 +96,48 @@ def get_token_info(chain_id, token_addr):
     return name, symbol
 
 
-def query_approval_logs(chain_id, wallet, blocks=50000):
-    """Query Approval event logs for a wallet address."""
+def query_approval_logs(chain_id, wallet, max_blocks=1000000):
+    """Query Approval event logs for a wallet across up to max_blocks in chunks."""
     block_result = rpc_call(chain_id, "eth_blockNumber", [])
     if not block_result or "result" not in block_result:
         return []
     latest = int(block_result["result"], 16)
-    from_block = max(0, latest - blocks)
 
-    # wallet as indexed topic (left-padded to 32 bytes)
     owner_topic = "0x" + wallet[2:].lower().rjust(64, "0")
-
-    result = rpc_call(chain_id, "eth_getLogs", [{
-        "fromBlock": hex(from_block),
-        "toBlock": hex(latest),
-        "topics": [APPROVAL_TOPIC, owner_topic],
-    }])
-
-    if not result or "result" not in result:
-        return []
-
-    logs = result["result"]
-    approvals = []
+    all_logs = []
     seen = set()
+    approvals = []
 
-    for log in logs:
-        token = log["address"]
-        # topic[2] = spender (indexed), topic[3] = value (indexed)
-        if len(log.get("topics", [])) >= 3:
-            spender = "0x" + log["topics"][2][26:]  # last 20 bytes
-        else:
-            continue
+    # Scan in chunks of 100K blocks, up to max_blocks total
+    chunk_size = 100000
+    scanned = 0
+    current_from = latest - chunk_size
 
-        pair = (token.lower(), spender.lower())
-        if pair in seen:
-            continue
-        seen.add(pair)
+    while scanned < max_blocks and current_from >= 0:
+        result = rpc_call(chain_id, "eth_getLogs", [{
+            "fromBlock": hex(max(0, current_from)),
+            "toBlock": hex(current_from + chunk_size - 1),
+            "topics": [APPROVAL_TOPIC, owner_topic],
+        }])
 
-        approvals.append((token, spender))
+        if result and "result" in result:
+            for log in result["result"]:
+                token = log["address"]
+                if len(log.get("topics", [])) >= 3:
+                    spender = "0x" + log["topics"][2][26:]
+                else:
+                    continue
+                pair = (token.lower(), spender.lower())
+                if pair not in seen:
+                    seen.add(pair)
+                    approvals.append((token, spender))
+
+        current_from -= chunk_size
+        scanned += chunk_size
+
+        # Stop early if we found approvals and already scanned a decent range
+        if approvals and scanned >= 500000:
+            break
 
     return approvals
 
@@ -297,7 +301,7 @@ def api_approvals():
 
     chain_name = CHAIN_NAMES.get(chain_id, chain_id)
 
-    # Step 1: Query Approval event logs from the last 50K blocks
+    # Step 1: Query Approval event logs from the last 1M blocks (~6 months on ETH)
     approval_pairs = query_approval_logs(chain_id, wallet)
 
     # Step 2: Check current allowance for each (token, spender) pair
