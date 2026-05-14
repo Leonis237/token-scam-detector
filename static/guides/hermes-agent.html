@@ -31,6 +31,24 @@
 </script>
 <title>Hermes Agent Guide — Leonis Forge | AI CLI Setup</title>
 <script src="https://cdn.tailwindcss.com"></script>
+<script>
+tailwind.config = {
+  theme: {
+    extend: {
+      colors: {
+        paper: 'var(--t-paper)',
+        pencil: 'var(--t-pencil)',
+        muted: 'var(--t-muted)',
+        accent: 'var(--t-accent)',
+        bluepen: 'var(--t-bluepen)',
+        greenpen: 'var(--t-greenpen)',
+        yellowpen: 'var(--t-yellowpen)',
+        postit: 'var(--t-postit)',
+      }
+    }
+  }
+}
+</script>
 <link href="https://fonts.googleapis.com/css2?family=Kalam:wght@400;700&family=Patrick+Hand&family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet">
 <style>
   body { font-family: 'Patrick Hand', cursive; background: #faf9f6; }
@@ -215,6 +233,67 @@
       <p data-i18n-html="hermes_tip_5"><strong>🧪 Environment isolation:</strong> <code>hermes -w</code> — worktree mode, safe for parallel coding agents.</p>
       <p data-i18n-html="hermes_tip_6"><strong>🔑 Key in .bashrc not working?</strong> Move API keys to <code>~/.hermes/.env</code> — bashrc only loads in interactive shells.</p>
     </div>
+  </div>
+
+  <!-- Kanban -->
+  <div class="bg-white border-[3px] border-pencil shadow-sketch wobbly-md p-6 mb-8">
+    <h2 class="font-heading text-2xl mb-3" data-i18n="hermes_kanban_title">📋 Kanban — Multi-Agent Task Board</h2>
+    <p class="text-pencil/80 leading-relaxed mb-3" data-i18n-html="hermes_kanban_desc">Hermes has a built-in <strong>durable task board</strong> (SQLite DB) that lets you fan out work to multiple agent workers in parallel. Think of it as a project board where the workers are AI agents — you create tasks, they pick them up and complete them autonomously.</p>
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-3 mt-4">
+      <div class="bg-greenpen/5 border-[2px] border-greenpen/20 rounded-xl p-3">
+        <span class="font-heading text-greenpen" data-i18n="hermes_kanban_feat1">🔄 Parallel workers</span>
+        <p class="text-xs text-pencil/60 mt-1" data-i18n="hermes_kanban_feat1_desc">Multiple agent profiles pull tasks from the same board simultaneously. Researcher, coder, reviewer — each does their specialty.</p>
+      </div>
+      <div class="bg-bluepen/5 border-[2px] border-bluepen/20 rounded-xl p-3">
+        <span class="font-heading text-bluepen" data-i18n="hermes_kanban_feat2">📊 Web Dashboard</span>
+        <p class="text-xs text-pencil/60 mt-1" data-i18n="hermes_kanban_feat2_desc">6-column board (Triage → Todo → Ready → In Progress → Blocked → Done) with drag-drop, live WebSocket updates.</p>
+      </div>
+      <div class="bg-accent/5 border-[2px] border-accent/20 rounded-xl p-3">
+        <span class="font-heading text-accent" data-i18n="hermes_kanban_feat3">🔗 Task dependencies</span>
+        <p class="text-xs text-pencil/60 mt-1" data-i18n="hermes_kanban_feat3_desc">Parent→child links. A downstream task only activates when all parents are done. Perfect for pipelines: research → build → review.</p>
+      </div>
+      <div class="bg-yellowpen/5 border-[2px] border-yellowpen/20 rounded-xl p-3">
+        <span class="font-heading text-yellowpen" data-i18n="hermes_kanban_feat4">🛡️ Crash recovery</span>
+        <p class="text-xs text-pencil/60 mt-1" data-i18n="hermes_kanban_feat4_desc">If a worker OOM/crashes, the task is automatically reclaimed. Spawn failures after N attempts auto-block for human attention.</p>
+      </div>
+    </div>
+    <div class="bg-gray-900 text-green-400 rounded-xl p-3 overflow-x-auto text-xs mt-4">
+      <code>hermes kanban init          # create the default board</code><br>
+      <code>hermes kanban create        # add a task (interactive TUI)</code><br>
+      <code>hermes kanban watch         # start the dispatcher</code><br>
+      <code>hermes dashboard            # open the web UI</code>
+    </div>
+  </div>
+
+  <!-- Skins & Themes -->
+  <div class="bg-white border-[3px] border-pencil shadow-sketch wobbly-md p-6 mb-8">
+    <h2 class="font-heading text-2xl mb-3" data-i18n="hermes_skin_title">🎨 Skins & Themes</h2>
+    <p class="text-pencil/80 leading-relaxed mb-3" data-i18n-html="hermes_skin_desc">Hermes comes with <strong>9 built-in CLI skins</strong> and supports custom YAML themes. Skins control the visual presentation: banner colors, spinner faces, response labels, branding — separate from Personality which controls conversational tone.</p>
+    <div class="grid grid-cols-2 md:grid-cols-3 gap-2 mb-4">
+      <div class="bg-white border-[2px] border-pencil/20 rounded-lg p-2 text-center text-xs"><span class="font-heading text-amber-600">default</span><br><span class="text-pencil/50">Classic gold, kawaii</span></div>
+      <div class="bg-white border-[2px] border-pencil/20 rounded-lg p-2 text-center text-xs"><span class="font-heading text-red-600">ares</span><br><span class="text-pencil/50">Crimson war-god</span></div>
+      <div class="bg-white border-[2px] border-pencil/20 rounded-lg p-2 text-center text-xs"><span class="font-heading text-gray-600">mono</span><br><span class="text-pencil/50">Grayscale minimal</span></div>
+      <div class="bg-white border-[2px] border-pencil/20 rounded-lg p-2 text-center text-xs"><span class="font-heading text-slate-600">slate</span><br><span class="text-pencil/50">Cool blue dev</span></div>
+      <div class="bg-white border-[2px] border-pencil/20 rounded-lg p-2 text-center text-xs"><span class="font-heading text-sky-600">daylight</span><br><span class="text-pencil/50">Light theme</span></div>
+      <div class="bg-white border-[2px] border-pencil/20 rounded-lg p-2 text-center text-xs"><span class="font-heading text-blue-600">poseidon</span><br><span class="text-pencil/50">Ocean vibes</span></div>
+    </div>
+    <div class="bg-gray-900 text-green-400 rounded-xl p-3 overflow-x-auto text-xs">
+      <code>/skin ares          # switch to a built-in skin (session only)</code><br>
+      <code>/skin mytheme       # load custom skin from ~/.hermes/skins/mytheme.yaml</code>
+    </div>
+    <p class="text-xs text-pencil/50 mt-2 italic" data-i18n-html="hermes_skin_note">Set <code>display.skin</code> in <code>~/.hermes/config.yaml</code> for a permanent default. The community-built <strong>Hermes Mod</strong> is a visual skin editor (web UI with live preview) — install via <code>npx hermes-mod</code>.</p>
+  </div>
+
+  <!-- Achievements -->
+  <div class="bg-white border-[3px] border-pencil shadow-sketch wobbly-md p-6 mb-8">
+    <h2 class="font-heading text-2xl mb-3" data-i18n="hermes_ach_title">🏆 Achievements</h2>
+    <p class="text-pencil/80 leading-relaxed mb-3" data-i18n-html="hermes_ach_desc">A <strong>Steam-style achievements system</strong> built into Hermes. Over 60 collectible badges generated from your real session history — no manual tracking, no opt-in. Just use Hermes and they unlock automatically.</p>
+    <div class="space-y-2 text-sm text-pencil/80 mb-3">
+      <p data-i18n-html="hermes_ach_tier"><strong>5 tiers:</strong> 🥉 Copper → 🥈 Silver → 🥇 Gold → 💎 Diamond → 🏛️ Olympian</p>
+      <p data-i18n-html="hermes_ach_how"><strong>How it works:</strong> Scans <code>~/.hermes/state.db</code> session history in background. Some badges are <strong>Secret</strong> — hidden until their first unlock signal fires.</p>
+      <p data-i18n-html="hermes_ach_where"><strong>Where to find them:</strong> Dashboard tab (auto-registered, no setup). REST API at <code>/api/plugins/hermes-achievements/</code> if you want to build on top of it.</p>
+    </div>
+    <p class="text-xs text-pencil/50 italic" data-i18n="hermes_ach_note">Originally authored by @PCinkusz as an external plugin. Now bundled in-tree — installed by default since Hermes v4.</p>
   </div>
 
   <!-- Review Box -->
