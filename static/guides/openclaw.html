@@ -31,6 +31,24 @@
 </script>
 <title>OpenClaw Guide — Leonis Forge | AI Coding CLI Setup</title>
 <script src="https://cdn.tailwindcss.com"></script>
+<script>
+tailwind.config = {
+  theme: {
+    extend: {
+      colors: {
+        paper: 'var(--t-paper)',
+        pencil: 'var(--t-pencil)',
+        muted: 'var(--t-muted)',
+        accent: 'var(--t-accent)',
+        bluepen: 'var(--t-bluepen)',
+        greenpen: 'var(--t-greenpen)',
+        yellowpen: 'var(--t-yellowpen)',
+        postit: 'var(--t-postit)',
+      }
+    }
+  }
+}
+</script>
 <link href="https://fonts.googleapis.com/css2?family=Kalam:wght@400;700&family=Patrick+Hand&family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet">
 <style>
   body { font-family: 'Patrick Hand', cursive; background: #faf9f6; }
@@ -47,9 +65,77 @@
   .step-num { width: 36px; height: 36px; display: inline-flex; align-items: center; justify-content: center; font-weight: bold; flex-shrink: 0; }
   .lang-btn { cursor: pointer; padding: 2px 8px; border-radius: 9999px; font-size: 12px; border: 2px solid transparent; }
   .lang-btn.active { border-color: #e74c3c; background: #fef2f2; color: #991b1b; }
+
+  /* Theme */
+  :root {
+    --t-paper: #faf9f6; --t-pencil: #1a1a1a; --t-muted: #e5e0d8;
+    --t-accent: #e74c3c; --t-bluepen: #2d5da1; --t-greenpen: #4a9c5d;
+    --t-yellowpen: #d4a017; --t-postit: #fff9c4; --t-surface: #ffffff;
+    --t-shadow: rgba(0,0,0,0.15); --t-shadow-sm: rgba(0,0,0,0.1);
+    --t-tapecolor: rgba(180,170,150,0.4);
+  }
+  [data-theme="dark"] {
+    --t-paper: #16161e; --t-pencil: #cec9bc; --t-muted: #2a2a3a;
+    --t-accent: #ff6b6b; --t-bluepen: #5e97f6; --t-greenpen: #4caf7c;
+    --t-yellowpen: #e6b422; --t-postit: #3a3528; --t-surface: #1e1e2e;
+    --t-shadow: rgba(0,0,0,0.5); --t-shadow-sm: rgba(0,0,0,0.3);
+    --t-tapecolor: rgba(100,100,120,0.25);
+  }
+  [data-theme="dark"] body { background: var(--t-paper); color: var(--t-pencil); }
+  [data-theme="dark"] .bg-white { background-color: var(--t-surface) !important; }
+  [data-theme="dark"] .bg-white\/90 { background-color: rgba(30,30,46,0.9) !important; }
+  [data-theme="dark"] .shadow-sketch { box-shadow: 4px 4px 0px 0px var(--t-shadow); }
+  [data-theme="dark"] .shadow-sketch-sm { box-shadow: 3px 3px 0px 0px var(--t-shadow-sm); }
+  [data-theme="dark"] .tape { background: var(--t-tapecolor); }
+  [data-theme="dark"] .btn-sketch:hover { box-shadow: 1px 1px 0px 0px var(--t-shadow); }
+  [data-theme="dark"] .text-pencil\\/80 { color: rgba(206,201,188,0.8) !important; }
+  [data-theme="dark"] .text-pencil\\/60 { color: rgba(206,201,188,0.6) !important; }
+  [data-theme="dark"] .text-pencil\\/50 { color: rgba(206,201,188,0.5) !important; }
+  [data-theme="dark"] .bg-greenpen\\/5 { background-color: rgba(76,175,124,0.06) !important; }
+  [data-theme="dark"] .bg-greenpen\\/10 { background-color: rgba(76,175,124,0.1) !important; }
+  [data-theme="dark"] .bg-bluepen\\/5 { background-color: rgba(94,151,246,0.06) !important; }
+  [data-theme="dark"] .bg-accent\\/5 { background-color: rgba(255,107,107,0.06) !important; }
+  [data-theme="dark"] .bg-yellowpen\\/5 { background-color: rgba(230,180,34,0.06) !important; }
+  [data-theme="dark"] .border-greenpen\\/20 { border-color: rgba(76,175,124,0.2) !important; }
+  [data-theme="dark"] .border-bluepen\\/20 { border-color: rgba(94,151,246,0.2) !important; }
+  [data-theme="dark"] .border-accent\\/20 { border-color: rgba(255,107,107,0.2) !important; }
+  [data-theme="dark"] .border-yellowpen\\/20 { border-color: rgba(230,180,34,0.2) !important; }
+  [data-theme="dark"] .border-pencil\\/20 { border-color: rgba(255,255,255,0.08) !important; }
+  [data-theme="dark"] .text-pencil { color: var(--t-pencil) !important; }
+  [data-theme="dark"] .border-pencil { border-color: #3d3d52 !important; }
+  [data-theme="dark"] .hover\\:text-accent:hover { color: var(--t-accent) !important; }
+  [data-theme="dark"] .hover\\:bg-accent:hover { background-color: var(--t-accent) !important; }
+  [data-theme="dark"] .text-accent { color: var(--t-accent) !important; }
+  [data-theme="dark"] .text-greenpen { color: var(--t-greenpen) !important; }
+  [data-theme="dark"] .text-bluepen { color: var(--t-bluepen) !important; }
+  [data-theme="dark"] .text-yellowpen { color: var(--t-yellowpen) !important; }
+  [data-theme="dark"] .border-greenpen { border-color: var(--t-greenpen) !important; }
+  [data-theme="dark"] .border-accent { border-color: var(--t-accent) !important; }
+  [data-theme="dark"] .border-bluepen { border-color: var(--t-bluepen) !important; }
+  [data-theme="dark"] .border-yellowpen { border-color: var(--t-yellowpen) !important; }
+  [data-theme="dark"] .bg-greenpen { background-color: var(--t-greenpen) !important; }
+  [data-theme="dark"] .bg-accent { background-color: var(--t-accent) !important; }
+  [data-theme="dark"] .bg-bluepen { background-color: var(--t-bluepen) !important; }
+  [data-theme="dark"] .bg-yellowpen { background-color: var(--t-yellowpen) !important; }
+  [data-theme="dark"] .bg-gray-900 { background-color: #0d0d1a !important; }
+  [data-theme="dark"] .text-amber-600 { color: #d97706 !important; }
+  [data-theme="dark"] .text-red-600 { color: #ef4444 !important; }
+  [data-theme="dark"] .text-gray-600 { color: #9ca3af !important; }
+  [data-theme="dark"] .text-slate-600 { color: #94a3b8 !important; }
+  [data-theme="dark"] .text-sky-600 { color: #38bdf8 !important; }
+  [data-theme="dark"] .text-blue-600 { color: #60a5fa !important; }
+  [data-theme="dark"] .text-green-400 { color: #4ade80 !important; }
+  [data-theme="dark"] .hover\\:text-white:hover { color: #ffffff !important; }
 </style>
 </head>
 <body class="min-h-screen">
+
+<!-- Theme Toggle -->
+<div class="fixed top-4 left-4 z-50">
+  <button onclick="toggleTheme()" id="themeToggle" class="bg-white/90 backdrop-blur border-2 border-pencil/20 shadow-sketch-sm rounded-full px-2.5 py-1 text-sm" title="Toggle dark mode">
+    <span id="themeIcon">🌙</span>
+  </button>
+</div>
 
 <!-- Language Selector -->
 <div class="fixed top-4 right-4 z-50 flex gap-1 bg-white/90 backdrop-blur border-2 border-pencil/20 rounded-full px-2 py-1 shadow-sketch-sm">
@@ -211,8 +297,32 @@ setLang = function(lang) {
   _origSetLang2(lang);
   updateLangBtns(lang);
 };
+// Init
 const saved = localStorage.getItem('lang') || 'en';
 updateLangBtns(saved);
+
+// ── Theme Toggle ──
+(function() {
+  const html = document.documentElement;
+  const tsaved = localStorage.getItem('lf-theme');
+  if (tsaved === 'dark' || (!tsaved && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
+    html.setAttribute('data-theme', 'dark');
+    localStorage.setItem('lf-theme', 'dark');
+    document.getElementById('themeIcon').textContent = '☀️';
+  }
+})();
+function toggleTheme() {
+  const html = document.documentElement;
+  if (html.getAttribute('data-theme') === 'dark') {
+    html.removeAttribute('data-theme');
+    localStorage.setItem('lf-theme', 'light');
+    document.getElementById('themeIcon').textContent = '🌙';
+  } else {
+    html.setAttribute('data-theme', 'dark');
+    localStorage.setItem('lf-theme', 'dark');
+    document.getElementById('themeIcon').textContent = '☀️';
+  }
+}
 </script>
 </body>
 </html>

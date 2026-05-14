@@ -343,6 +343,9 @@ tailwind.config = {
       <a href="#guides" class="hover:text-accent transition-colors">Guides</a>
     </div>
     <div class="hidden md:flex items-center gap-3">
+      <button onclick="toggleTheme()" id="themeToggle" class="font-heading text-sm bg-white border-[2px] border-pencil/30 shadow-sketch-sm px-2.5 py-1 rounded-full hover:bg-muted transition-colors" title="Toggle dark mode">
+        <span id="themeIcon">🌙</span>
+      </button>
       <a href="#scanner" class="font-heading text-sm bg-white border-[3px] border-pencil shadow-sketch px-4 py-1.5 wobbly-sm btn-sketch hover:bg-accent hover:text-white transition-colors" data-i18n="nav_cta">Scan now ✦</a>
       <div class="relative">
         <button onclick="toggleLangMenu()" class="font-heading text-sm bg-white border-[2px] border-pencil/30 shadow-sketch-sm px-2.5 py-1 rounded-full hover:bg-muted transition-colors flex items-center gap-1">
@@ -979,6 +982,46 @@ tailwind.config = {
 
 <!-- ════════════════ SCRIPTS ════════════════ -->
 <script>
+// ── Theme Toggle ──
+(function() {
+  const html = document.documentElement;
+  const saved = localStorage.getItem('lf-theme');
+  if (saved === 'dark' || (!saved && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
+    html.setAttribute('data-theme', 'dark');
+    localStorage.setItem('lf-theme', 'dark');
+    document.getElementById('themeIcon').textContent = '☀️';
+  } else {
+    html.removeAttribute('data-theme');
+    document.getElementById('themeIcon').textContent = '🌙';
+  }
+})();
+
+function toggleTheme() {
+  const html = document.documentElement;
+  if (html.getAttribute('data-theme') === 'dark') {
+    html.removeAttribute('data-theme');
+    localStorage.setItem('lf-theme', 'light');
+    document.getElementById('themeIcon').textContent = '🌙';
+  } else {
+    html.setAttribute('data-theme', 'dark');
+    localStorage.setItem('lf-theme', 'dark');
+    document.getElementById('themeIcon').textContent = '☀️';
+  }
+}
+
+// Listen for OS theme changes
+window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', e => {
+  if (!localStorage.getItem('lf-theme')) {
+    if (e.matches) {
+      document.documentElement.setAttribute('data-theme', 'dark');
+      document.getElementById('themeIcon').textContent = '☀️';
+    } else {
+      document.documentElement.removeAttribute('data-theme');
+      document.getElementById('themeIcon').textContent = '🌙';
+    }
+  }
+});
+
 // ── Tab switching ──
 function switchTab(tab) {
   const panels = {

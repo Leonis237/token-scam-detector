@@ -15,32 +15,72 @@ tailwind.config = {
         body: ['Patrick Hand', 'cursive'],
       },
       colors: {
-        paper: '#fdfbf7',
-        pencil: '#2d2d2d',
-        accent: '#ff4d4d',
-        yellowpen: '#d4a017',
+        paper: 'var(--t-paper)',
+        pencil: 'var(--t-pencil)',
+        accent: 'var(--t-accent)',
+        yellowpen: 'var(--t-yellowpen)',
+        bluepen: 'var(--t-bluepen)',
+        greenpen: 'var(--t-greenpen)',
+        muted: 'var(--t-muted)',
       }
     }
   }
 }
 </script>
 <style>
+  /* Theme vars */
+  :root {
+    --t-paper: #fdfbf7; --t-pencil: #2d2d2d; --t-muted: #e5e0d8;
+    --t-accent: #ff4d4d; --t-bluepen: #2d5da1; --t-greenpen: #4a9c5d;
+    --t-yellowpen: #d4a017; --t-surface: #ffffff;
+    --t-shadow: #2d2d2d; --t-tapecolor: rgba(180,180,170,0.4);
+  }
+  [data-theme="dark"] {
+    --t-paper: #16161e; --t-pencil: #cec9bc; --t-muted: #2a2a3a;
+    --t-accent: #ff6b6b; --t-bluepen: #5e97f6; --t-greenpen: #4caf7c;
+    --t-yellowpen: #e6b422; --t-surface: #1e1e2e;
+    --t-shadow: rgba(0,0,0,0.5); --t-tapecolor: rgba(100,100,120,0.25);
+  }
   body {
-    background-color: #fdfbf7;
-    background-image: radial-gradient(#e5e0d8 1px, transparent 1px);
+    background-color: var(--t-paper);
+    background-image: radial-gradient(var(--t-muted) 1px, transparent 1px);
     background-size: 24px 24px;
   }
+  [data-theme="dark"] body { background-color: var(--t-paper); background-image: radial-gradient(#252540 1px, transparent 1px); }
+  [data-theme="dark"] .bg-white { background-color: var(--t-surface) !important; }
+  [data-theme="dark"] .bg-muted { background-color: var(--t-muted) !important; }
+  [data-theme="dark"] .text-pencil { color: var(--t-pencil) !important; }
+  [data-theme="dark"] .text-pencil\\/50 { color: rgba(206,201,188,0.5) !important; }
+  [data-theme="dark"] .text-pencil\\/70 { color: rgba(206,201,188,0.7) !important; }
+  [data-theme="dark"] .text-pencil\\/40 { color: rgba(206,201,188,0.4) !important; }
+  [data-theme="dark"] .text-accent { color: var(--t-accent) !important; }
+  [data-theme="dark"] .text-bluepen { color: var(--t-bluepen) !important; }
+  [data-theme="dark"] .text-greenpen { color: var(--t-greenpen) !important; }
+  [data-theme="dark"] .border-pencil { border-color: #3d3d52 !important; }
+  [data-theme="dark"] .border-pencil\\/20 { border-color: rgba(255,255,255,0.08) !important; }
+  [data-theme="dark"] .border-accent\\/30 { border-color: rgba(255,107,107,0.3) !important; }
+  [data-theme="dark"] .bg-accent\\/20 { background-color: rgba(255,107,107,0.15) !important; }
+  [data-theme="dark"] .hover\\:text-accent:hover { color: var(--t-accent) !important; }
+  [data-theme="dark"] .hover\\:bg-accent:hover { background-color: var(--t-accent) !important; }
+  [data-theme="dark"] .hover\\:text-white:hover { color: #fff !important; }
   .wobbly { border-radius: 255px 15px 225px 15px / 15px 225px 15px 255px; }
-  .shadow-sketch { box-shadow: 4px 4px 0px 0px #2d2d2d; }
+  .shadow-sketch { box-shadow: 4px 4px 0px 0px var(--t-shadow); }
   .tape {
     position: absolute; top: -10px; left: 50%;
     transform: translateX(-50%) rotate(-2deg);
     width: 60px; height: 22px;
-    background: rgba(180,180,170,0.4);
+    background: var(--t-tapecolor);
   }
 </style>
 </head>
 <body class="font-body text-pencil min-h-screen">
+
+<!-- Theme Toggle -->
+<div class="fixed top-4 right-4 z-50">
+  <button onclick="toggleTheme()" id="themeToggle" class="bg-white border-[3px] border-pencil shadow-sketch wobbly px-2.5 py-1 text-sm font-heading" title="Toggle dark mode">
+    <span id="themeIcon">🌙</span>
+  </button>
+</div>
 
 <div class="max-w-2xl mx-auto px-6 py-12">
   <!-- Header -->
@@ -143,6 +183,29 @@ async function load() {
   }
 }
 load();
+
+// ── Theme Toggle ──
+(function() {
+  const html = document.documentElement;
+  const tsaved = localStorage.getItem('lf-theme');
+  if (tsaved === 'dark' || (!tsaved && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
+    html.setAttribute('data-theme', 'dark');
+    localStorage.setItem('lf-theme', 'dark');
+    document.getElementById('themeIcon').textContent = '☀️';
+  }
+})();
+function toggleTheme() {
+  const html = document.documentElement;
+  if (html.getAttribute('data-theme') === 'dark') {
+    html.removeAttribute('data-theme');
+    localStorage.setItem('lf-theme', 'light');
+    document.getElementById('themeIcon').textContent = '🌙';
+  } else {
+    html.setAttribute('data-theme', 'dark');
+    localStorage.setItem('lf-theme', 'dark');
+    document.getElementById('themeIcon').textContent = '☀️';
+  }
+}
 </script>
 </body>
 </html>
