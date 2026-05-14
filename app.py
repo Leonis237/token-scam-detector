@@ -302,6 +302,10 @@ def preprocess(features):
     return x
 
 
+@app.route("/sitemap.xml")
+def sitemap():
+    return send_from_directory("static", "sitemap.xml")
+
 @app.route("/")
 def index():
     return send_from_directory("static", "index.html")
