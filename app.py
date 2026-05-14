@@ -313,7 +313,18 @@ def index():
 
 @app.route("/guides/<path:filename>")
 def guide(filename):
-    return send_from_directory("static/guides", filename)
+    guides_dir = DIR / "static" / "guides"
+    # Try the exact path first
+    if (guides_dir / filename).exists():
+        return send_from_directory("static/guides", filename)
+    # Try with .html extension (clean URLs)
+    html_name = filename + ".html"
+    if (guides_dir / html_name).exists():
+        return send_from_directory("static/guides", html_name)
+    # Try as directory/index.html
+    if (guides_dir / filename / "index.html").exists():
+        return send_from_directory("static/guides", filename + "/index.html")
+    return "Not Found", 404
 
 
 @app.route("/api/check")
