@@ -772,82 +772,140 @@ def _call_deepseek(prompt):
         return None
 
 
+def _ds(path, params=None):
+    """DexScreener free API helper. Returns (data, error_str)."""
+    base = "https://api.dexscreener.com/latest/dex"
+    url = base + path
+    if params:
+        url += "?" + urllib.parse.urlencode(params)
+    req = urllib.request.Request(url, headers={"User-Agent": "LeonisForge/1.0"})
+    try:
+        with urllib.request.urlopen(req, timeout=15) as resp:
+            return json.loads(resp.read().decode()), None
+    except Exception as e:
+        return None, str(e)[:100]
+
+
 @app.route("/api/token/analyze")
 def api_token_analyze():
-    """Full token analysis: CoinGecko data + AI analysis."""
+    """Full token analysis: DexScreener market data + DeepSeek AI analysis."""
     coin_id = request.args.get("coin_id", "").strip()
+    name = request.args.get("name", "").strip()
+    symbol = request.args.get("symbol", "").strip()
     if not coin_id:
         return jsonify({"error": "coin_id is required"}), 400
 
     now = time.time()
     cached = _token_cache.get(coin_id)
-    if cached and (now - cached["ts"]) < 3600:  # 1h cache
+    if cached and (now - cached["ts"]) < 3600:
         return jsonify(cached["data"])
 
-    # Small delay to avoid CoinGecko rate limits (free tier)
-    time.sleep(2)
-    
-    # Fetch CoinGecko coin detail
-    detail, detail_err = _cg(f"/coins/{coin_id}", {
+    # Search DexScreener by symbol or name
+    query = symbol or name or coin_id
+    ds_data, ds_err = _ds(f"/search", {"q": query})
+    if not ds_data or "pairs" not in ds_data or not ds_data["pairs"]:
+        return jsonify({"error": f"Token not found on DexScreener" + (f" ({ds_err})" if ds_err else "")}), 404
+
+    # Aggregate across all pairs for this token
+    pairs = ds_data["pairs"]
+    # Filter pairs matching our token
+    matching = [p for p in pairs if (
+        p.get("baseToken", {}).get("symbol", "").upper() == symbol.upper() or
+        coin_id.lower() in p.get("baseToken", {}).get("name", "").lower() or
+        coin_id.lower() in p.get("url", "").lower()
+    )] if symbol else pairs[:5]
+    if not matching:
+        matching = pairs[:5]
+
+    # Use the pair with highest liquidity as primary
+    primary = max(matching, key=lambda p: p.get("liquidity", {}).get("usd", 0) or 0)
+
+    base = primary.get("baseToken", {})
+    price = float(primary.get("priceUsd", 0) or 0)
+    volume_24h = float(primary.get("volume", {}).get("h24", 0) or 0)
+    liquidity = float(primary.get("liquidity", {}).get("usd", 0) or 0)
+    fdv = float(primary.get("fdv", 0) or 0)
+    mcap = float(primary.get("marketCap", 0) or 0)
+    price_change_24h = float(primary.get("priceChange", {}).get("h24", 0) or 0)
+
+    # Get exchange list from unique DEX names
+    exchanges = []
+    seen_dex = set()
+    for p in matching[:5]:
+        dex_name = p.get("dexId", "?")
+        if dex_name not in seen_dex:
+            seen_dex.add(dex_name)
+            exchanges.append({
+                "name": dex_name.upper(),
+                "volume_24h_usd": float(p.get("volume", {}).get("h24", 0) or 0),
+            })
+    exchanges.sort(key=lambda x: x["volume_24h_usd"], reverse=True)
+
+    # Get some CoinGecko metadata (non-rate-limited endpoints)
+    detail, _ = _cg(f"/coins/{coin_id}", {
         "localization": "false",
         "tickers": "false",
         "community_data": "false",
         "developer_data": "false",
     })
-    if not detail or "id" not in detail:
-        return jsonify({"error": f"Token not found on CoinGecko" + (f" ({detail_err})" if detail_err else "")}), 404
+    categories = []
+    description = ""
+    links = {"website": "", "twitter": ""}
+    rank = None
+    img = ""
+    ath = None
+    ath_change_pct = None
+    circ_supply = None
+    total_supply = None
+    circ_pct = None
 
-    market = detail.get("market_data", {})
-    img = detail.get("image", {})
+    if detail:
+        market = detail.get("market_data", {})
+        img = detail.get("image", {}).get("large", "")
+        rank = detail.get("market_cap_rank")
+        categories = [c for c in detail.get("categories", [])[:5] if c]
+        description = (detail.get("description", {}).get("en") or "")[:300]
+        links = {
+            "website": detail.get("links", {}).get("homepage", [""])[0] or "",
+            "twitter": detail.get("links", {}).get("twitter_screen_name", ""),
+        }
+        ath = market.get("ath", {}).get("usd")
+        if price and ath:
+            ath_change_pct = round(price / ath * 100, 1)
+        circ_supply = market.get("circulating_supply")
+        total_supply = market.get("total_supply")
+        if circ_supply and total_supply:
+            circ_pct = round(circ_supply / total_supply * 100, 1)
 
-    # Fetch tickers for exchange data
-    ticker_data, _ = _cg(f"/coins/{coin_id}/tickers")
-    exchanges = []
-    total_vol = 0
-    if ticker_data and "tickers" in ticker_data:
-        seen = set()
-        for t in ticker_data["tickers"]:
-            ex_name = t.get("market", {}).get("name", "?")
-            vol = t.get("converted_volume", {}).get("usd") or t.get("volume", 0)
-            if ex_name not in seen:
-                seen.add(ex_name)
-                exchanges.append({"name": ex_name, "volume_24h_usd": vol})
-            total_vol += vol
-        exchanges.sort(key=lambda x: x["volume_24h_usd"] or 0, reverse=True)
-        exchanges = exchanges[:5]
-
-    current_price = market.get("current_price", {}).get("usd")
-    ath = market.get("ath", {}).get("usd")
-    ath_change = (current_price / ath * 100 - 100) if current_price and ath else None
-
-    circ_supply = market.get("circulating_supply")
-    total_supply = market.get("total_supply")
-    circ_pct = round(circ_supply / total_supply * 100, 1) if circ_supply and total_supply else None
+    # Use DexScreener data as primary, CoinGecko as supplement
+    token_name = base.get("name") or name or detail.get("name", coin_id) if detail else coin_id
+    token_symbol = base.get("symbol", symbol).upper() if base.get("symbol") else symbol.upper()
 
     result = {
         "id": coin_id,
-        "name": detail.get("name", "?"),
-        "symbol": detail.get("symbol", "?").upper(),
-        "image": img.get("large", ""),
-        "thumb": img.get("thumb", ""),
-        "rank": detail.get("market_cap_rank"),
-        "price": current_price,
+        "name": token_name,
+        "symbol": token_symbol,
+        "image": img,
+        "thumb": img,
+        "rank": rank,
+        "price": price if price else None,
         "ath": ath,
-        "ath_change_pct": round(current_price / ath * 100, 1) if current_price and ath else None,
-        "mcap": market.get("market_cap", {}).get("usd"),
-        "fdv": market.get("fully_diluted_valuation", {}).get("usd"),
+        "ath_change_pct": ath_change_pct,
+        "mcap": mcap if mcap else (detail.get("market_data", {}).get("market_cap", {}).get("usd") if detail else None),
+        "fdv": fdv if fdv else (detail.get("market_data", {}).get("fully_diluted_valuation", {}).get("usd") if detail else None),
         "circ_supply": circ_supply,
         "total_supply": total_supply,
         "circ_pct": circ_pct,
-        "volume_24h": market.get("total_volume", {}).get("usd"),
-        "categories": [c for c in detail.get("categories", [])[:5] if c],
-        "description": (detail.get("description", {}).get("en") or "")[:300],
+        "volume_24h": volume_24h,
+        "liquidity": liquidity,
+        "price_change_24h": price_change_24h,
+        "categories": categories,
+        "description": description,
         "exchanges": exchanges,
-        "links": {
-            "website": detail.get("links", {}).get("homepage", [""])[0] or "",
-            "twitter": detail.get("links", {}).get("twitter_screen_name", ""),
-        },
-        "genesis_date": detail.get("genesis_date"),
+        "links": links,
+        "dex": primary.get("dexId", ""),
+        "pair_address": primary.get("pairAddress", ""),
+        "chain": primary.get("chainId", ""),
         "low_circ_warning": circ_pct is not None and circ_pct < 30,
     }
 
@@ -856,7 +914,6 @@ def api_token_analyze():
     ai_text = _call_deepseek(prompt)
     result["ai_analysis"] = ai_text
 
-    # Cache
     _token_cache[coin_id] = {"ts": now, "data": result}
     return jsonify(result)
 

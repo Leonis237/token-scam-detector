@@ -1122,6 +1122,8 @@ window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', e =
 
 // ── Token Checker ──
 let checkerSelectedId = null;
+let checkerSelectedName = '';
+let checkerSelectedSymbol = '';
 let checkerTimer = null;
 
 async function tokenLiveSearch() {
@@ -1150,13 +1152,19 @@ async function tokenLiveSearch() {
 
 function selectToken(id, name, symbol) {
   checkerSelectedId = id;
+  checkerSelectedName = name;
+  checkerSelectedSymbol = symbol;
   document.getElementById('checkerQuery').value = name + ' (' + symbol + ')';
   document.getElementById('checkerDropdown').classList.add('hidden');
   analyzeToken();
 }
 
 async function analyzeToken() {
-  if (!checkerSelectedId) {
+  let coinId = checkerSelectedId;
+  let coinName = checkerSelectedName || '';
+  let coinSymbol = checkerSelectedSymbol || '';
+
+  if (!coinId) {
     // Try searching from current input
     const q = document.getElementById('checkerQuery').value.trim();
     if (q.length < 2) return;
@@ -1183,7 +1191,7 @@ async function analyzeToken() {
   btn.disabled = true;
 
   try {
-    const resp = await fetch(`/api/token/analyze?coin_id=${encodeURIComponent(checkerSelectedId)}`);
+    const resp = await fetch(`/api/token/analyze?coin_id=${encodeURIComponent(coinId)}&name=${encodeURIComponent(coinName)}&symbol=${encodeURIComponent(coinSymbol)}`);
     const data = await resp.json();
     if (data.error) { errorDiv.textContent = data.error; errorDiv.classList.remove('hidden'); return; }
 
