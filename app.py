@@ -657,19 +657,24 @@ def stats_page():
 _token_cache = {}
 
 def _cg(path, params=None):
-    """CoinGecko free API helper. Returns (data, error_str)."""
+    """CoinGecko free API helper. Returns (data, error_str). Retries on 429."""
     base = "https://api.coingecko.com/api/v3"
     url = base + path
     if params:
         url += "?" + urllib.parse.urlencode(params)
     req = urllib.request.Request(url, headers={"User-Agent": "LeonisForge/1.0"})
-    try:
-        with urllib.request.urlopen(req, timeout=15) as resp:
-            return json.loads(resp.read().decode()), None
-    except urllib.error.HTTPError as e:
-        return None, f"HTTP {e.code}"
-    except Exception as e:
-        return None, str(e)[:100]
+    for attempt in range(3):
+        try:
+            with urllib.request.urlopen(req, timeout=15) as resp:
+                return json.loads(resp.read().decode()), None
+        except urllib.error.HTTPError as e:
+            if e.code == 429 and attempt < 2:
+                time.sleep(2 * (attempt + 1))
+                continue
+            return None, f"HTTP {e.code}"
+        except Exception as e:
+            return None, str(e)[:100]
+    return None, "HTTP 429 (retries exhausted)"
 
 
 @app.route("/api/token/lookup")
