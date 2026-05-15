@@ -24,6 +24,18 @@ const I18N = {
     tab_scam: "🔍 Scan Token Scam",
     tab_approval: "🛡️ Approval Checker",
     tab_eip7702: "🔐 EIP-7702 Checker",
+    tab_checker: "🧠 Token Check",
+
+    checker_label: "Tên token, symbol hoặc địa chỉ contract",
+    checker_placeholder: "BTC, opengradient, 0xFbC2...",
+    checker_btn: "🧠 Phân Tích Token",
+    checker_ath: "ATH",
+    checker_mcap: "Market Cap",
+    checker_fdv: "FDV",
+    checker_circ: "Circulating",
+    checker_exchanges: "Sàn giao dịch (top 5)",
+    checker_ai_title: "🧠 AI Phân Tích (DeepSeek)",
+    checker_ai_note: "AI analysis có thể không chính xác. Luôn DYOR.",
 
     scam_label_addr: "Địa chỉ contract token",
     scam_placeholder: "0x87230146E138d3F296a9a77e497A2A83012e9Bc5",
@@ -128,7 +140,8 @@ const I18N = {
 
     tab_scam_desc: "<strong class=\"font-heading text-bluepen\">🔍 Token Scam Detector</strong> — Dán địa chỉ contract token để kiểm tra rủi ro: <span class=\"text-accent font-semibold\">honeypot</span> (chỉ mua được, không bán được), <span class=\"text-accent font-semibold\">thuế cao</span> (mất % lớn khi bán), <span class=\"text-accent font-semibold\">proxy ẩn</span> (owner nâng cấp logic bất kỳ lúc nào), <span class=\"text-accent font-semibold\">mã nguồn đóng</span>. AI phân tích 19 đặc điểm on-chain + Honeypot.is API. <em>Dùng cho: trader kiểm tra token trước khi mua.</em>",
     tab_approval_desc: "<strong class=\"font-heading text-greenpen\">🛡️ Approval Checker</strong> — Bạn đã từng swap trên Uniswap, PancakeSwap, hay 1inch? Mỗi lần swap bạn cấp quyền <span class=\"font-semibold\">approve</span> cho DEX rút token. Nếu quên thu hồi (revoke), hacker exploit contract DEX là <span class=\"text-accent font-semibold\">rút sạch token của bạn</span> — kể cả USDT, USDC, ETH. Quét on-chain 200K blocks + top DEX để tìm tất cả approval còn active. <em>Dùng cho: kiểm tra ví định kỳ, sau khi swap token lạ.</em>",
-    tab_eip7702_desc: "<strong class=\"font-heading text-accent\">🔐 EIP-7702 Delegation Checker</strong> — Sau bản nâng cấp <span class=\"font-semibold\">Pectra</span> (2025), EIP-7702 cho phép smart contract \"mượn\" ví EOA (ví thường của bạn) để ký giao dịch thay bạn.<br><span class=\"text-accent font-semibold\">⚠️ Attack vector:</span> Bạn click \"Connect Wallet\" trên web lạ → ký 1 chữ ký trông vô hại → contract được delegate toàn quyền điều khiển ví → <span class=\"text-accent font-semibold\">rút sạch token mà không cần private key.</span><br>🧠 <em>Nhiều người không biết ví mình đang bị delegate. Checker này quét 5 chain (ETH, BSC, Base, Arbitrum, Polygon) cùng lúc — nếu thấy code <code class=\"bg-accent/20 px-1 rounded text-xs\">0xef01...</code> trong ví là có delegation.</em>",
+    tab_eip7702_desc: "<strong class=\"font-heading text-accent\">🔐 EIP-7702 Delegation Checker</strong> — Sau bản nâng cấp <span class=\"font-semibold\">Pectra</span> (2025), EIP-7702 cho phép smart contract \"mượn\" ví EOA (ví thường của bạn) để ký giao dịch thay bạn.<br><span class=\"text-accent font-semibold\">⚠️ Attack vector:</span> Bạn click \"Connect Wallet\" trên web lạ → ký 1 chữ ký trông vô hại → contract được delegate toàn quyền điều khiển ví → <span class=\"text-accent font-semibold\">rút sạch token, không cần private key.</span><br>🧠 <em>Nhiều người không biết ví mình đang bị delegate. Checker này quét đồng thời 5 chain (ETH, BSC, Base, Arbitrum, Polygon) — nếu ví có code <code class=\"bg-accent/20 px-1 rounded text-xs\">0xef01...</code> là có delegation. Dùng cho: audit ví định kỳ, sau khi connect ví vào web lạ.</em>",
+    tab_checker_desc: "<strong class=\"font-heading text-bluepen\">🧠 Token Check</strong> — Tra cứu token theo tên, symbol hoặc địa chỉ contract. Xem giá, Market Cap, FDV, tỉ lệ circulating, top sàn giao dịch. <em class=\"text-accent\">AI phân tích tiềm năng &amp; rủi ro (DeepSeek).</em>",
 
     hermes_title: "☤ Hermes Agent — Hướng Dẫn Cài Đặt",
     hermes_subtitle: "AI agent mã nguồn mở bởi <strong>Nous Research</strong>. Tự học, đa nền tảng, 18+ nhà cung cấp LLM. Chạy trên Linux, macOS, và WSL.",
@@ -315,6 +328,18 @@ const I18N = {
     tab_scam: "🔍 Scan Token Scam",
     tab_approval: "🛡️ Approval Checker",
     tab_eip7702: "🔐 EIP-7702 Checker",
+    tab_checker: "🧠 Token Check",
+
+    checker_label: "Token name, symbol or contract address",
+    checker_placeholder: "BTC, opengradient, 0xFbC2...",
+    checker_btn: "🧠 Analyze Token",
+    checker_ath: "ATH",
+    checker_mcap: "Market Cap",
+    checker_fdv: "FDV",
+    checker_circ: "Circulating",
+    checker_exchanges: "Exchanges (top 5)",
+    checker_ai_title: "🧠 AI Analysis (DeepSeek)",
+    checker_ai_note: "AI analysis may be inaccurate. Always DYOR.",
 
     scam_label_addr: "Token contract address",
     scam_placeholder: "0x87230146E138d3F296a9a77e497A2A83012e9Bc5",
@@ -419,7 +444,8 @@ const I18N = {
 
     tab_scam_desc: "<strong class=\"font-heading text-bluepen\">🔍 Token Scam Detector</strong> — Paste a token contract address to check for risks: <span class=\"text-accent font-semibold\">honeypots</span> (buy OK, sell blocked), <span class=\"text-accent font-semibold\">high taxes</span>, <span class=\"text-accent font-semibold\">hidden proxies</span>, <span class=\"text-accent font-semibold\">closed source</span>. AI analyzes 19 on-chain features + Honeypot.is API. <em>Use for: checking tokens before buying.</em>",
     tab_approval_desc: "<strong class=\"font-heading text-greenpen\">🛡️ Approval Checker</strong> — Ever swapped on Uniswap, PancakeSwap, or 1inch? Each swap grants <span class=\"font-semibold\">approve</span> permission for the DEX to withdraw your tokens. Forgotten approvals are a <span class=\"text-accent font-semibold\">critical exploit vector</span> — if a DEX contract gets hacked, attackers drain your USDT, USDC, ETH. Scans 200K on-chain blocks + top DEXes for all active approvals. <em>Use for: periodic wallet audits, after swapping obscure tokens.</em>",
-    tab_eip7702_desc: "<strong class=\"font-heading text-accent\">🔐 EIP-7702 Delegation Checker</strong> — After the <span class=\"font-semibold\">Pectra</span> upgrade (2025), EIP-7702 lets smart contracts \"borrow\" your EOA wallet to sign transactions on your behalf.<br><span class=\"text-accent font-semibold\">⚠️ Attack vector:</span> You click \"Connect Wallet\" on a shady site → sign an innocent-looking signature → the contract gets full delegation over your wallet → <span class=\"text-accent font-semibold\">drains all tokens without your private key.</span><br>🧠 <em>Many users don't know their wallet is delegated. This checker scans 5 chains (ETH, BSC, Base, Arbitrum, Polygon) simultaneously — if <code class=\"bg-accent/20 px-1 rounded text-xs\">0xef01...</code> code appears in your wallet, you have an active delegation.</em>",
+    tab_eip7702_desc: "<strong class=\"font-heading text-accent\">🔐 EIP-7702 Delegation Checker</strong> — After the <span class=\"font-semibold\">Pectra</span> upgrade (2025), EIP-7702 lets smart contracts \"borrow\" your EOA wallet to sign transactions on your behalf.<br><span class=\"text-accent font-semibold\">⚠️ Attack vector:</span> You click \"Connect Wallet\" on a shady site → sign an innocent-looking signature → the contract gets full delegation over your wallet → <span class=\"text-accent font-semibold\">drain all tokens without your private key.</span><br>🧠 <em>Many users don't know their wallet is delegated. This checker scans 5 chains (ETH, BSC, Base, Arbitrum, Polygon) simultaneously — if <code class=\"bg-accent/20 px-1 rounded text-xs\">0xef01...</code> appears in your wallet code, there's a delegation. Use for: periodic wallet audits, after connecting to unfamiliar dApps.</em>",
+    tab_checker_desc: "<strong class=\"font-heading text-bluepen\">🧠 Token Check</strong> — Look up tokens by name, symbol, or contract address. View price, Market Cap, FDV, circulating supply %, top exchanges. <em class=\"text-accent\">AI-powered potential &amp; risk analysis (DeepSeek).</em>",
 
     hermes_title: "☤ Hermes Agent — Full Installation Guide",
     hermes_subtitle: "Open-source AI agent by <strong>Nous Research</strong>. Self-learning, multi-platform, 18+ LLM providers. Runs on Linux, macOS, and WSL.",
@@ -606,6 +632,18 @@ const I18N = {
     tab_scam: "🔍 代币骗局扫描",
     tab_approval: "🛡️ 授权检查",
     tab_eip7702: "🔐 EIP-7702 检查",
+    tab_checker: "🧠 代币查询",
+
+    checker_label: "代币名称、符号或合约地址",
+    checker_placeholder: "BTC, opengradient, 0xFbC2...",
+    checker_btn: "🧠 分析代币",
+    checker_ath: "历史最高",
+    checker_mcap: "市值",
+    checker_fdv: "完全稀释估值",
+    checker_circ: "流通量",
+    checker_exchanges: "交易所 (前5)",
+    checker_ai_title: "🧠 AI 分析 (DeepSeek)",
+    checker_ai_note: "AI分析可能不准确。请自行研究。",
 
     scam_label_addr: "代币合约地址",
     scam_placeholder: "0x87230146E138d3F296a9a77e497A2A83012e9Bc5",
@@ -710,7 +748,8 @@ const I18N = {
 
     tab_scam_desc: "<strong class=\"font-heading text-bluepen\">🔍 代币骗局检测器</strong> — 粘贴代币合约地址以检查风险：<span class=\"text-accent font-semibold\">蜜罐</span>（只能买不能卖）、<span class=\"text-accent font-semibold\">高税率</span>、<span class=\"text-accent font-semibold\">隐藏代理</span>、<span class=\"text-accent font-semibold\">闭源代码</span>。AI分析19个链上特征 + Honeypot.is API。<em>用途：购买前检查代币。</em>",
     tab_approval_desc: "<strong class=\"font-heading text-greenpen\">🛡️ 授权检查器</strong> — 在Uniswap、PancakeSwap或1inch上交易过吗？每次交易都会授予DEX <span class=\"font-semibold\">approve</span> 权限来提取您的代币。忘记撤销（revoke）的授权是<span class=\"text-accent font-semibold\">严重的安全漏洞</span>——如果DEX合约被黑，攻击者将清空您的USDT、USDC、ETH。扫描20万区块 + 主流DEX以查找所有活跃授权。<em>用途：定期钱包审计、交易陌生代币后。</em>",
-    tab_eip7702_desc: "<strong class=\"font-heading text-accent\">🔐 EIP-7702 委托检查器</strong> — <span class=\"font-semibold\">Pectra</span>升级（2025）后，EIP-7702允许智能合约\"借用\"您的EOA钱包代表您签署交易。<br><span class=\"text-accent font-semibold\">⚠️ 攻击方式：</span>您在可疑网站点击\"连接钱包\"→签署一个看似无害的签名→合约获得您钱包的完全委托权限→<span class=\"text-accent font-semibold\">无需私钥即可清空所有代币。</span><br>🧠 <em>许多用户不知道自己的钱包已被委托。此检查器同时扫描5条链（ETH、BSC、Base、Arbitrum、Polygon）——如果钱包中出现<code class=\"bg-accent/20 px-1 rounded text-xs\">0xef01...</code>代码，说明存在活跃委托。</em>",
+    tab_eip7702_desc: "<strong class=\"font-heading text-accent\">🔐 EIP-7702 委托检查器</strong> — <span class=\"font-semibold\">Pectra</span>升级（2025）后，EIP-7702允许智能合约\"借用\"您的EOA钱包代表您签署交易。<br><span class=\"text-accent font-semibold\">⚠️ 攻击方式：</span>您在可疑网站点击\"连接钱包\"→签署一个看似无害的签名→合约获得您钱包的完全委托权限→<span class=\"text-accent font-semibold\">无需私钥即可清空所有代币。</span><br>🧠 <em>许多用户不知道自己的钱包已被委托。此检查器同时扫描5条链（ETH、BSC、Base、Arbitrum、Polygon）——如果钱包中出现<code class=\"bg-accent/20 px-1 rounded text-xs\">0xef01...</code>代码，说明存在委托。用途：定期钱包审计、连接陌生dApp后。</em>",
+    tab_checker_desc: "<strong class=\"font-heading text-bluepen\">🧠 代币查询</strong> — 按名称、符号或合约地址查找代币。查看价格、市值、FDV、流通供应量%、顶级交易所。<em class=\"text-accent\">AI驱动的潜力与风险分析 (DeepSeek)。</em>",
 
     hermes_title: "☤ Hermes Agent — 完整安装指南",
     hermes_subtitle: "由 <strong>Nous Research</strong> 开发的开源 AI 代理。自我学习、多平台、18+ LLM 提供商。支持 Linux、macOS 和 WSL。",
@@ -897,6 +936,18 @@ const I18N = {
     tab_scam: "🔍 토큰 사기 스캔",
     tab_approval: "🛡️ 승인 확인",
     tab_eip7702: "🔐 EIP-7702 검사",
+    tab_checker: "🧠 토큰 검색",
+
+    checker_label: "토큰 이름, 심볼 또는 컨트랙트 주소",
+    checker_placeholder: "BTC, opengradient, 0xFbC2...",
+    checker_btn: "🧠 토큰 분석",
+    checker_ath: "ATH",
+    checker_mcap: "시가총액",
+    checker_fdv: "FDV",
+    checker_circ: "유통량",
+    checker_exchanges: "거래소 (상위 5)",
+    checker_ai_title: "🧠 AI 분석 (DeepSeek)",
+    checker_ai_note: "AI 분석은 부정확할 수 있습니다. 항상 DYOR.",
 
     scam_label_addr: "토큰 컨트랙트 주소",
     scam_placeholder: "0x87230146E138d3F296a9a77e497A2A83012e9Bc5",
@@ -1001,7 +1052,8 @@ const I18N = {
 
     tab_scam_desc: "<strong class=\"font-heading text-bluepen\">🔍 토큰 사기 탐지기</strong> — 토큰 컨트랙트 주소를 붙여넣어 위험을 확인하세요: <span class=\"text-accent font-semibold\">허니팟</span> (매수만 가능, 매도 불가), <span class=\"text-accent font-semibold\">높은 세금</span>, <span class=\"text-accent font-semibold\">숨겨진 프록시</span>, <span class=\"text-accent font-semibold\">비공개 소스</span>. AI가 19개 온체인 특징 + Honeypot.is API를 분석합니다. <em>용도: 구매 전 토큰 확인.</em>",
     tab_approval_desc: "<strong class=\"font-heading text-greenpen\">🛡️ 승인 검사기</strong> — Uniswap, PancakeSwap, 1inch에서 스왑한 적 있나요? 각 스왑마다 DEX가 토큰을 인출할 수 있는 <span class=\"font-semibold\">approve</span> 권한을 부여합니다. 잊혀진 승인은 <span class=\"text-accent font-semibold\">치명적인 공격 경로</span>입니다 — DEX 컨트랙트가 해킹되면 공격자가 USDT, USDC, ETH를 모두 탈취합니다. 20만 온체인 블록 + 주요 DEX를 스캔하여 모든 활성 승인을 찾습니다. <em>용도: 정기 지갑 감사, 생소한 토큰 스왑 후.</em>",
-    tab_eip7702_desc: "<strong class=\"font-heading text-accent\">🔐 EIP-7702 위임 검사기</strong> — <span class=\"font-semibold\">Pectra</span> 업그레이드(2025) 이후, EIP-7702는 스마트 컨트랙트가 사용자의 EOA 지갑을 \"빌려\" 대신 거래에 서명할 수 있게 합니다.<br><span class=\"text-accent font-semibold\">⚠️ 공격 방식:</span> 수상한 사이트에서 \"지갑 연결\" 클릭 → 무해해 보이는 서명 → 컨트랙트가 지갑에 대한 완전한 위임 권한 획득 → <span class=\"text-accent font-semibold\">개인키 없이 모든 토큰 탈취.</span><br>🧠 <em>많은 사용자가 자신의 지갑이 위임되었는지 모릅니다. 이 검사기는 5개 체인(ETH, BSC, Base, Arbitrum, Polygon)을 동시에 스캔합니다 — 지갑에서 <code class=\"bg-accent/20 px-1 rounded text-xs\">0xef01...</code> 코드가 발견되면 활성 위임이 있는 것입니다.</em>",
+    tab_eip7702_desc: "<strong class=\"font-heading text-accent\">🔐 EIP-7702 위임 검사기</strong> — <span class=\"font-semibold\">Pectra</span> 업그레이드(2025) 이후, EIP-7702는 스마트 컨트랙트가 사용자의 EOA 지갑을 \"빌려\" 대신 거래에 서명할 수 있게 합니다.<br><span class=\"text-accent font-semibold\">⚠️ 공격 방식:</span> 수상한 사이트에서 \"지갑 연결\" 클릭 → 무해해 보이는 서명 → 컨트랙트가 지갑에 대한 완전한 위임 권한 획득 → <span class=\"text-accent font-semibold\">개인키 없이 모든 토큰 탈취.</span><br>🧠 <em>많은 사용자가 자신의 지갑이 위임되었는지 모릅니다. 이 검사기는 5개 체인(ETH, BSC, Base, Arbitrum, Polygon)을 동시에 스캔합니다 — 지갑에 <code class=\"bg-accent/20 px-1 rounded text-xs\">0xef01...</code> 코드가 나타나면 위임이 있는 것입니다. 용도: 정기 지갑 감사, 낯선 dApp 연결 후.</em>",
+    tab_checker_desc: "<strong class=\"font-heading text-bluepen\">🧠 토큰 검색</strong> — 이름, 심볼 또는 컨트랙트 주소로 토큰을 조회하세요. 가격, 시가총액, FDV, 유통 공급량 %, 상위 거래소를 확인하세요. <em class=\"text-accent\">AI 기반 잠재력 및 위험 분석 (DeepSeek).</em>",
 
     hermes_title: "☤ Hermes Agent — 전체 설치 가이드",
     hermes_subtitle: "<strong>Nous Research</strong>의 오픈소스 AI 에이전트. 자기 학습, 멀티 플랫폼, 18개 이상 LLM 제공자. Linux, macOS, WSL에서 실행.",

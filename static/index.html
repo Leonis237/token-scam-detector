@@ -435,6 +435,10 @@ tailwind.config = {
       class="font-heading text-lg px-5 py-2 border-[3px] border-b-0 border-muted rounded-t-2xl bg-muted/40 text-pencil/50 transition-colors">
       <span data-i18n="tab_eip7702">🔐 EIP-7702 Checker</span>
     </button>
+    <button id="tabChecker" onclick="switchTab('checker')"
+      class="font-heading text-lg px-5 py-2 border-[3px] border-b-0 border-muted rounded-t-2xl bg-muted/40 text-pencil/50 transition-colors">
+      <span data-i18n="tab_checker">🧠 Token Check</span>
+    </button>
   </div>
 
   <!-- ═══ SCAM DETECTOR TAB ═══ -->
@@ -652,6 +656,100 @@ tailwind.config = {
     <div id="eip7702Result" class="hidden fade-in mt-4">
       <div id="eip7702Verdict" class="border-[3px] border-pencil shadow-sketch-sm wobbly p-5 text-center mb-4"></div>
       <div id="eip7702Chains" class="grid grid-cols-2 md:grid-cols-3 gap-3"></div>
+    </div>
+  </div>
+
+  <!-- ═══ TOKEN CHECK TAB ═══ -->
+  <div id="panelChecker" class="hidden bg-white border-[3px] border-pencil shadow-sketch-sm wobbly-md p-6 md:p-8">
+
+    <!-- Info box -->
+    <div class="bg-bluepen/5 border-[3px] border-bluepen/30 rounded-xl p-4 mb-4">
+      <p class="text-sm text-pencil/80 leading-relaxed" data-i18n-html="tab_checker_desc"><strong class="font-heading text-bluepen">🧠 Token Check</strong> — Tra cứu token theo tên, symbol hoặc địa chỉ contract. Xem giá, Market Cap, FDV, tỉ lệ circulating, top sàn giao dịch. <em class="text-accent">AI phân tích tiềm năng &amp; rủi ro (DeepSeek).</em></p>
+    </div>
+
+    <!-- Search -->
+    <div class="mb-4">
+      <label class="font-heading text-sm block mb-1 text-pencil/70" data-i18n="checker_label">Tên token, symbol hoặc địa chỉ contract</label>
+      <div class="relative">
+        <input type="text" id="checkerQuery"
+          class="input-sketch w-full border-[3px] border-pencil rounded-xl px-4 py-3 bg-white transition-colors"
+          placeholder="BTC, opengradient, 0xFbC2..." data-i18n-placeholder="checker_placeholder"
+          autocomplete="off" spellcheck="false"
+          oninput="tokenLiveSearch()" onfocus="tokenLiveSearch()">
+        <div id="checkerDropdown" class="hidden absolute top-full left-0 right-0 bg-white border-[3px] border-pencil rounded-xl shadow-sketch-sm z-20 mt-1 max-h-64 overflow-y-auto"></div>
+      </div>
+    </div>
+
+    <button id="checkerBtn" onclick="analyzeToken()"
+      class="font-heading text-lg w-full bg-white border-[3px] border-pencil shadow-sketch px-6 py-3 wobbly-sm btn-sketch hover:bg-accent hover:text-white transition-colors mb-6">
+      <span data-i18n="checker_btn">🧠 Phân Tích Token</span>
+    </button>
+
+    <!-- Loading -->
+    <div id="checkerSpinner" class="hidden text-center py-6">
+      <span class="inline-block w-3 h-3 bg-accent rounded-full mx-1 animate-bounce" style="animation-delay:0s"></span>
+      <span class="inline-block w-3 h-3 bg-bluepen rounded-full mx-1 animate-bounce" style="animation-delay:0.15s"></span>
+      <span class="inline-block w-3 h-3 bg-greenpen rounded-full mx-1 animate-bounce" style="animation-delay:0.3s"></span>
+      <p class="text-sm text-pencil/50 mt-3 font-heading">Đang phân tích + AI đánh giá...</p>
+    </div>
+
+    <!-- Error -->
+    <div id="checkerError" class="hidden bg-accent/10 border-[3px] border-accent rounded-xl p-4 mb-4 text-center text-accent font-heading"></div>
+
+    <!-- Results -->
+    <div id="checkerResult" class="hidden">
+
+      <!-- Token header -->
+      <div class="flex items-center gap-4 mb-6 border-b-[3px] border-dashed border-pencil/20 pb-4">
+        <img id="checkerImg" class="w-12 h-12 wobbly-sm" alt="">
+        <div>
+          <h3 class="font-heading text-2xl" id="checkerName"></h3>
+          <p class="text-sm text-pencil/50" id="checkerSymbol"></p>
+        </div>
+        <div class="ml-auto text-right">
+          <div class="font-heading text-2xl" id="checkerPrice"></div>
+          <div class="text-xs text-pencil/50" id="checkerRank"></div>
+        </div>
+      </div>
+
+      <!-- Circulating warning -->
+      <div id="checkerCircWarn" class="hidden bg-accent/10 border-[3px] border-accent rounded-xl p-4 mb-4 text-center">
+        <span class="font-heading text-accent text-lg">⚠️ Cảnh báo rủi ro Unlock</span>
+        <p class="text-sm text-pencil/70 mt-1">Circulating supply thấp — phần lớn token còn bị khóa. Nguy cơ bị dump khi mở khóa.</p>
+      </div>
+
+      <!-- Metrics grid -->
+      <div class="grid grid-cols-2 md:grid-cols-4 gap-3 mb-4">
+        <div class="bg-postit/30 border-[2px] border-pencil/20 rounded-xl p-3 text-center">
+          <div class="text-xs text-pencil/40 font-heading" data-i18n="checker_ath">ATH</div>
+          <div class="font-heading text-sm" id="checkerAth"></div>
+        </div>
+        <div class="bg-postit/30 border-[2px] border-pencil/20 rounded-xl p-3 text-center">
+          <div class="text-xs text-pencil/40 font-heading" data-i18n="checker_mcap">Market Cap</div>
+          <div class="font-heading text-sm" id="checkerMcap"></div>
+        </div>
+        <div class="bg-postit/30 border-[2px] border-pencil/20 rounded-xl p-3 text-center">
+          <div class="text-xs text-pencil/40 font-heading" data-i18n="checker_fdv">FDV</div>
+          <div class="font-heading text-sm" id="checkerFdv"></div>
+        </div>
+        <div class="bg-postit/30 border-[2px] border-pencil/20 rounded-xl p-3 text-center">
+          <div class="text-xs text-pencil/40 font-heading" data-i18n="checker_circ">Circulating</div>
+          <div class="font-heading text-sm" id="checkerCirc"></div>
+        </div>
+      </div>
+
+      <!-- Exchanges -->
+      <div class="mb-4">
+        <h4 class="font-heading text-sm text-pencil/50 mb-2" data-i18n="checker_exchanges">Sàn giao dịch (top 5)</h4>
+        <div id="checkerExchanges" class="space-y-1"></div>
+      </div>
+
+      <!-- AI Analysis -->
+      <div id="checkerAnalysis" class="bg-bluepen/5 border-[3px] border-bluepen rounded-xl p-5 mt-4">
+        <h4 class="font-heading text-bluepen text-lg mb-3" data-i18n="checker_ai_title">🧠 AI Phân Tích (DeepSeek)</h4>
+        <div id="checkerAiText" class="text-sm text-pencil/80 leading-relaxed space-y-3"></div>
+        <p class="text-xs text-pencil/40 mt-3" data-i18n="checker_ai_note">AI analysis có thể không chính xác. Luôn DYOR.</p>
+      </div>
     </div>
   </div>
 
@@ -1022,17 +1120,147 @@ window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', e =
   }
 });
 
+// ── Token Checker ──
+let checkerSelectedId = null;
+let checkerTimer = null;
+
+async function tokenLiveSearch() {
+  clearTimeout(checkerTimer);
+  const q = document.getElementById('checkerQuery').value.trim();
+  const dropdown = document.getElementById('checkerDropdown');
+  if (q.length < 2) { dropdown.classList.add('hidden'); return; }
+
+  checkerTimer = setTimeout(async () => {
+    try {
+      const resp = await fetch(`/api/token/lookup?q=${encodeURIComponent(q)}`);
+      const data = await resp.json();
+      if (!data.tokens || data.tokens.length === 0) {
+        dropdown.innerHTML = '<div class="p-3 text-sm text-pencil/40">Không tìm thấy token</div>';
+        dropdown.classList.remove('hidden');
+        return;
+      }
+      dropdown.innerHTML = data.tokens.map(t => `<div class="flex items-center gap-3 p-3 hover:bg-postit/30 cursor-pointer border-b-[2px] border-dashed border-pencil/10 last:border-b-0"
+        onclick="selectToken('${t.id}', '${t.name}', '${t.symbol}')">
+        <img src="${t.thumb || ''}" class="w-6 h-6" onerror="this.style.display='none'" alt="">
+        <div><div class="font-heading text-sm">${t.name}</div><div class="text-xs text-pencil/40">${t.symbol}${t.rank ? ' · #'+t.rank : ''}</div></div></div>`).join('');
+      dropdown.classList.remove('hidden');
+    } catch(e) { dropdown.classList.add('hidden'); }
+  }, 300);
+}
+
+function selectToken(id, name, symbol) {
+  checkerSelectedId = id;
+  document.getElementById('checkerQuery').value = name + ' (' + symbol + ')';
+  document.getElementById('checkerDropdown').classList.add('hidden');
+  analyzeToken();
+}
+
+async function analyzeToken() {
+  if (!checkerSelectedId) {
+    // Try searching from current input
+    const q = document.getElementById('checkerQuery').value.trim();
+    if (q.length < 2) return;
+    try {
+      const resp = await fetch(`/api/token/lookup?q=${encodeURIComponent(q)}`);
+      const data = await resp.json();
+      if (!data.tokens || data.tokens.length === 0) {
+        document.getElementById('checkerError').textContent = 'Token không tồn tại trên CoinGecko';
+        document.getElementById('checkerError').classList.remove('hidden');
+        return;
+      }
+      checkerSelectedId = data.tokens[0].id;
+    } catch(e) { return; }
+  }
+
+  const btn = document.getElementById('checkerBtn');
+  const spinner = document.getElementById('checkerSpinner');
+  const resultDiv = document.getElementById('checkerResult');
+  const errorDiv = document.getElementById('checkerError');
+
+  errorDiv.classList.add('hidden');
+  resultDiv.classList.add('hidden');
+  spinner.classList.remove('hidden');
+  btn.disabled = true;
+
+  try {
+    const resp = await fetch(`/api/token/analyze?coin_id=${encodeURIComponent(checkerSelectedId)}`);
+    const data = await resp.json();
+    if (data.error) { errorDiv.textContent = data.error; errorDiv.classList.remove('hidden'); return; }
+
+    // Render header
+    document.getElementById('checkerImg').src = data.image || '';
+    document.getElementById('checkerImg').onerror = function(){this.style.display='none'};
+    document.getElementById('checkerName').textContent = data.name;
+    document.getElementById('checkerSymbol').textContent = data.symbol + (data.rank ? ' · Rank #' + data.rank : '');
+    document.getElementById('checkerPrice').textContent = data.price ? '$' + fmtNum(data.price) : '?';
+    document.getElementById('checkerRank').textContent = data.categories ? data.categories.slice(0,3).join(' · ') : '';
+
+    // Circulating warning
+    document.getElementById('checkerCircWarn').classList.toggle('hidden', !data.low_circ_warning);
+
+    // Metrics
+    const athVal = data.ath ? '$' + fmtNum(data.ath) + (data.ath_change_pct ? ' (x' + data.ath_change_pct/100 + ')' : '') : '?';
+    document.getElementById('checkerAth').textContent = athVal;
+    document.getElementById('checkerMcap').textContent = data.mcap ? '$' + fmtM(data.mcap) : '?';
+    document.getElementById('checkerFdv').textContent = data.fdv ? '$' + fmtM(data.fdv) : '?';
+    document.getElementById('checkerCirc').textContent = data.circ_pct != null ? data.circ_pct + '%' : '?';
+
+    // Exchanges
+    const exDiv = document.getElementById('checkerExchanges');
+    if (data.exchanges && data.exchanges.length) {
+      exDiv.innerHTML = data.exchanges.map(e => `<div class="flex justify-between text-xs border-b-[2px] border-dashed border-pencil/10 py-1"><span class="font-heading text-pencil/70">${e.name}</span><span class="text-pencil/40">$${fmtM(e.volume_24h_usd)}</span></div>`).join('');
+    } else {
+      exDiv.innerHTML = '<div class="text-xs text-pencil/40">Không có dữ liệu</div>';
+    }
+
+    // AI Analysis
+    if (data.ai_analysis) {
+      const aiDiv = document.getElementById('checkerAiText');
+      let text = data.ai_analysis
+        .replace(/\\n\\n/g, '</p><p class="mb-2">')
+        .replace(/\\n/g, '<br>')
+        .replace(/\\*\\*(.*?)\\*\\*/g, '<strong class="font-heading text-bluepen">$1</strong>');
+      aiDiv.innerHTML = '<p class="mb-2">' + text + '</p>';
+      document.getElementById('checkerAnalysis').classList.remove('hidden');
+    } else {
+      document.getElementById('checkerAnalysis').classList.add('hidden');
+    }
+
+    resultDiv.classList.remove('hidden');
+    resultDiv.scrollIntoView({ behavior: 'smooth', block: 'center' });
+  } catch(e) {
+    errorDiv.textContent = 'Lỗi mạng hoặc API không phản hồi';
+    errorDiv.classList.remove('hidden');
+  } finally {
+    spinner.classList.add('hidden');
+    btn.disabled = false;
+    checkerSelectedId = null;
+  }
+}
+
+function fmtNum(n) { return n ? (n < 0.01 ? n.toFixed(6) : n < 1 ? n.toFixed(4) : n < 1000 ? n.toFixed(2) : n.toLocaleString('en', {maximumFractionDigits: 0})) : '?'; }
+function fmtM(n) { return n ? (n >= 1e9 ? (n/1e9).toFixed(1)+'B' : n >= 1e6 ? (n/1e6).toFixed(1)+'M' : n >= 1e3 ? (n/1e3).toFixed(1)+'K' : n.toFixed(2)) : '?'; }
+
+// Close dropdown on outside click
+document.addEventListener('click', (e) => {
+  if (!e.target.closest('#checkerQuery') && !e.target.closest('#checkerDropdown')) {
+    document.getElementById('checkerDropdown').classList.add('hidden');
+  }
+});
+
 // ── Tab switching ──
 function switchTab(tab) {
   const panels = {
     scam: document.getElementById('panelScam'),
     approval: document.getElementById('panelApproval'),
     eip7702: document.getElementById('panelEIP7702'),
+    checker: document.getElementById('panelChecker'),
   };
   const tabs = {
     scam: document.getElementById('tabScam'),
     approval: document.getElementById('tabApproval'),
     eip7702: document.getElementById('tabEIP7702'),
+    checker: document.getElementById('tabChecker'),
   };
 
   // Hide all, deactivate all

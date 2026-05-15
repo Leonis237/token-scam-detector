@@ -651,6 +651,207 @@ def stats_page():
     return send_from_directory("static", "stats.html")
 
 
+# ── Token Checker ──
+
+# Simple in-memory cache: coin_id → {data, timestamp}
+_token_cache = {}
+
+def _cg(path, params=None):
+    """CoinGecko free API helper."""
+    import urllib.parse
+    base = "https://api.coingecko.com/api/v3"
+    url = base + path
+    if params:
+        url += "?" + urllib.parse.urlencode(params)
+    req = urllib.request.Request(url, headers={"User-Agent": "LeonisForge/1.0"})
+    try:
+        with urllib.request.urlopen(req, timeout=15) as resp:
+            return json.loads(resp.read().decode())
+    except Exception:
+        return None
+
+
+@app.route("/api/token/lookup")
+def api_token_lookup():
+    """Search CoinGecko for tokens by name, symbol, or contract address."""
+    q = request.args.get("q", "").strip()
+    if not q or len(q) < 2:
+        return jsonify({"tokens": []})
+
+    # Try contract address search first (CoinGecko /coins/{chain}/contract/{addr})
+    if q.startswith("0x") and len(q) == 42:
+        for cg_chain in ["ethereum", "binance-smart-chain", "base", "arbitrum-one", "polygon-pos"]:
+            data = _cg(f"/coins/{cg_chain}/contract/{q.lower()}")
+            if data and "id" in data:
+                return jsonify({"tokens": [{
+                    "id": data["id"],
+                    "name": data["name"],
+                    "symbol": data.get("symbol", "").upper(),
+                    "thumb": data.get("image", {}).get("thumb", ""),
+                    "rank": data.get("market_cap_rank"),
+                }]})
+
+    # Text search
+    data = _cg("/search", {"query": q})
+    if not data or "coins" not in data:
+        return jsonify({"tokens": []})
+
+    tokens = []
+    for c in data["coins"][:6]:
+        tokens.append({
+            "id": c["id"],
+            "name": c["name"],
+            "symbol": c.get("symbol", "").upper(),
+            "thumb": c.get("thumb", ""),
+            "rank": c.get("market_cap_rank"),
+        })
+    return jsonify({"tokens": tokens})
+
+
+def _build_ai_prompt(token_data):
+    """Build a structured prompt for DeepSeek analysis in Vietnamese."""
+    td = token_data
+    return f"""Bạn là chuyên gia phân tích crypto. Phân tích token sau bằng TIẾNG VIỆT. 
+Viết NGẮN GỌN, thẳng thắn, không PR. Tối đa 250 từ.
+
+DỮ LIỆU TOKEN:
+- Tên: {td['name']} ({td['symbol']})
+- Giá hiện tại: ${td.get('price', '?')}
+- ATH: ${td.get('ath', '?')} ({'x' + str(round(td.get('ath_change', 0))) if td.get('ath_change') else '?'})
+- Market Cap: ${td.get('mcap', '?')}
+- FDV: ${td.get('fdv', '?')}
+- Circulating Supply: {td.get('circ_pct', '?')}%
+- Tổng cung: {td.get('total_supply', '?')}
+- Hạng: #{td.get('rank', '?')}
+- Lĩnh vực: {', '.join(td.get('categories', ['?'])[:3])}
+- Mô tả: {td.get('description', '?')[:400]}
+- Sàn giao dịch: {', '.join(td.get('exchanges', ['?'])[:5])}
+- Volume 24h: ${td.get('volume_24h', '?')}
+
+YÊU CẦU:
+1. **Dự án giải quyết vấn đề gì?** (1-2 câu)
+2. **Tiềm năng** — trend, catalyst, adoption (2-3 câu)
+3. **Rủi ro** — tokenomics (đặc biệt nếu circulating thấp), cạnh tranh, valuation (2-3 câu)
+4. **Kết luận** — đánh giá thật lòng, có đáng quan tâm không (1-2 câu)
+
+QUAN TRỌNG: Nếu circulating < 30% thì PHẢI cảnh báo rủi ro unlock/dilution mạnh. 
+Nếu token đang -50%+ từ ATH thì nêu rõ. Viết như đang nói chuyện với bạn, không văn vẻ."""
+
+
+def _call_deepseek(prompt):
+    """Call DeepSeek API for AI analysis."""
+    api_key = os.environ.get("DEEPSEEK_API_KEY", "")
+    if not api_key:
+        return None
+    body = json.dumps({
+        "model": "deepseek-chat",
+        "messages": [{"role": "user", "content": prompt}],
+        "temperature": 0.7,
+        "max_tokens": 800,
+    }).encode()
+    req = urllib.request.Request(
+        "https://api.deepseek.com/v1/chat/completions",
+        data=body,
+        headers={
+            "Content-Type": "application/json",
+            "Authorization": f"Bearer {api_key}",
+            "User-Agent": "LeonisForge/1.0",
+        },
+    )
+    try:
+        with urllib.request.urlopen(req, timeout=45) as resp:
+            result = json.loads(resp.read().decode())
+            return result["choices"][0]["message"]["content"].strip()
+    except Exception:
+        return None
+
+
+@app.route("/api/token/analyze")
+def api_token_analyze():
+    """Full token analysis: CoinGecko data + AI analysis."""
+    coin_id = request.args.get("coin_id", "").strip()
+    if not coin_id:
+        return jsonify({"error": "coin_id is required"}), 400
+
+    now = time.time()
+    cached = _token_cache.get(coin_id)
+    if cached and (now - cached["ts"]) < 3600:  # 1h cache
+        return jsonify(cached["data"])
+
+    # Fetch CoinGecko coin detail
+    detail = _cg(f"/coins/{coin_id}", {
+        "localization": "false",
+        "tickers": "false",
+        "community_data": "false",
+        "developer_data": "false",
+    })
+    if not detail or "id" not in detail:
+        return jsonify({"error": "Token not found on CoinGecko"}), 404
+
+    market = detail.get("market_data", {})
+    img = detail.get("image", {})
+
+    # Fetch tickers for exchange data
+    ticker_data = _cg(f"/coins/{coin_id}/tickers")
+    exchanges = []
+    total_vol = 0
+    if ticker_data and "tickers" in ticker_data:
+        seen = set()
+        for t in ticker_data["tickers"]:
+            ex_name = t.get("market", {}).get("name", "?")
+            vol = t.get("converted_volume", {}).get("usd") or t.get("volume", 0)
+            if ex_name not in seen:
+                seen.add(ex_name)
+                exchanges.append({"name": ex_name, "volume_24h_usd": vol})
+            total_vol += vol
+        exchanges.sort(key=lambda x: x["volume_24h_usd"] or 0, reverse=True)
+        exchanges = exchanges[:5]
+
+    current_price = market.get("current_price", {}).get("usd")
+    ath = market.get("ath", {}).get("usd")
+    ath_change = (current_price / ath * 100 - 100) if current_price and ath else None
+
+    circ_supply = market.get("circulating_supply")
+    total_supply = market.get("total_supply")
+    circ_pct = round(circ_supply / total_supply * 100, 1) if circ_supply and total_supply else None
+
+    result = {
+        "id": coin_id,
+        "name": detail.get("name", "?"),
+        "symbol": detail.get("symbol", "?").upper(),
+        "image": img.get("large", ""),
+        "thumb": img.get("thumb", ""),
+        "rank": detail.get("market_cap_rank"),
+        "price": current_price,
+        "ath": ath,
+        "ath_change_pct": round(current_price / ath * 100, 1) if current_price and ath else None,
+        "mcap": market.get("market_cap", {}).get("usd"),
+        "fdv": market.get("fully_diluted_valuation", {}).get("usd"),
+        "circ_supply": circ_supply,
+        "total_supply": total_supply,
+        "circ_pct": circ_pct,
+        "volume_24h": market.get("total_volume", {}).get("usd"),
+        "categories": [c for c in detail.get("categories", [])[:5] if c],
+        "description": (detail.get("description", {}).get("en") or "")[:300],
+        "exchanges": exchanges,
+        "links": {
+            "website": detail.get("links", {}).get("homepage", [""])[0] or "",
+            "twitter": detail.get("links", {}).get("twitter_screen_name", ""),
+        },
+        "genesis_date": detail.get("genesis_date"),
+        "low_circ_warning": circ_pct is not None and circ_pct < 30,
+    }
+
+    # AI Analysis
+    prompt = _build_ai_prompt(result)
+    ai_text = _call_deepseek(prompt)
+    result["ai_analysis"] = ai_text
+
+    # Cache
+    _token_cache[coin_id] = {"ts": now, "data": result}
+    return jsonify(result)
+
+
 if __name__ == "__main__":
     port = int(os.environ.get("PORT", 8080))
     app.run(host="0.0.0.0", port=port)
