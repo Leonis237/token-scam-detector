@@ -731,7 +731,7 @@ DỮ LIỆU TOKEN:
 - Hạng: #{td.get('rank', '?')}
 - Lĩnh vực: {', '.join(td.get('categories', ['?'])[:3])}
 - Mô tả: {td.get('description', '?')[:400]}
-- Sàn giao dịch: {', '.join(td.get('exchanges', ['?'])[:5])}
+- Sàn giao dịch: {', '.join([e.get('name', '?') if isinstance(e, dict) else str(e) for e in td.get('exchanges', ['?'])[:5]])}
 - Volume 24h: ${td.get('volume_24h', '?')}
 
 YÊU CẦU:
