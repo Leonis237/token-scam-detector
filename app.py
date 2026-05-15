@@ -697,8 +697,31 @@ def api_token_lookup():
                     "rank": data.get("market_cap_rank"),
                 }]})
 
-    # Text search
+    # Text search on CoinGecko
     data, _ = _cg("/search", {"query": q})
+    
+    # Fallback to DexScreener for short queries / symbols that CoinGecko misses
+    if not data or not data.get("coins"):
+        ds_data, _ = _ds("/search", {"q": q})
+        if ds_data and ds_data.get("pairs"):
+            # Extract unique base tokens from DexScreener pairs
+            seen = {}
+            for p in ds_data["pairs"][:10]:
+                base = p.get("baseToken", {})
+                sym = base.get("symbol", "").upper()
+                name = base.get("name", "")
+                addr = base.get("address", "")
+                if sym and sym not in seen:
+                    seen[sym] = {
+                        "id": f"ds:{sym.lower()}",
+                        "name": name or sym,
+                        "symbol": sym,
+                        "thumb": p.get("info", {}).get("imageUrl", ""),
+                        "rank": None,
+                    }
+            if seen:
+                return jsonify({"tokens": list(seen.values())[:6]})
+
     if not data or "coins" not in data:
         return jsonify({"tokens": []})
 
@@ -802,6 +825,9 @@ def api_token_analyze():
 
     # Search DexScreener by symbol or name
     query = symbol or name or coin_id
+    # Strip ds: prefix from fallback lookup
+    if query.startswith("ds:"):
+        query = query[3:]
     ds_data, ds_err = _ds(f"/search", {"q": query})
     if not ds_data or "pairs" not in ds_data or not ds_data["pairs"]:
         return jsonify({"error": f"Token not found on DexScreener" + (f" ({ds_err})" if ds_err else "")}), 404
@@ -841,13 +867,15 @@ def api_token_analyze():
             })
     exchanges.sort(key=lambda x: x["volume_24h_usd"], reverse=True)
 
-    # Get some CoinGecko metadata (non-rate-limited endpoints)
-    detail, _ = _cg(f"/coins/{coin_id}", {
-        "localization": "false",
-        "tickers": "false",
-        "community_data": "false",
-        "developer_data": "false",
-    })
+    # Get some CoinGecko metadata (skip for DexScreener-only results)
+    detail = None
+    if not coin_id.startswith("ds:"):
+        detail, _ = _cg(f"/coins/{coin_id}", {
+            "localization": "false",
+            "tickers": "false",
+            "community_data": "false",
+            "developer_data": "false",
+        })
     categories = []
     description = ""
     links = {"website": "", "twitter": ""}
