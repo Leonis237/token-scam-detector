@@ -784,6 +784,9 @@ def api_token_analyze():
     if cached and (now - cached["ts"]) < 3600:  # 1h cache
         return jsonify(cached["data"])
 
+    # Small delay to avoid CoinGecko rate limits (free tier)
+    time.sleep(2)
+    
     # Fetch CoinGecko coin detail
     detail, detail_err = _cg(f"/coins/{coin_id}", {
         "localization": "false",
