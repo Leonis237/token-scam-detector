@@ -755,31 +755,31 @@ def api_token_lookup():
 def _build_ai_prompt(token_data):
     """Build a structured prompt for DeepSeek analysis in Vietnamese."""
     td = token_data
-    return f"""Bạn là chuyên gia phân tích crypto. Phân tích token sau bằng TIẾNG VIỆT. 
-Viết NGẮN GỌN, thẳng thắn, không PR. Tối đa 250 từ.
+    return f"""You are a crypto analyst. Analyze this token in ENGLISH. 
+Be CONCISE, honest, no shilling. Max 250 words.
 
-DỮ LIỆU TOKEN:
-- Tên: {td['name']} ({td['symbol']})
-- Giá hiện tại: ${td.get('price', '?')}
+TOKEN DATA:
+- Name: {td['name']} ({td['symbol']})
+- Current Price: ${td.get('price', '?')}
 - ATH: ${td.get('ath', '?')} ({'x' + str(round(td.get('ath_change', 0))) if td.get('ath_change') else '?'})
 - Market Cap: ${td.get('mcap', '?')}
 - FDV: ${td.get('fdv', '?')}
 - Circulating Supply: {td.get('circ_pct', '?')}%
-- Tổng cung: {td.get('total_supply', '?')}
-- Hạng: #{td.get('rank', '?')}
-- Lĩnh vực: {', '.join(td.get('categories', ['?'])[:3])}
-- Mô tả: {td.get('description', '?')[:400]}
-- Sàn giao dịch: {', '.join([e.get('name', '?') if isinstance(e, dict) else str(e) for e in td.get('exchanges', ['?'])[:5]])}
-- Volume 24h: ${td.get('volume_24h', '?')}
+- Total Supply: {td.get('total_supply', '?')}
+- Rank: #{td.get('rank', '?')}
+- Category: {', '.join(td.get('categories', ['?'])[:3])}
+- Description: {td.get('description', '?')[:400]}
+- Exchanges: {', '.join([e.get('name', '?') if isinstance(e, dict) else str(e) for e in td.get('exchanges', ['?'])[:5]])}
+- 24h Volume: ${td.get('volume_24h', '?')}
 
-YÊU CẦU:
-1. **Dự án giải quyết vấn đề gì?** (1-2 câu)
-2. **Tiềm năng** — trend, catalyst, adoption (2-3 câu)
-3. **Rủi ro** — tokenomics (đặc biệt nếu circulating thấp), cạnh tranh, valuation (2-3 câu)
-4. **Kết luận** — đánh giá thật lòng, có đáng quan tâm không (1-2 câu)
+FORMAT:
+1. **What problem does it solve?** (1-2 sentences)
+2. **Potential** — trend, catalyst, adoption (2-3 sentences)
+3. **Risks** — tokenomics (especially if circulating is low), competition, valuation (2-3 sentences)
+4. **Verdict** — honest take, worth attention? (1-2 sentences)
 
-QUAN TRỌNG: Nếu circulating < 30% thì PHẢI cảnh báo rủi ro unlock/dilution mạnh. 
-Nếu token đang -50%+ từ ATH thì nêu rõ. Viết như đang nói chuyện với bạn, không văn vẻ."""
+IMPORTANT: If circulating < 30%, STRONGLY warn about unlock/dilution risk.
+If token is -50%+ from ATH, state clearly. Write like talking to a friend, no corporate fluff."""
 
 
 def _call_deepseek(prompt):
