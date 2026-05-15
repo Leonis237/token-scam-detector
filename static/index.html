@@ -325,8 +325,8 @@ tailwind.config = {
 <body class="font-body text-pencil">
 
 <!-- ════════════════ NAV ════════════════ -->
-<nav class="sticky top-0 z-50 bg-paper/95 backdrop-blur-sm border-b-[3px] border-dashed border-pencil/20" id="navbar">
-  <div class="max-w-6xl mx-auto px-6 py-3 flex items-center justify-between">
+<nav class="sticky top-0 z-50 bg-paper/90 backdrop-blur-sm border-b-[3px] border-dashed border-pencil/20">
+  <div class="max-w-5xl mx-auto px-6 py-3 flex items-center justify-between">
     <a href="#" class="font-heading text-xl text-pencil hover:text-accent transition-colors flex items-center gap-2">
       <img src="https://github.com/Leonis237.png" alt="Leonis" class="w-7 h-7 rounded-full border-2 border-pencil">Leonis Forge
     </a>
@@ -335,17 +335,18 @@ tailwind.config = {
         <span data-i18n="nav_scan">Scan</span>
         <span class="absolute -bottom-1 left-0 right-0 h-0.5 bg-accent scale-x-0 hover:scale-x-100 transition-transform"></span>
       </a>
+      <a href="#approvals" class="hover:text-accent transition-colors"><span data-i18n="nav_approvals">Approvals</span></a>
       <a href="#features" class="hover:text-accent transition-colors"><span data-i18n="nav_features">Features</span></a>
       <a href="#how" class="hover:text-accent transition-colors"><span data-i18n="nav_how">How</span></a>
+      <a href="#faq" class="hover:text-accent transition-colors"><span data-i18n="nav_faq">FAQ</span></a>
       <a href="#ecosystem" class="hover:text-accent transition-colors">Minara</a>
       <a href="#guides" class="hover:text-accent transition-colors">Guides</a>
-      <a href="#faq" class="hover:text-accent transition-colors"><span data-i18n="nav_faq">FAQ</span></a>
     </div>
     <div class="hidden md:flex items-center gap-3">
       <button onclick="toggleTheme()" id="themeToggle" class="font-heading text-sm bg-white border-[2px] border-pencil/30 shadow-sketch-sm px-2.5 py-1 rounded-full hover:bg-muted transition-colors" title="Toggle dark mode">
         <span id="themeIcon">🌙</span>
       </button>
-      <a href="#scanner" class="font-heading text-sm bg-accent text-white border-[3px] border-pencil shadow-sketch px-4 py-1.5 wobbly-sm btn-sketch hover:bg-pencil transition-colors" data-i18n="nav_cta">Scan now ✦</a>
+      <a href="#scanner" class="font-heading text-sm bg-white border-[3px] border-pencil shadow-sketch px-4 py-1.5 wobbly-sm btn-sketch hover:bg-accent hover:text-white transition-colors" data-i18n="nav_cta">Scan now ✦</a>
       <div class="relative">
         <button onclick="toggleLangMenu()" class="font-heading text-sm bg-white border-[2px] border-pencil/30 shadow-sketch-sm px-2.5 py-1 rounded-full hover:bg-muted transition-colors flex items-center gap-1">
           <span id="langSwitcherText">EN</span>
@@ -363,102 +364,81 @@ tailwind.config = {
 </nav>
 
 <!-- ════════════════ HERO ════════════════ -->
-<section class="relative overflow-hidden py-16 md:py-28 px-6">
-  <div class="hidden md:block absolute top-16 right-16 w-20 h-20 border-[3px] border-dashed border-accent/30 rounded-full float-anim"></div>
-  <div class="hidden md:block absolute top-1/3 left-8 w-12 h-12 border-[3px] border-dashed border-bluepen/20 rounded-full float-anim" style="animation-delay: 1.5s"></div>
-  <div class="hidden md:block absolute bottom-20 left-16 text-5xl opacity-15 spin-slow">✧</div>
-  <div class="hidden md:block absolute top-24 right-[42%] text-3xl opacity-10 spin-slow" style="animation-delay: 4s">◇</div>
+<section class="relative overflow-hidden py-20 md:py-28 px-6">
+  <!-- Decorative elements -->
+  <div class="hidden md:block absolute top-20 right-10 w-16 h-16 border-[3px] border-dashed border-accent/30 rounded-full float-anim"></div>
+  <div class="hidden md:block absolute bottom-10 left-8 text-4xl opacity-20 spin-slow">✧</div>
 
-  <div class="max-w-6xl mx-auto grid grid-cols-1 lg:grid-cols-2 gap-12 items-center relative z-10">
-    <div class="text-center lg:text-left">
-      <div class="inline-block bg-postit border-[3px] border-pencil shadow-sketch-sm px-5 py-1.5 wobbly-sm -rotate-1 mb-6">
-        <span class="font-heading text-sm text-pencil" data-i18n="hero_badge">🛡️ Free · No signup needed</span>
+  <div class="max-w-3xl mx-auto text-center relative z-10">
+    <!-- Post-it badge -->
+    <div class="inline-block bg-postit border-[3px] border-pencil shadow-sketch-sm px-5 py-1.5 wobbly-sm -rotate-1 mb-6">
+      <span class="font-heading text-sm text-pencil" data-i18n="hero_badge">🛡️ Miễn phí · Không cần đăng ký</span>
+    </div>
+
+    <h1 class="font-heading text-5xl md:text-6xl leading-tight mb-4 text-pencil">
+      <span data-i18n="hero_title1">Đừng để ví </span><span class="text-accent squiggly" id="heroHighlight" data-i18n="hero_title_highlight">dính chưởng</span><br>
+      <span class="relative">
+        <span data-i18n="hero_title2">Check trước khi quá muộn</span>
+        <span class="hidden md:inline absolute -right-8 -top-2 text-3xl animate-bounce">!</span>
+      </span>
+    </h1>
+
+    <p class="text-lg md:text-xl text-pencil/65 max-w-xl mx-auto mb-8">
+      <span data-i18n="hero_sub">Dán địa chỉ token — AI quét 30+ tín hiệu scam. Dán địa chỉ ví — kiểm tra approvals nguy hiểm. Tất cả trong 1 tool.</span>
+    </p>
+
+    <!-- Stats -->
+    <div class="flex justify-center gap-6 md:gap-10 mb-8">
+      <div class="text-center">
+        <div class="font-heading text-3xl md:text-4xl text-accent">30+</div>
+        <div class="text-xs text-pencil/50 uppercase tracking-wider" data-i18n="hero_stat1_label">Scam Signals</div>
       </div>
-      <h1 class="font-heading text-5xl md:text-6xl lg:text-7xl leading-tight mb-4 text-pencil">
-        <span data-i18n="hero_title1">Don't let your wallet get </span>
-        <span class="text-accent squiggly" id="heroHighlight" data-i18n="hero_title_highlight">rekt</span><br>
-        <span class="relative inline-block">
-          <span data-i18n="hero_title2">Check before it's too late</span>
-          <span class="hidden md:inline absolute -right-6 -top-1 text-3xl animate-bounce">!</span>
-        </span>
-      </h1>
-      <p class="text-lg md:text-xl text-pencil/65 max-w-xl mb-8 mx-auto lg:mx-0">
-        <span data-i18n="hero_sub">Paste a token address — AI scans 30+ scam signals. Paste a wallet address — check for dangerous approvals. All in one tool.</span>
-      </p>
-      <div class="max-w-xl mx-auto lg:mx-0">
-        <div class="flex items-center gap-2 bg-white border-[3px] border-pencil shadow-sketch-lg rounded-full overflow-hidden px-2 py-1.5">
-          <input type="text" id="heroSearch"
-            class="flex-1 border-none outline-none bg-transparent px-4 py-2.5 font-body text-lg text-pencil placeholder-pencil/30"
-            data-i18n-placeholder="search_placeholder" placeholder="Paste token or wallet address...">
-          <button onclick="heroSearch()"
-            class="font-heading bg-accent text-white border-[2px] border-pencil shadow-sketch-sm px-6 py-2.5 rounded-full btn-sketch hover:bg-pencil transition-colors whitespace-nowrap">
-            <span data-i18n="hero_cta">Start scanning →</span>
-          </button>
-        </div>
+      <div class="text-center">
+        <div class="font-heading text-3xl md:text-4xl text-bluepen">5</div>
+        <div class="text-xs text-pencil/50 uppercase tracking-wider" data-i18n="hero_stat2_label">Chains</div>
       </div>
-      <div class="hidden md:flex gap-6 mt-8 justify-center lg:justify-start text-xs text-pencil/40">
-        <span>🔒 No wallet connect</span>
-        <span>⚡ Results in &lt;5s</span>
-        <span>🆓 Free forever</span>
+      <div class="text-center">
+        <div class="font-heading text-3xl md:text-4xl text-greenpen">~81%</div>
+        <div class="text-xs text-pencil/50 uppercase tracking-wider" data-i18n="hero_stat3_label">F1 Score</div>
       </div>
     </div>
-    <!-- Sketch Shield -->
-    <div class="hidden lg:flex items-center justify-center">
-      <div class="relative w-80 h-80">
-        <div class="absolute inset-0 flex items-center justify-center">
-          <div class="relative w-64 h-72 border-[4px] border-pencil bg-white shadow-sketch-lg wobbly-md overflow-hidden">
-            <div class="absolute top-0 left-0 right-0 h-16 bg-accent/10 border-b-[3px] border-dashed border-accent/30 flex items-center justify-center">
-              <span class="font-heading text-accent text-sm">LEONIS FORGE</span>
-            </div>
-            <div class="absolute top-20 left-6 right-6 bottom-6 flex flex-col items-center justify-center gap-3">
-              <div class="text-5xl">🛡️</div>
-              <div class="font-heading text-lg text-pencil text-center leading-tight">AI-Powered<br>Token Scanner</div>
-              <div class="flex gap-2 mt-2">
-                <span class="w-2.5 h-2.5 rounded-full bg-accent"></span>
-                <span class="w-2.5 h-2.5 rounded-full bg-bluepen"></span>
-                <span class="w-2.5 h-2.5 rounded-full bg-greenpen"></span>
-              </div>
-              <div class="grid grid-cols-3 gap-1.5 mt-2">
-                <div class="text-xs text-center px-2 py-1 bg-greenpen/10 border-[2px] border-greenpen/20 rounded-full">✅ Safe</div>
-                <div class="text-xs text-center px-2 py-1 bg-yellowpen/10 border-[2px] border-yellowpen/20 rounded-full">⚠️ Suspicious</div>
-                <div class="text-xs text-center px-2 py-1 bg-accent/10 border-[2px] border-accent/20 rounded-full">🚨 Scam</div>
-              </div>
-              <div class="absolute -top-3 left-1/2 -translate-x-1/2 -rotate-3 w-14 h-6 bg-white/60 border border-pencil/20 rounded-sm"></div>
-            </div>
-          </div>
-        </div>
-        <div class="absolute -top-4 -right-4 text-4xl opacity-30 -rotate-12">↗</div>
-        <div class="absolute -bottom-2 -left-4 text-3xl opacity-20 rotate-12">↙</div>
+
+    <!-- Unified Search -->
+    <div class="max-w-xl mx-auto mt-4">
+      <div class="flex items-center gap-2 bg-white border-[3px] border-pencil shadow-sketch-lg rounded-full overflow-hidden px-2 py-1.5">
+        <input type="text" id="heroSearch"
+          class="flex-1 border-none outline-none bg-transparent px-4 py-2 font-body text-lg text-pencil placeholder-pencil/30"
+          data-i18n-placeholder="search_placeholder" placeholder="Paste token or wallet address...">
+        <button onclick="heroSearch()"
+          class="font-heading bg-accent text-white border-[2px] border-pencil shadow-sketch-sm px-6 py-2 rounded-full btn-sketch hover:bg-pencil transition-colors whitespace-nowrap">
+          <span data-i18n="hero_cta">Quét ngay →</span>
+        </button>
       </div>
     </div>
   </div>
 </section>
 
-<!-- DIVIDER -->
-<div class="max-w-4xl mx-auto px-6 pb-4">
-  <svg viewBox="0 0 800 20" class="w-full h-5 text-pencil/15" fill="none" stroke="currentColor" stroke-width="2"><path d="M0,10 Q50,2 100,10 Q150,18 200,10 Q250,2 300,10 Q350,18 400,10 Q450,2 500,10 Q550,18 600,10 Q650,2 700,10 Q750,18 800,10" stroke-dasharray="4 8"/></svg>
-</div>
+<!-- ════════════════ TOOLS SECTION ════════════════ -->
+<section class="max-w-3xl mx-auto px-6 pb-20" id="scanner">
 
-<!-- ════════════════ TOOLS ════════════════ -->
-<section class="max-w-4xl mx-auto px-6 pb-20" id="scanner">
-  
   <!-- Tab switcher -->
-  <div class="flex gap-1 mb-0 border-b-[3px] border-dashed border-pencil/20 pb-0 overflow-x-auto">
+  <div class="flex gap-1 mb-0 border-b-[3px] border-dashed border-pencil/20 pb-0">
     <button id="tabScam" onclick="switchTab('scam')"
-      class="font-heading text-base md:text-lg px-4 md:px-5 py-2 border-[3px] border-b-0 border-pencil rounded-t-2xl bg-white -mb-[3px] relative z-10 whitespace-nowrap transition-colors">
+      class="font-heading text-lg px-5 py-2 border-[3px] border-b-0 border-pencil rounded-t-2xl bg-white -mb-[3px] relative z-10 transition-colors">
       <span data-i18n="tab_scam">🔍 Scan Token Scam</span>
     </button>
     <button id="tabApproval" onclick="switchTab('approval')"
-      class="font-heading text-base md:text-lg px-4 md:px-5 py-2 border-[3px] border-b-0 border-muted rounded-t-2xl bg-muted/40 text-pencil/50 whitespace-nowrap transition-colors">
+      class="font-heading text-lg px-5 py-2 border-[3px] border-b-0 border-muted rounded-t-2xl bg-muted/40 text-pencil/50 transition-colors">
       <span data-i18n="tab_approval">🛡️ Approval Checker</span>
     </button>
     <button id="tabEIP7702" onclick="switchTab('eip7702')"
-      class="font-heading text-base md:text-lg px-4 md:px-5 py-2 border-[3px] border-b-0 border-muted rounded-t-2xl bg-muted/40 text-pencil/50 whitespace-nowrap transition-colors">
+      class="font-heading text-lg px-5 py-2 border-[3px] border-b-0 border-muted rounded-t-2xl bg-muted/40 text-pencil/50 transition-colors">
       <span data-i18n="tab_eip7702">🔐 EIP-7702 Checker</span>
     </button>
   </div>
 
-    <div id="panelScam" class="bg-white border-[3px] border-pencil shadow-sketch-sm wobbly-md p-6 md:p-8">
+  <!-- ═══ SCAM DETECTOR TAB ═══ -->
+  <div id="panelScam" class="bg-white border-[3px] border-pencil shadow-sketch-sm wobbly-md p-6 md:p-8">
 
     <!-- Info box -->
     <div class="bg-blue-50 border-[3px] border-bluepen/30 rounded-xl p-4 mb-4">
@@ -675,247 +655,124 @@ tailwind.config = {
     </div>
   </div>
 
-
-</section>
-
-<!-- DIVIDER -->
-<div class="max-w-4xl mx-auto px-6 pb-4">
-  <svg viewBox="0 0 800 20" class="w-full h-5 text-pencil/15" fill="none" stroke="currentColor" stroke-width="2"><path d="M0,10 Q50,2 100,10 Q150,18 200,10 Q250,2 300,10 Q350,18 400,10 Q450,2 500,10 Q550,18 600,10 Q650,2 700,10 Q750,18 800,10" stroke-dasharray="4 8"/></svg>
-</div>
-
-<!-- ════════════════ STATS BAR ════════════════ -->
-<section class="relative py-16 px-6">
-  <div class="absolute inset-0 bg-white border-y-[3px] border-dashed border-pencil/10"></div>
-  <div class="max-w-4xl mx-auto relative z-10">
-    <div class="grid grid-cols-3 gap-4 md:gap-8">
-      <div class="text-center relative">
-        <div class="inline-flex items-center justify-center w-20 h-20 border-[3px] border-pencil bg-accent/10 shadow-sketch-sm rounded-full mb-3 relative">
-          <span class="font-heading text-3xl md:text-4xl text-accent">30+</span>
-          <div class="absolute -top-2 -right-2 w-6 h-6 bg-accent text-white rounded-full flex items-center justify-center text-xs font-heading">✦</div>
-        </div>
-        <div class="font-heading text-sm text-pencil/50 uppercase tracking-wider" data-i18n="hero_stat1_label">Scam Signals</div>
-      </div>
-      <div class="text-center relative">
-        <div class="inline-flex items-center justify-center w-20 h-20 border-[3px] border-pencil bg-bluepen/10 shadow-sketch-sm rounded-full mb-3 relative">
-          <span class="font-heading text-3xl md:text-4xl text-bluepen">5</span>
-          <div class="absolute -top-2 -right-2 w-6 h-6 bg-bluepen text-white rounded-full flex items-center justify-center text-xs font-heading">✦</div>
-        </div>
-        <div class="font-heading text-sm text-pencil/50 uppercase tracking-wider" data-i18n="hero_stat2_label">Chains</div>
-      </div>
-      <div class="text-center relative">
-        <div class="inline-flex items-center justify-center w-20 h-20 border-[3px] border-pencil bg-greenpen/10 shadow-sketch-sm rounded-full mb-3 relative">
-          <span class="font-heading text-3xl md:text-4xl text-greenpen">~81%</span>
-          <div class="absolute -top-2 -right-2 w-6 h-6 bg-greenpen text-white rounded-full flex items-center justify-center text-xs font-heading">✦</div>
-        </div>
-        <div class="font-heading text-sm text-pencil/50 uppercase tracking-wider" data-i18n="hero_stat3_label">F1 Score</div>
-      </div>
-    </div>
-  </div>
 </section>
 
 <!-- ════════════════ FEATURES ════════════════ -->
-<section class="max-w-5xl mx-auto px-6 pt-20 pb-20" id="features">
-  <div class="text-center mb-12">
-    <span class="inline-block bg-postit border-[2px] border-pencil/30 shadow-sketch-sm px-4 py-1 wobbly-sm -rotate-1 font-heading text-sm mb-4" data-i18n="features_badge">✨ Why use this?</span>
-    <h2 class="font-heading text-4xl md:text-5xl text-pencil" data-i18n="features_title">Everything to keep your wallet safe</h2>
+<section class="max-w-5xl mx-auto px-6 pb-20" id="features">
+  <div class="text-center mb-10">
+    <span class="inline-block bg-postit border-[2px] border-pencil/30 shadow-sketch-sm px-4 py-1 wobbly-sm -rotate-1 font-heading text-sm mb-4" data-i18n="features_badge">✨ Tại sao nên dùng?</span>
+    <h2 class="font-heading text-4xl md:text-5xl text-pencil" data-i18n="features_title">Mọi thứ để giữ ví an toàn</h2>
   </div>
 
-  <div class="space-y-8">
-    <!-- Row 1 -->
-    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-      <div class="relative bg-white border-[3px] border-pencil shadow-sketch-sm wobbly-md p-6 card-hover">
-        <div class="tape"></div>
-        <div class="flex items-start gap-4">
-          <div class="flex-shrink-0 w-14 h-14 border-[3px] border-accent/30 bg-accent/5 rounded-full flex items-center justify-center text-2xl">🔍</div>
-          <div>
-            <h3 class="font-heading text-xl mb-2" data-i18n="feat1_title">30+ Scam Signals</h3>
-            <p class="text-sm text-pencil/65 leading-relaxed" data-i18n="feat1_desc">Honeypots, high taxes, proxy contracts, closed source, siphoned wallets — all analyzed by AI.</p>
-          </div>
-        </div>
-      </div>
-      <div class="relative bg-white border-[3px] border-pencil shadow-sketch-sm wobbly-md p-6 card-hover">
-        <div class="flex items-start gap-4">
-          <div class="flex-shrink-0 w-14 h-14 border-[3px] border-greenpen/30 bg-greenpen/5 rounded-full flex items-center justify-center text-2xl">🛡️</div>
-          <div>
-            <h3 class="font-heading text-xl mb-2" data-i18n="feat2_title">Approval Checker</h3>
-            <p class="text-sm text-pencil/65 leading-relaxed" data-i18n="feat2_desc">Scan wallets for dangerous token approvals. Detect unlimited allowances to unknown DEXes.</p>
-          </div>
-        </div>
-      </div>
+  <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+    <!-- Feature cards -->
+    <div class="relative bg-white border-[3px] border-pencil shadow-sketch-sm wobbly-md p-6 card-hover">
+      <div class="tape"></div>
+      <div class="text-3xl mb-3">🔍</div>
+      <h3 class="font-heading text-xl mb-2" data-i18n="feat1_title">30+ Tín Hiệu Scam</h3>
+      <p class="text-sm text-pencil/65" data-i18n="feat1_desc">Honeypot, high tax, proxy, closed source, siphoned wallets — tất cả được AI phân tích.</p>
     </div>
-    <!-- Row 2 -->
-    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-      <div class="relative bg-postit border-[3px] border-pencil shadow-sketch-sm wobbly-md p-6 card-hover">
-        <div class="tape" style="transform: translateX(-50%) rotate(1deg); width: 50px;"></div>
-        <div class="flex items-start gap-4">
-          <div class="flex-shrink-0 w-14 h-14 border-[3px] border-bluepen/30 bg-bluepen/5 rounded-full flex items-center justify-center text-2xl">🌐</div>
-          <div>
-            <h3 class="font-heading text-xl mb-2" data-i18n="feat3_title">5 Chains Supported</h3>
-            <p class="text-sm text-pencil/65 leading-relaxed" data-i18n="feat3_desc">Ethereum, BSC, Base, Arbitrum, Polygon. More chains coming soon.</p>
-          </div>
-        </div>
-      </div>
-      <div class="relative bg-white border-[3px] border-pencil shadow-sketch-sm wobbly-md p-6 card-hover">
-        <div class="flex items-start gap-4">
-          <div class="flex-shrink-0 w-14 h-14 border-[3px] border-yellowpen/30 bg-yellowpen/5 rounded-full flex items-center justify-center text-2xl">⚡</div>
-          <div>
-            <h3 class="font-heading text-xl mb-2" data-i18n="feat4_title">Instant Results</h3>
-            <p class="text-sm text-pencil/65 leading-relaxed" data-i18n="feat4_desc">Real-time on-chain data. Scam detection results in under 5 seconds.</p>
-          </div>
-        </div>
-      </div>
+
+    <div class="relative bg-white border-[3px] border-pencil shadow-sketch-sm wobbly-md p-6 card-hover">
+      <div class="text-3xl mb-3">🛡️</div>
+      <h3 class="font-heading text-xl mb-2" data-i18n="feat2_title">Approval Checker</h3>
+      <p class="text-sm text-pencil/65" data-i18n="feat2_desc">Quét ví tìm token approvals nguy hiểm. Phát hiện unlimited allowance với DEX lạ.</p>
     </div>
-    <!-- Row 3 -->
-    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-      <div class="relative bg-white border-[3px] border-pencil shadow-sketch-sm wobbly-md p-6 card-hover">
-        <div class="flex items-start gap-4">
-          <div class="flex-shrink-0 w-14 h-14 border-[3px] border-bluepen/30 bg-bluepen/5 rounded-full flex items-center justify-center text-2xl">🤖</div>
-          <div>
-            <h3 class="font-heading text-xl mb-2" data-i18n="feat5_title">AI-Powered</h3>
-            <p class="text-sm text-pencil/65 leading-relaxed" data-i18n="feat5_desc">Neural network trained on 200+ tokens. Continuously improving, F1 ~81%.</p>
-          </div>
-        </div>
-      </div>
-      <div class="relative bg-white border-[3px] border-pencil shadow-sketch-sm wobbly-md p-6 card-hover">
-        <div class="tape" style="transform: translateX(-50%) rotate(-1deg); width: 45px;"></div>
-        <div class="flex items-start gap-4">
-          <div class="flex-shrink-0 w-14 h-14 border-[3px] border-greenpen/30 bg-greenpen/5 rounded-full flex items-center justify-center text-2xl">💯</div>
-          <div>
-            <h3 class="font-heading text-xl mb-2" data-i18n="feat6_title">Free Forever</h3>
-            <p class="text-sm text-pencil/65 leading-relaxed" data-i18n="feat6_desc">No signup, no wallet connect required. Public RPC — zero cost.</p>
-          </div>
-        </div>
-      </div>
+
+    <div class="relative bg-postit border-[3px] border-pencil shadow-sketch-sm wobbly-md p-6 card-hover">
+      <div class="tape" style="transform: translateX(-50%) rotate(1deg); width: 50px;"></div>
+      <div class="text-3xl mb-3">🌐</div>
+      <h3 class="font-heading text-xl mb-2" data-i18n="feat3_title">5 Chain Hỗ Trợ</h3>
+      <p class="text-sm text-pencil/65" data-i18n="feat3_desc">Ethereum, BSC, Base, Arbitrum, Polygon. Nhiều chain hơn sắp ra mắt.</p>
+    </div>
+
+    <div class="relative bg-white border-[3px] border-pencil shadow-sketch-sm wobbly-md p-6 card-hover">
+      <div class="text-3xl mb-3">⚡</div>
+      <h3 class="font-heading text-xl mb-2" data-i18n="feat4_title">Kết Quả Tức Thì</h3>
+      <p class="text-sm text-pencil/65" data-i18n="feat4_desc">Dữ liệu on-chain real-time. Kết quả scam detection trong dưới 5 giây.</p>
+    </div>
+
+    <div class="relative bg-white border-[3px] border-pencil shadow-sketch-sm wobbly-md p-6 card-hover">
+      <div class="text-3xl mb-3">🤖</div>
+      <h3 class="font-heading text-xl mb-2" data-i18n="feat5_title">AI-Powered</h3>
+      <p class="text-sm text-pencil/65" data-i18n="feat5_desc">Neural network huấn luyện trên 200+ token. Cập nhật liên tục, F1 ~81%.</p>
+    </div>
+
+    <div class="relative bg-white border-[3px] border-pencil shadow-sketch-sm wobbly-md p-6 card-hover">
+      <div class="text-3xl mb-3">💯</div>
+      <h3 class="font-heading text-xl mb-2" data-i18n="feat6_title">Miễn Phí Mãi Mãi</h3>
+      <p class="text-sm text-pencil/65" data-i18n="feat6_desc">Không cần đăng ký, không cần connect ví. Dùng public RPC — zero cost.</p>
     </div>
   </div>
 </section>
 
-<!-- DIVIDER -->
-<div class="max-w-4xl mx-auto px-6 pb-4">
-  <svg viewBox="0 0 800 20" class="w-full h-5 text-pencil/15" fill="none" stroke="currentColor" stroke-width="2"><path d="M0,10 Q50,2 100,10 Q150,18 200,10 Q250,2 300,10 Q350,18 400,10 Q450,2 500,10 Q550,18 600,10 Q650,2 700,10 Q750,18 800,10" stroke-dasharray="4 8"/></svg>
-</div>
+
+<!-- ════════════════ SCAM ALERTS ════════════════ -->
+<section class="max-w-3xl mx-auto px-6 pb-20" id="alerts">
+  <div class="text-center mb-8">
+    <span class="inline-block bg-postit border-[2px] border-pencil/30 shadow-sketch-sm px-4 py-1 wobbly-sm -rotate-1 font-heading text-sm mb-4" data-i18n="alerts_badge">🚨 Cảnh báo</span>
+    <h2 class="font-heading text-4xl text-pencil" data-i18n="alerts_title">Scam Alerts Mới Nhất</h2>
+  </div>
+  <div id="alertsList" class="space-y-3">
+    <div class="text-center py-4 text-pencil/40 font-body">Đang tải...</div>
+  </div>
+  <p class="text-xs text-pencil/30 text-center mt-4" data-i18n="alerts_source">Nguồn: Rekt.news — cập nhật tự động</p>
+</section>
 
 <!-- ════════════════ HOW IT WORKS ════════════════ -->
-<section class="relative py-20 px-6" id="how">
-  <div class="absolute inset-0 bg-muted/20 border-y-[3px] border-dashed border-pencil/10"></div>
-  <div class="max-w-4xl mx-auto relative z-10">
-    <div class="text-center mb-12">
-      <span class="inline-block bg-postit border-[2px] border-pencil/30 shadow-sketch-sm px-4 py-1 wobbly-sm rotate-1 font-heading text-sm mb-4" data-i18n="how_badge">📋 Process</span>
-      <h2 class="font-heading text-4xl md:text-5xl text-pencil" data-i18n="how_title">How It Works</h2>
+<section class="max-w-3xl mx-auto px-6 pb-20" id="how">
+  <div class="text-center mb-10">
+    <span class="inline-block bg-postit border-[2px] border-pencil/30 shadow-sketch-sm px-4 py-1 wobbly-sm rotate-1 font-heading text-sm mb-4" data-i18n="how_badge">📋 Quy trình</span>
+    <h2 class="font-heading text-4xl md:text-5xl text-pencil" data-i18n="how_title">Cách hoạt động</h2>
+  </div>
+
+  <div class="grid grid-cols-1 md:grid-cols-3 gap-8 relative">
+    <!-- Squiggly connector line (desktop only) -->
+    <div class="hidden md:block absolute top-10 left-[20%] right-[20%] h-1 border-t-[3px] border-dashed border-pencil/20 -z-10"></div>
+
+    <div class="text-center">
+      <div class="inline-flex items-center justify-center w-16 h-16 border-[3px] border-pencil bg-white shadow-sketch-sm rounded-full mb-4 relative z-10 font-heading text-2xl">1</div>
+      <h4 class="font-heading text-lg mb-1" data-i18n="how_step1_title">Dán địa chỉ</h4>
+      <p class="text-sm text-pencil/60" data-i18n="how_step1_desc">Copy contract token hoặc địa chỉ ví. Hỗ trợ mọi EVM chain.</p>
     </div>
 
-    <!-- Vertical timeline -->
-    <div class="relative max-w-2xl mx-auto">
-      <div class="hidden md:block absolute left-1/2 top-0 bottom-0 w-0.5 border-l-[3px] border-dashed border-pencil/15 -translate-x-1/2"></div>
+    <div class="text-center">
+      <div class="inline-flex items-center justify-center w-16 h-16 border-[3px] border-pencil bg-white shadow-sketch-sm rounded-full mb-4 relative z-10 font-heading text-2xl">2</div>
+      <h4 class="font-heading text-lg mb-1" data-i18n="how_step2_title">AI Quét</h4>
+      <p class="text-sm text-pencil/60" data-i18n="how_step2_desc">Model phân tích 30+ tín hiệu + on-chain data. Dưới 5 giây.</p>
+    </div>
 
-      <div class="relative mb-12 md:mb-16">
-        <div class="md:grid md:grid-cols-2 md:gap-8 items-center">
-          <div class="text-center md:text-right mb-4 md:mb-0 md:pr-8">
-            <h4 class="font-heading text-lg mb-1 text-pencil" data-i18n="how_step1_title">Paste Address</h4>
-            <p class="text-sm text-pencil/55" data-i18n="how_step1_desc">Copy a token contract or wallet address. All EVM chains supported.</p>
-          </div>
-          <div class="hidden md:flex items-center justify-center relative z-10">
-            <div class="inline-flex items-center justify-center w-14 h-14 border-[3px] border-pencil bg-white shadow-sketch-sm rounded-full font-heading text-xl">1</div>
-          </div>
-          <div class="md:hidden flex justify-center mb-3">
-            <div class="inline-flex items-center justify-center w-12 h-12 border-[3px] border-pencil bg-white shadow-sketch-sm rounded-full font-heading text-lg">1</div>
-          </div>
-        </div>
-      </div>
-
-      <div class="relative mb-12 md:mb-16">
-        <div class="md:grid md:grid-cols-2 md:gap-8 items-center">
-          <div class="hidden md:flex items-center justify-center relative z-10">
-            <div class="inline-flex items-center justify-center w-14 h-14 border-[3px] border-pencil bg-white shadow-sketch-sm rounded-full font-heading text-xl">2</div>
-          </div>
-          <div class="text-center md:text-left mb-4 md:mb-0 md:pl-8">
-            <h4 class="font-heading text-lg mb-1 text-pencil" data-i18n="how_step2_title">AI Scan</h4>
-            <p class="text-sm text-pencil/55" data-i18n="how_step2_desc">Model analyzes 30+ signals + on-chain data. Under 5 seconds.</p>
-          </div>
-          <div class="md:hidden flex justify-center mb-3">
-            <div class="inline-flex items-center justify-center w-12 h-12 border-[3px] border-pencil bg-white shadow-sketch-sm rounded-full font-heading text-lg">2</div>
-          </div>
-        </div>
-      </div>
-
-      <div class="relative">
-        <div class="md:grid md:grid-cols-2 md:gap-8 items-center">
-          <div class="text-center md:text-right mb-4 md:mb-0 md:pr-8">
-            <h4 class="font-heading text-lg mb-1 text-pencil" data-i18n="how_step3_title">Get Results</h4>
-            <p class="text-sm text-pencil/55" data-i18n="how_step3_desc">Scam score, red flags, dangerous approvals — all clearly displayed.</p>
-          </div>
-          <div class="hidden md:flex items-center justify-center relative z-10">
-            <div class="inline-flex items-center justify-center w-14 h-14 border-[3px] border-pencil bg-accent text-white shadow-sketch-sm rounded-full font-heading text-xl">3</div>
-          </div>
-          <div class="md:hidden flex justify-center mb-3">
-            <div class="inline-flex items-center justify-center w-12 h-12 border-[3px] border-pencil bg-accent text-white shadow-sketch-sm rounded-full font-heading text-lg">3</div>
-          </div>
-        </div>
-      </div>
+    <div class="text-center">
+      <div class="inline-flex items-center justify-center w-16 h-16 border-[3px] border-pencil bg-accent text-white shadow-sketch-sm rounded-full mb-4 relative z-10 font-heading text-2xl">3</div>
+      <h4 class="font-heading text-lg mb-1" data-i18n="how_step3_title">Nhận Kết Quả</h4>
+      <p class="text-sm text-pencil/60" data-i18n="how_step3_desc">Scam score, red flags, approvals nguy hiểm — tất cả rõ ràng.</p>
     </div>
   </div>
 </section>
 
 <!-- ════════════════ CHAINS ════════════════ -->
-<section class="max-w-5xl mx-auto px-6 py-20 text-center">
+<section class="max-w-3xl mx-auto px-6 pb-20 text-center">
   <span class="inline-block bg-postit border-[2px] border-pencil/30 shadow-sketch-sm px-4 py-1 wobbly-sm -rotate-1 font-heading text-sm mb-4" data-i18n="chains_badge">⛓️ Networks</span>
-  <h2 class="font-heading text-4xl text-pencil mb-10" data-i18n="chains_title">Multi-Chain</h2>
-  
-  <div class="grid grid-cols-2 md:grid-cols-5 gap-4">
-    <div class="bg-white border-[3px] border-pencil shadow-sketch-sm wobbly-sm p-4 card-hover">
-      <div class="w-12 h-12 mx-auto mb-2 rounded-full flex items-center justify-center text-2xl bg-yellowpen/10 border-[2px] border-yellowpen/30">🟡</div>
-      <div class="font-heading text-sm">BNB Chain</div>
-    </div>
-    <div class="bg-white border-[3px] border-pencil shadow-sketch-sm wobbly-sm p-4 card-hover">
-      <div class="w-12 h-12 mx-auto mb-2 rounded-full flex items-center justify-center text-2xl bg-bluepen/10 border-[2px] border-bluepen/30">💎</div>
-      <div class="font-heading text-sm">Ethereum</div>
-    </div>
-    <div class="bg-white border-[3px] border-pencil shadow-sketch-sm wobbly-sm p-4 card-hover">
-      <div class="w-12 h-12 mx-auto mb-2 rounded-full flex items-center justify-center text-2xl bg-bluepen/10 border-[2px] border-bluepen/30">🔵</div>
-      <div class="font-heading text-sm">Base</div>
-    </div>
-    <div class="bg-white border-[3px] border-pencil shadow-sketch-sm wobbly-sm p-4 card-hover">
-      <div class="w-12 h-12 mx-auto mb-2 rounded-full flex items-center justify-center text-2xl bg-bluepen/10 border-[2px] border-bluepen/30">🔷</div>
-      <div class="font-heading text-sm">Arbitrum</div>
-    </div>
-    <div class="bg-white border-[3px] border-pencil shadow-sketch-sm wobbly-sm p-4 card-hover">
-      <div class="w-12 h-12 mx-auto mb-2 rounded-full flex items-center justify-center text-2xl bg-bluepen/10 border-[2px] border-bluepen/30">🟣</div>
-      <div class="font-heading text-sm">Polygon</div>
-    </div>
+  <h2 class="font-heading text-4xl text-pencil mb-8" data-i18n="chains_title">Multi-Chain</h2>
+  <div class="flex flex-wrap justify-center gap-3">
+    <span class="border-[3px] border-pencil bg-white shadow-sketch-sm px-5 py-2 rounded-full text-sm font-heading">🟡 BNB Chain</span>
+    <span class="border-[3px] border-pencil bg-white shadow-sketch-sm px-5 py-2 rounded-full text-sm font-heading">💎 Ethereum</span>
+    <span class="border-[3px] border-pencil bg-white shadow-sketch-sm px-5 py-2 rounded-full text-sm font-heading">🔵 Base</span>
+    <span class="border-[3px] border-pencil bg-white shadow-sketch-sm px-5 py-2 rounded-full text-sm font-heading">🔷 Arbitrum</span>
+    <span class="border-[3px] border-pencil bg-white shadow-sketch-sm px-5 py-2 rounded-full text-sm font-heading">🟣 Polygon</span>
   </div>
 </section>
-
-<!-- ════════════════ ALERTS ════════════════ -->
-<section class="relative py-20 px-6" id="alerts">
-  <div class="absolute inset-0 bg-white border-y-[3px] border-dashed border-pencil/10"></div>
-  <div class="max-w-3xl mx-auto relative z-10">
-    <div class="text-center mb-8">
-      <span class="inline-block bg-postit border-[2px] border-pencil/30 shadow-sketch-sm px-4 py-1 wobbly-sm -rotate-1 font-heading text-sm mb-4" data-i18n="alerts_badge">🚨 Alerts</span>
-      <h2 class="font-heading text-4xl text-pencil" data-i18n="alerts_title">Latest Scam Alerts</h2>
-    </div>
-    <div id="alertsList" class="space-y-3">
-      <div class="text-center py-4 text-pencil/40 font-body">Loading...</div>
-    </div>
-    <p class="text-xs text-pencil/30 text-center mt-4" data-i18n="alerts_source">Source: Rekt.news — auto-updated</p>
-  </div>
-</section>
-
-<!-- DIVIDER -->
-<div class="max-w-4xl mx-auto px-6 pb-4">
-  <svg viewBox="0 0 800 20" class="w-full h-5 text-pencil/15" fill="none" stroke="currentColor" stroke-width="2"><path d="M0,10 Q50,2 100,10 Q150,18 200,10 Q250,2 300,10 Q350,18 400,10 Q450,2 500,10 Q550,18 600,10 Q650,2 700,10 Q750,18 800,10" stroke-dasharray="4 8"/></svg>
-</div>
 
 <!-- ════════════════ ECOSYSTEM ════════════════ -->
-<section class="max-w-5xl mx-auto px-6 pt-16 pb-20" id="ecosystem">
-  <div class="text-center mb-10">
+<section class="max-w-3xl mx-auto px-6 pb-20" id="ecosystem">
+  <div class="text-center mb-8">
     <span class="inline-block bg-bluepen/10 border-[2px] border-bluepen/30 shadow-sketch-sm px-4 py-1 wobbly-sm rotate-1 font-heading text-sm mb-4">🛠️ Leonis Ecosystem</span>
     <h2 class="font-heading text-3xl md:text-4xl text-pencil mb-3">Scan. Trade. Profit.</h2>
     <p class="text-pencil/60 text-sm max-w-lg mx-auto">Two tools, one flow — check safety with Leonis Forge, then trade smarter with Minara AI.</p>
   </div>
 
-  <div class="grid grid-cols-1 md:grid-cols-2 gap-6 relative">
-    <div class="hidden md:flex absolute top-1/2 left-[48%] -translate-y-1/2 z-10 items-center justify-center w-12 h-12 bg-accent text-white border-[3px] border-pencil shadow-sketch rounded-full font-heading text-lg">→</div>
-
+  <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+    <!-- Leonis Forge card -->
     <div class="bg-white border-[3px] border-pencil shadow-sketch-sm wobbly-md p-6 relative">
       <div class="tape"></div>
       <div class="flex items-center gap-3 mb-3">
@@ -932,6 +789,7 @@ tailwind.config = {
       <p class="text-xs text-pencil/40 italic">→ Step 1: Verify the token isn't a scam</p>
     </div>
 
+    <!-- Minara card -->
     <div class="bg-white border-[3px] border-pencil shadow-sketch-sm wobbly-md p-6 relative">
       <div class="tape tape-blue"></div>
       <div class="flex items-center gap-3 mb-3">
@@ -954,182 +812,171 @@ tailwind.config = {
   </div>
 </section>
 
-<!-- DIVIDER -->
-<div class="max-w-4xl mx-auto px-6 pb-4">
-  <svg viewBox="0 0 800 20" class="w-full h-5 text-pencil/15" fill="none" stroke="currentColor" stroke-width="2"><path d="M0,10 Q50,2 100,10 Q150,18 200,10 Q250,2 300,10 Q350,18 400,10 Q450,2 500,10 Q550,18 600,10 Q650,2 700,10 Q750,18 800,10" stroke-dasharray="4 8"/></svg>
-</div>
-
 <!-- ════════════════ GUIDES ════════════════ -->
-<section class="max-w-6xl mx-auto px-6 pt-16 pb-20" id="guides">
-  <div class="text-center mb-10">
+<section class="max-w-3xl mx-auto px-6 pb-20" id="guides">
+  <div class="text-center mb-8">
     <span class="inline-block bg-postit border-[2px] border-pencil/30 shadow-sketch-sm px-4 py-1 wobbly-sm -rotate-1 font-heading text-sm mb-4">📚 Guides</span>
     <h2 class="font-heading text-3xl md:text-4xl text-pencil mb-3">Install & Run Your Own AI Agent</h2>
     <p class="text-pencil/60 text-sm max-w-lg mx-auto">Step-by-step guides to set up autonomous AI agents on your machine. Open-source, free, runs on any LLM.</p>
   </div>
 
-  <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
-    <!-- OpenClaw (left) -->
-    <div class="bg-white border-[3px] border-pencil/30 shadow-sketch-sm wobbly-md p-5 relative opacity-80 hover:opacity-100 transition-opacity">
-      <div class="flex items-center gap-2 mb-1">
-        <span class="text-xl">🦞</span>
-        <h3 class="font-heading text-lg">OpenClaw</h3>
-        <span class="text-xs bg-muted/50 border-[2px] border-pencil/20 text-pencil/50 px-2 py-0.5 rounded-full">Legacy</span>
-      </div>
-      <p class="text-xs text-pencil/40 mb-3">The OG agent gateway · Community maintained</p>
-      <p class="text-xs text-pencil/60 mb-3 leading-relaxed">The original open-source AI agent gateway. Still maintained by the community — handles multi-channel messaging, tool calling, and cron scheduling.</p>
-      <div class="flex gap-2">
-        <a href="/guides/openclaw.html" class="font-heading text-xs bg-white border-[2px] border-pencil/30 shadow-sketch-sm px-3 py-1 wobbly-sm hover:bg-yellowpen hover:text-white transition-colors">📖 Guide →</a>
-        <a href="https://github.com/openclaw/openclaw" target="_blank" rel="noopener" class="font-heading text-xs text-pencil/40 hover:text-accent transition-colors">GitHub</a>
-      </div>
-    </div>
-
-    <!-- Hermes Agent (center - featured) -->
-    <div class="bg-white border-[3px] border-pencil shadow-sketch-lg wobbly-md p-6 relative -mt-2 lg:-mt-4 z-10">
+  <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+    <!-- Hermes Agent card -->
+    <div class="bg-white border-[3px] border-pencil shadow-sketch-sm wobbly-md p-6 relative">
       <div class="tape"></div>
-      <div class="absolute -top-3 left-1/2 -translate-x-1/2 bg-greenpen text-white text-xs font-heading px-3 py-0.5 rounded-full border-[2px] border-pencil shadow-sketch-sm">⭐ Recommended</div>
-      <div class="flex items-center gap-2 mb-1 mt-1">
+      <div class="flex items-center gap-2 mb-1">
         <span class="text-2xl">☤</span>
         <h3 class="font-heading text-xl">Hermes Agent</h3>
+        <span class="text-xs bg-greenpen/10 border-[2px] border-greenpen/20 text-greenpen px-2 py-0.5 rounded-full font-heading">⭐ Recommended</span>
       </div>
       <p class="text-xs text-pencil/40 mb-3">by Nous Research · Open-source (MIT)</p>
-      <p class="text-sm text-pencil/70 mb-3 leading-relaxed">Open-source AI agent that <strong>learns from experience</strong>. Self-improving skills, persistent memory across sessions, runs on Telegram/Discord/Slack/CLI. Works with <strong>18+ LLM providers</strong>.</p>
+
+      <p class="text-sm text-pencil/70 mb-3 leading-relaxed">Open-source AI agent that <strong>learns from experience</strong>. Self-improving skills, persistent memory across sessions, runs on Telegram/Discord/Slack/CLI. Works with <strong>18+ LLM providers</strong> (DeepSeek, OpenAI, Anthropic, local models).</p>
+
       <div class="bg-muted/30 border-[2px] border-pencil/20 rounded-xl p-3 mb-3">
-        <p class="text-xs font-heading text-pencil/60 mb-1">🚀 Quick Install</p>
+        <p class="text-xs font-heading text-pencil/60 mb-1">🚀 Quick Install (Linux/macOS/WSL)</p>
         <code class="text-xs bg-white border-[2px] border-pencil/20 px-2 py-1 rounded block font-mono break-all">curl -fsSL https://raw.githubusercontent.com/NousResearch/hermes-agent/main/scripts/install.sh | bash</code>
       </div>
+
       <div class="flex gap-2 flex-wrap mb-3">
         <span class="text-xs bg-greenpen/10 border-[2px] border-greenpen/20 px-2 py-0.5 rounded-full">🧠 Self-learning</span>
         <span class="text-xs bg-greenpen/10 border-[2px] border-greenpen/20 px-2 py-0.5 rounded-full">💬 Multi-platform</span>
         <span class="text-xs bg-greenpen/10 border-[2px] border-greenpen/20 px-2 py-0.5 rounded-full">🔌 18+ providers</span>
         <span class="text-xs bg-greenpen/10 border-[2px] border-greenpen/20 px-2 py-0.5 rounded-full">⏰ Cron jobs</span>
       </div>
-      <p class="text-xs text-pencil/50 italic mb-2">💡 <strong>Our take:</strong> Best open-source agent we've used. Skills system means it gets better over time.</p>
+
+      <p class="text-xs text-pencil/50 italic mb-2">💡 <strong>Our take:</strong> Best open-source agent we've used. Skills system means it gets better over time. Multi-platform gateway is killer for teams. Active development, great docs.</p>
+
       <div class="flex gap-3">
         <a href="/guides/hermes-agent.html" class="font-heading text-sm bg-greenpen text-white border-[3px] border-greenpen shadow-sketch px-4 py-1.5 wobbly-sm hover:bg-greenpen/90 transition-colors">📖 Full Guide →</a>
         <a href="https://github.com/NousResearch/hermes-agent" target="_blank" rel="noopener" class="font-heading text-sm bg-white border-[3px] border-pencil shadow-sketch px-4 py-1.5 wobbly-sm hover:bg-accent hover:text-white transition-colors">⭐ GitHub</a>
       </div>
     </div>
 
-    <!-- Minara (right) -->
-    <div class="bg-white border-[3px] border-pencil/30 shadow-sketch-sm wobbly-md p-5 relative hover:border-accent transition-colors">
+    <!-- OpenClaw card -->
+    <div class="bg-white border-[3px] border-pencil shadow-sketch-sm wobbly-md p-6 relative">
+      <div class="tape"></div>
       <div class="flex items-center gap-2 mb-1">
-        <span class="text-xl">👩</span>
-        <h3 class="font-heading text-lg">Minara on Hermes</h3>
-        <span class="text-xs bg-accent/10 border-[2px] border-accent/20 text-accent px-2 py-0.5 rounded-full font-heading">🆕 Trading</span>
+        <span class="text-2xl">🦞</span>
+        <h3 class="font-heading text-xl">OpenClaw</h3>
+        <span class="text-xs bg-muted/50 border-[2px] border-pencil/20 text-pencil/50 px-2 py-0.5 rounded-full">Legacy</span>
       </div>
-      <p class="text-xs text-pencil/40 mb-3">AI crypto trading · EVM + Solana + Hyperliquid</p>
-      <p class="text-xs text-pencil/60 mb-3 leading-relaxed">Turn Hermes Agent into a <strong>crypto trading terminal</strong>. Swap tokens, trade perps with leverage, run AI autopilot strategies.</p>
-      <div class="bg-muted/30 border-[2px] border-pencil/20 rounded-xl p-2.5 mb-2">
-        <p class="text-xs font-heading text-pencil/60 mb-1">1️⃣ Install Hermes first</p>
-        <code class="text-xs bg-white border-[2px] border-pencil/20 px-2 py-1 rounded block font-mono break-all">curl -fsSL ...hermes-agent/.../install.sh | bash</code>
+      <p class="text-xs text-pencil/40 mb-3">Original autonomous agent · Predecessor to Hermes</p>
+
+      <p class="text-sm text-pencil/70 mb-3 leading-relaxed">The OG open-source AI agent gateway. <strong>Still maintained</strong> by the open-source community — handles multi-channel messaging, tool calling, and cron scheduling. Hermes Agent (forked from this) adds self-learning skills, persistent memory, and 18+ providers.</p>
+
+      <div class="bg-muted/30 border-[2px] border-pencil/20 rounded-xl p-3 mb-3">
+        <p class="text-xs font-heading text-pencil/60 mb-1">📦 Quick install</p>
+        <code class="text-xs bg-white border-[2px] border-pencil/20 px-2 py-1 rounded block font-mono break-all">npm install -g openclaw</code>
+        <p class="text-xs text-pencil/50 mt-1">Community maintained fork (v2026.5.7) — 3 providers, cron jobs, messaging.</p>
       </div>
-      <div class="bg-muted/30 border-[2px] border-pencil/20 rounded-xl p-2.5 mb-3">
-        <p class="text-xs font-heading text-pencil/60 mb-1">2️⃣ Add Minara skill</p>
-        <code class="text-xs bg-white border-[2px] border-pencil/20 px-2 py-1 rounded block font-mono break-all">curl -fsSL ...minara-skill-setup.sh | bash</code>
+
+      <div class="flex gap-3">
+        <a href="/guides/openclaw.html" class="font-heading text-sm bg-yellowpen text-white border-[3px] border-yellowpen shadow-sketch px-4 py-1.5 wobbly-sm hover:bg-yellowpen/90 transition-colors">📖 Install Guide →</a>
+        <a href="https://github.com/openclaw/openclaw" target="_blank" rel="noopener" class="font-heading text-sm bg-white border-[3px] border-pencil shadow-sketch px-4 py-1.5 wobbly-sm hover:bg-accent hover:text-white transition-colors">🔧 GitHub</a>
       </div>
+    </div>
+
+    <!-- Minara on Hermes card -->
+    <div class="bg-white border-[3px] border-pencil shadow-sketch-sm wobbly-md p-6 relative md:col-span-2">
+      <div class="tape"></div>
+      <div class="flex items-center gap-2 mb-1">
+        <span class="text-2xl">👩</span>
+        <h3 class="font-heading text-xl">Minara on Hermes</h3>
+        <span class="text-xs bg-accent/10 border-[2px] border-accent/20 text-accent px-2 py-0.5 rounded-full font-heading">🆕 Crypto Trading</span>
+      </div>
+      <p class="text-xs text-pencil/40 mb-3">AI crypto trading skill · EVM + Solana + Hyperliquid</p>
+
+      <p class="text-sm text-pencil/70 mb-3 leading-relaxed">Turn Hermes Agent into a <strong>crypto trading terminal</strong>. Swap tokens, trade perps with leverage, run AI autopilot strategies (up to 308% APR), and get live market analysis — all through Hermes. Supports 18+ chains.</p>
+
+      <div class="bg-muted/30 border-[2px] border-pencil/20 rounded-xl p-3 mb-2">
+        <p class="text-xs font-heading text-pencil/60 mb-1">1️⃣ Install Hermes Agent first</p>
+        <code class="text-xs bg-white border-[2px] border-pencil/20 px-2 py-1 rounded block font-mono break-all">curl -fsSL https://raw.githubusercontent.com/NousResearch/hermes-agent/main/scripts/install.sh | bash</code>
+      </div>
+
+      <div class="bg-muted/30 border-[2px] border-pencil/20 rounded-xl p-3 mb-3">
+        <p class="text-xs font-heading text-pencil/60 mb-1">2️⃣ Then add Minara skill</p>
+        <code class="text-xs bg-white border-[2px] border-pencil/20 px-2 py-1 rounded block font-mono break-all">curl -fsSL https://raw.githubusercontent.com/Minara-AI/skills/main/scripts/hermes-minara-skill-setup.sh | bash</code>
+      </div>
+
       <div class="flex gap-2 flex-wrap mb-3">
-        <span class="text-xs bg-greenpen/10 border-[2px] border-greenpen/20 px-2 py-0.5 rounded-full">💱 Spot</span>
-        <span class="text-xs bg-greenpen/10 border-[2px] border-greenpen/20 px-2 py-0.5 rounded-full">📈 Perps</span>
+        <span class="text-xs bg-greenpen/10 border-[2px] border-greenpen/20 px-2 py-0.5 rounded-full">💱 Spot trading</span>
+        <span class="text-xs bg-greenpen/10 border-[2px] border-greenpen/20 px-2 py-0.5 rounded-full">📈 Perps (50x)</span>
         <span class="text-xs bg-greenpen/10 border-[2px] border-greenpen/20 px-2 py-0.5 rounded-full">🤖 Autopilot</span>
+        <span class="text-xs bg-greenpen/10 border-[2px] border-greenpen/20 px-2 py-0.5 rounded-full">🧠 AI analysis</span>
       </div>
-      <div class="flex gap-2">
-        <a href="/guides/minara-hermes.html" class="font-heading text-xs bg-accent text-white border-[3px] border-accent shadow-sketch px-3 py-1 wobbly-sm hover:bg-accent/90 transition-colors">📖 Guide →</a>
-        <a href="https://minara.ai" target="_blank" rel="noopener" class="font-heading text-xs text-pencil/40 hover:text-accent transition-colors">Minara</a>
+
+      <div class="flex gap-3">
+        <a href="/guides/minara-hermes.html" class="font-heading text-sm bg-accent text-white border-[3px] border-accent shadow-sketch px-4 py-1.5 wobbly-sm hover:bg-accent/90 transition-colors">📖 Install Guide →</a>
+        <a href="https://minara.ai/vi/app/trade/perps/BTC?r=1MPQ6Z" target="_blank" rel="noopener" class="font-heading text-sm bg-white border-[3px] border-pencil shadow-sketch px-4 py-1.5 wobbly-sm hover:bg-accent hover:text-white transition-colors">🌐 Minara</a>
       </div>
     </div>
   </div>
 </section>
 
 <!-- ════════════════ FAQ ════════════════ -->
-<section class="relative py-20 px-6" id="faq">
-  <div class="absolute inset-0 bg-muted/20 border-y-[3px] border-dashed border-pencil/10"></div>
-  <div class="max-w-2xl mx-auto relative z-10">
-    <div class="text-center mb-10">
-      <span class="inline-block bg-postit border-[2px] border-pencil/30 shadow-sketch-sm px-4 py-1 wobbly-sm rotate-1 font-heading text-sm mb-4" data-i18n="faq_badge">❓ FAQ</span>
-      <h2 class="font-heading text-4xl text-pencil" data-i18n="faq_title">Frequently Asked Questions</h2>
-    </div>
+<section class="max-w-2xl mx-auto px-6 pb-20" id="faq">
+  <div class="text-center mb-10">
+    <span class="inline-block bg-postit border-[2px] border-pencil/30 shadow-sketch-sm px-4 py-1 wobbly-sm rotate-1 font-heading text-sm mb-4" data-i18n="faq_badge">❓ Hỏi đáp</span>
+    <h2 class="font-heading text-4xl text-pencil" data-i18n="faq_title">Câu Hỏi Thường Gặp</h2>
+  </div>
 
-    <div class="space-y-3">
-      <details class="group bg-white border-[3px] border-pencil shadow-sketch-sm wobbly-md p-5 cursor-pointer">
-        <summary class="font-heading text-lg list-none flex justify-between items-center">
-          <span data-i18n="faq_q1">How accurate is this tool?</span>
-          <span class="text-xl transition-transform group-open:rotate-180">▼</span>
-        </summary>
-        <p class="mt-3 text-sm text-pencil/65 border-t-[2px] border-dashed border-pencil/10 pt-3" data-i18n="faq_a1">Our neural network was trained on 200+ labeled tokens with ~81% cross-validation F1 score. It catches honeypots, rug pulls, and high-tax tokens. Always DYOR — this is a tool, not financial advice.</p>
-      </details>
+  <div class="space-y-3">
+    <details class="group bg-white border-[3px] border-pencil shadow-sketch-sm wobbly-md p-5 cursor-pointer">
+      <summary class="font-heading text-lg list-none flex justify-between items-center">
+        <span data-i18n="faq_q1">Tool này có chính xác không?</span>
+        <span class="text-xl transition-transform group-open:rotate-180">▼</span>
+      </summary>
+      <p class="mt-3 text-sm text-pencil/65 border-t-[2px] border-dashed border-pencil/10 pt-3" data-i18n="faq_a1">Model neural network huấn luyện trên 200+ token với F1 score ~81% (cross-validation). Phát hiện honeypot, rug pull, high-tax tokens. Luôn luôn DYOR — đây là công cụ hỗ trợ, không phải lời khuyên tài chính.</p>
+    </details>
 
-      <details class="group bg-white border-[3px] border-pencil shadow-sketch-sm wobbly-md p-5 cursor-pointer">
-        <summary class="font-heading text-lg list-none flex justify-between items-center">
-          <span data-i18n="faq_q2">Is it free?</span>
-          <span class="text-xl transition-transform group-open:rotate-180">▼</span>
-        </summary>
-        <p class="mt-3 text-sm text-pencil/65 border-t-[2px] border-dashed border-pencil/10 pt-3" data-i18n="faq_a2">Completely free. We use the free Honeypot.is API + public RPC endpoints. No signup, no wallet connect, no data stored.</p>
-      </details>
+    <details class="group bg-white border-[3px] border-pencil shadow-sketch-sm wobbly-md p-5 cursor-pointer">
+      <summary class="font-heading text-lg list-none flex justify-between items-center">
+        <span data-i18n="faq_q2">Có mất phí không?</span>
+        <span class="text-xl transition-transform group-open:rotate-180">▼</span>
+      </summary>
+      <p class="mt-3 text-sm text-pencil/65 border-t-[2px] border-dashed border-pencil/10 pt-3" data-i18n="faq_a2">Hoàn toàn miễn phí. Dùng Honeypot.is API (free) + public RPC endpoints. Không cần đăng ký, không cần connect ví, không lưu data.</p>
+    </details>
 
-      <details class="group bg-white border-[3px] border-pencil shadow-sketch-sm wobbly-md p-5 cursor-pointer">
-        <summary class="font-heading text-lg list-none flex justify-between items-center">
-          <span data-i18n="faq_q3">What does Approval Checker scan?</span>
-          <span class="text-xl transition-transform group-open:rotate-180">▼</span>
-        </summary>
-        <p class="mt-3 text-sm text-pencil/65 border-t-[2px] border-dashed border-pencil/10 pt-3" data-i18n="faq_a3">It checks allowances of popular tokens (USDT, USDC, ETH, WBTC...) against major DEX routers (Uniswap, 0x, 1inch, PancakeSwap...). Detects unlimited approvals to unknown spenders. Currently scans ~8-10 tokens × 8 spenders per chain.</p>
-      </details>
+    <details class="group bg-white border-[3px] border-pencil shadow-sketch-sm wobbly-md p-5 cursor-pointer">
+      <summary class="font-heading text-lg list-none flex justify-between items-center">
+        <span data-i18n="faq_q3">Approval Checker quét những gì?</span>
+        <span class="text-xl transition-transform group-open:rotate-180">▼</span>
+      </summary>
+      <p class="mt-3 text-sm text-pencil/65 border-t-[2px] border-dashed border-pencil/10 pt-3" data-i18n="faq_a3">Quét allowance của các token phổ biến (USDT, USDC, ETH, WBTC...) với các DEX/router lớn (Uniswap, 0x, 1inch, PancakeSwap...). Phát hiện unlimited approval với spender lạ. Hiện tại quét khoảng 8-10 token × 8 spender mỗi chain.</p>
+    </details>
 
-      <details class="group bg-white border-[3px] border-pencil shadow-sketch-sm wobbly-md p-5 cursor-pointer">
-        <summary class="font-heading text-lg list-none flex justify-between items-center">
-          <span data-i18n="faq_q4">Does it support Solana?</span>
-          <span class="text-xl transition-transform group-open:rotate-180">▼</span>
-        </summary>
-        <p class="mt-3 text-sm text-pencil/65 border-t-[2px] border-dashed border-pencil/10 pt-3" data-i18n="faq_a4">Not yet. Honeypot.is only supports EVM chains. Solana will be added when suitable APIs become available.</p>
-      </details>
-    </div>
+    <details class="group bg-white border-[3px] border-pencil shadow-sketch-sm wobbly-md p-5 cursor-pointer">
+      <summary class="font-heading text-lg list-none flex justify-between items-center">
+        <span data-i18n="faq_q4">Có hỗ trợ Solana không?</span>
+        <span class="text-xl transition-transform group-open:rotate-180">▼</span>
+      </summary>
+      <p class="mt-3 text-sm text-pencil/65 border-t-[2px] border-dashed border-pencil/10 pt-3" data-i18n="faq_a4">Chưa. Honeypot.is chỉ hỗ trợ EVM chains. Solana sẽ được thêm khi có API phù hợp.</p>
+    </details>
   </div>
 </section>
 
 <!-- ════════════════ ABOUT ════════════════ -->
-<section class="max-w-2xl mx-auto px-6 py-16">
-  <div class="bg-postit border-[3px] border-pencil shadow-sketch-lg wobbly-md p-8 text-center relative">
+<section class="max-w-2xl mx-auto px-6 pb-20">
+  <div class="bg-postit border-[3px] border-pencil shadow-sketch-lg wobbly-md p-6 text-center relative">
     <div class="tape" style="width: 70px;"></div>
-    <div class="text-3xl mb-3">🛠️</div>
-    <h3 class="font-heading text-2xl mb-2">Built by a degen, for degens</h3>
-    <p class="text-sm text-pencil/70 leading-relaxed">Certified degen. Building tools I wish I had.<br>Scanned 200+ scam tokens so you don't have to.<br>DYOR — but I already did mine.</p>
+    <h3 class="font-heading text-2xl mb-2">🛠️ Built by a degen, for degens</h3>
+    <p class="text-sm text-pencil/70">Certified degen. Building tools I wish I had.<br>Scanned 200+ scam tokens so you don't have to.<br>DYOR — but I already did mine.</p>
   </div>
 </section>
 
 <!-- ════════════════ FOOTER ════════════════ -->
-<footer class="border-t-[3px] border-dashed border-pencil/20 py-12 px-6">
-  <div class="max-w-5xl mx-auto">
-    <div class="grid grid-cols-1 md:grid-cols-3 gap-8 mb-8">
-      <div>
-        <div class="flex items-center gap-2 mb-2">
-          <img src="https://github.com/Leonis237.png" alt="Leonis" class="w-6 h-6 rounded-full border-2 border-pencil">
-          <span class="font-heading text-lg">Leonis Forge</span>
-        </div>
-        <p class="text-xs text-pencil/50 leading-relaxed">Free crypto security tools. No signup, no wallet connect. Built by a degen, for degens.</p>
-      </div>
-      <div>
-        <h4 class="font-heading text-sm mb-3">Tools</h4>
-        <div class="space-y-1.5 text-xs">
-          <a href="#scanner" class="block text-pencil/60 hover:text-accent transition-colors">Token Scanner</a>
-          <a href="#scanner" class="block text-pencil/60 hover:text-accent transition-colors">Approval Checker</a>
-          <a href="#scanner" class="block text-pencil/60 hover:text-accent transition-colors">EIP-7702 Checker</a>
-        </div>
-      </div>
-      <div>
-        <h4 class="font-heading text-sm mb-3">Connect</h4>
-        <div class="space-y-1.5 text-xs">
-          <a href="https://x.com/Leonis237" target="_blank" rel="noopener" class="block text-pencil/60 hover:text-accent transition-colors">𝕏 @Leonis237</a>
-          <a href="https://t.me/Leonis2307" target="_blank" rel="noopener" class="block text-pencil/60 hover:text-accent transition-colors">💬 Telegram</a>
-          <a href="https://github.com/Leonis237/token-scam-detector" target="_blank" rel="noopener" class="block text-pencil/60 hover:text-accent transition-colors">GitHub</a>
-        </div>
-      </div>
+<footer class="border-t-[3px] border-dashed border-pencil/20 py-10 px-6">
+  <div class="max-w-3xl mx-auto text-center">
+    <div class="flex justify-center gap-6 flex-wrap mb-4 text-sm">
+      <a href="https://x.com/Leonis237" target="_blank" rel="noopener" class="hover:text-accent hover:line-through transition-colors">𝕏 @Leonis237</a>
+      <a href="https://t.me/Leonis2307" target="_blank" rel="noopener" class="hover:text-accent hover:line-through transition-colors">💬 Telegram</a>
+      <a href="https://github.com/Leonis237/token-scam-detector" target="_blank" rel="noopener" class="hover:text-accent hover:line-through transition-colors">GitHub</a>
+      <a href="https://honeypot.is" target="_blank" rel="noopener" class="hover:text-accent hover:line-through transition-colors">Honeypot.is</a>
     </div>
-    <div class="border-t-[2px] border-dashed border-pencil/10 pt-6 text-center">
-      <p class="text-xs text-pencil/40">
-        <span data-i18n="footer_disclaimer">© 2026 Leonis Forge. Not financial advice. DYOR.</span>
-        <span class="mx-2">·</span>
-        <span data-i18n="footer_built">Built with ✦ by</span> <a href="https://x.com/Leonis237" class="hover:text-accent transition-colors">@Leonis237</a>
-      </p>
-    </div>
+    <p class="text-xs text-pencil/40">
+      <span data-i18n="footer_disclaimer">© 2026 Leonis Forge. Không phải lời khuyên tài chính. DYOR.</span> <span data-i18n="footer_built">Built with ✦ by</span> <a href="https://x.com/Leonis237" class="hover:text-accent transition-colors">@Leonis237</a>
+    </p>
   </div>
 </footer>
 
