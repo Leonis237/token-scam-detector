@@ -851,6 +851,35 @@ def api_token_analyze():
     return jsonify(result)
 
 
+@app.route("/api/token/debug")
+def api_token_debug():
+    """Debug endpoint to test CoinGecko connectivity."""
+    import traceback
+    results = {}
+    try:
+        req = urllib.request.Request(
+            "https://api.coingecko.com/api/v3/ping",
+            headers={"User-Agent": "LeonisForge/1.0"}
+        )
+        with urllib.request.urlopen(req, timeout=15) as resp:
+            results["ping"] = json.loads(resp.read().decode())
+    except Exception as e:
+        results["ping_error"] = str(e)
+
+    try:
+        req = urllib.request.Request(
+            "https://api.coingecko.com/api/v3/search?query=bitcoin",
+            headers={"User-Agent": "LeonisForge/1.0"}
+        )
+        with urllib.request.urlopen(req, timeout=15) as resp:
+            data = json.loads(resp.read().decode())
+            results["search_coins"] = len(data.get("coins", []))
+    except Exception as e:
+        results["search_error"] = str(e)
+
+    return jsonify(results)
+
+
 if __name__ == "__main__":
     port = int(os.environ.get("PORT", 8080))
     app.run(host="0.0.0.0", port=port)
