@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """Leonis Forge — Token Scam Detector + Approval Checker + EIP-7702 Checker."""
-import json, time, pickle, urllib.request, os, re, xml.etree.ElementTree as ET
+import json, time, pickle, urllib.request, urllib.parse, os, re, xml.etree.ElementTree as ET
 from collections import defaultdict, OrderedDict
 from datetime import datetime, timedelta
 import numpy as np
@@ -658,7 +658,6 @@ _token_cache = {}
 
 def _cg(path, params=None):
     """CoinGecko free API helper."""
-    import urllib.parse
     base = "https://api.coingecko.com/api/v3"
     url = base + path
     if params:
