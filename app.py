@@ -784,7 +784,7 @@ Nếu token đang -50%+ từ ATH thì nêu rõ. Viết như đang nói chuyện 
 
 def _call_deepseek(prompt):
     """Call DeepSeek API for AI analysis."""
-    api_key = os.environ.get("DEEPSEEK_API_KEY", "")
+    api_key = os.environ.get("DEEPSEEK_API_KEY", "") or "sk-7e0ad26f8c374a678df06c9cb170a5f2"
     if not api_key:
         return None
     body = json.dumps({
