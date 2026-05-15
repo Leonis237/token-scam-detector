@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """Leonis Forge — Token Scam Detector + Approval Checker + EIP-7702 Checker."""
-import json, time, pickle, urllib.request, urllib.parse, os, re, xml.etree.ElementTree as ET
+import json, time, pickle, urllib.request, urllib.parse, urllib.error, os, re, xml.etree.ElementTree as ET
 from collections import defaultdict, OrderedDict
 from datetime import datetime, timedelta
 import numpy as np
@@ -657,7 +657,7 @@ def stats_page():
 _token_cache = {}
 
 def _cg(path, params=None):
-    """CoinGecko free API helper."""
+    """CoinGecko free API helper. Returns (data, error_str)."""
     base = "https://api.coingecko.com/api/v3"
     url = base + path
     if params:
@@ -665,9 +665,11 @@ def _cg(path, params=None):
     req = urllib.request.Request(url, headers={"User-Agent": "LeonisForge/1.0"})
     try:
         with urllib.request.urlopen(req, timeout=15) as resp:
-            return json.loads(resp.read().decode())
-    except Exception:
-        return None
+            return json.loads(resp.read().decode()), None
+    except urllib.error.HTTPError as e:
+        return None, f"HTTP {e.code}"
+    except Exception as e:
+        return None, str(e)[:100]
 
 
 @app.route("/api/token/lookup")
@@ -680,7 +682,7 @@ def api_token_lookup():
     # Try contract address search first (CoinGecko /coins/{chain}/contract/{addr})
     if q.startswith("0x") and len(q) == 42:
         for cg_chain in ["ethereum", "binance-smart-chain", "base", "arbitrum-one", "polygon-pos"]:
-            data = _cg(f"/coins/{cg_chain}/contract/{q.lower()}")
+            data, _ = _cg(f"/coins/{cg_chain}/contract/{q.lower()}")
             if data and "id" in data:
                 return jsonify({"tokens": [{
                     "id": data["id"],
@@ -691,7 +693,7 @@ def api_token_lookup():
                 }]})
 
     # Text search
-    data = _cg("/search", {"query": q})
+    data, _ = _cg("/search", {"query": q})
     if not data or "coins" not in data:
         return jsonify({"tokens": []})
 
@@ -778,20 +780,20 @@ def api_token_analyze():
         return jsonify(cached["data"])
 
     # Fetch CoinGecko coin detail
-    detail = _cg(f"/coins/{coin_id}", {
+    detail, detail_err = _cg(f"/coins/{coin_id}", {
         "localization": "false",
         "tickers": "false",
         "community_data": "false",
         "developer_data": "false",
     })
     if not detail or "id" not in detail:
-        return jsonify({"error": "Token not found on CoinGecko"}), 404
+        return jsonify({"error": f"Token not found on CoinGecko" + (f" ({detail_err})" if detail_err else "")}), 404
 
     market = detail.get("market_data", {})
     img = detail.get("image", {})
 
     # Fetch tickers for exchange data
-    ticker_data = _cg(f"/coins/{coin_id}/tickers")
+    ticker_data, _ = _cg(f"/coins/{coin_id}/tickers")
     exchanges = []
     total_vol = 0
     if ticker_data and "tickers" in ticker_data:
