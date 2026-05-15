@@ -697,6 +697,21 @@ def api_token_lookup():
                     "rank": data.get("market_cap_rank"),
                 }]})
 
+        # Fallback: DexScreener token endpoint for contract addresses
+        ds_data, _ = _ds(f"/tokens/{q.lower()}")
+        if ds_data and ds_data.get("pairs"):
+            base = ds_data["pairs"][0].get("baseToken", {})
+            sym = base.get("symbol", "").upper()
+            name = base.get("name", "")
+            if sym:
+                return jsonify({"tokens": [{
+                    "id": f"ds:{sym.lower()}",
+                    "name": name or sym,
+                    "symbol": sym,
+                    "thumb": ds_data["pairs"][0].get("info", {}).get("imageUrl", ""),
+                    "rank": None,
+                }]})
+
     # Text search on CoinGecko
     data, _ = _cg("/search", {"query": q})
     
