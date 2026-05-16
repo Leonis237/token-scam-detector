@@ -8,6 +8,8 @@ import onnxruntime as ort
 from pathlib import Path
 from flask import Flask, request, jsonify, send_from_directory
 
+from airdrop_safety import analyze_airdrop
+
 app = Flask(__name__, static_folder="static")
 DIR = Path(__file__).parent
 
@@ -650,6 +652,19 @@ def stats_page():
         return "not found", 404
     return send_from_directory("static", "stats.html")
 
+
+@app.route("/api/airdrop/safety")
+def api_airdrop_safety():
+    """Analyze airdrop claim link for phishing, drainers, and scams."""
+    url = request.args.get("url", "").strip()
+    if not url:
+        return jsonify({"error": "URL required"}), 400
+
+    try:
+        report = analyze_airdrop(url)
+        return jsonify(report)
+    except Exception as e:
+        return jsonify({"error": f"Analysis failed: {str(e)[:200]}"}), 500
 
 
 if __name__ == "__main__":

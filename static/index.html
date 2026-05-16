@@ -435,6 +435,10 @@ tailwind.config = {
       class="font-heading text-lg px-5 py-2 border-[3px] border-b-0 border-muted rounded-t-2xl bg-muted/40 text-pencil/50 transition-colors">
       <span data-i18n="tab_eip7702">🔐 EIP-7702 Checker</span>
     </button>
+    <button id="tabAirdrop" onclick="switchTab('airdrop')"
+      class="font-heading text-lg px-5 py-2 border-[3px] border-b-0 border-muted rounded-t-2xl bg-muted/40 text-pencil/50 transition-colors">
+      <span>🪂 Airdrop Safety</span>
+    </button>
   </div>
 
   <!-- ═══ SCAM DETECTOR TAB ═══ -->
@@ -663,6 +667,65 @@ tailwind.config = {
     <div id="eip7702Result" class="hidden fade-in mt-4">
       <div id="eip7702Verdict" class="border-[3px] border-pencil shadow-sketch-sm wobbly p-5 text-center mb-4"></div>
       <div id="eip7702Chains" class="grid grid-cols-2 md:grid-cols-3 gap-3"></div>
+    </div>
+  </div>
+
+  <!-- ═══ AIRDROP SAFETY TAB ═══ -->
+  <div id="panelAirdrop" class="hidden bg-white border-[3px] border-pencil shadow-sketch-sm wobbly-md p-6 md:p-8">
+
+    <!-- Info box -->
+    <div class="bg-greenpen/10 border-[3px] border-greenpen/30 rounded-xl p-4 mb-4">
+      <p class="text-sm text-pencil/80 leading-relaxed">
+        <strong class="font-heading text-greenpen">🪂 Airdrop Safety Checker</strong> — Paste any airdrop or claim link to check if it's a <span class="text-accent font-semibold">phishing site</span> or <span class="text-accent font-semibold">wallet drainer</span>. Scans 9 signals: suspicious TLDs, brand impersonation (fake Uniswap/Metamask), URL shorteners, typosquatting, known phishing domains, IPFS links, and more. <em>Use for: verifying links from Telegram, Discord, Twitter DMs before connecting your wallet.</em>
+      </p>
+    </div>
+
+    <div class="mb-4">
+      <label class="font-heading text-sm block mb-1 text-pencil/70">Airdrop / Claim Link</label>
+      <input type="text" id="airdropUrl"
+        class="input-sketch w-full border-[3px] border-pencil rounded-xl px-4 py-3 bg-white transition-colors"
+        placeholder="https://claim-uniswap.xyz/airdrop"
+        autocomplete="off" spellcheck="false">
+    </div>
+
+    <button id="airdropBtn" onclick="checkAirdrop()"
+      class="font-heading text-lg w-full bg-white border-[3px] border-pencil shadow-sketch px-6 py-3 wobbly-sm btn-sketch hover:bg-greenpen hover:text-white transition-colors mb-4">
+      <span>🪂 Scan Link</span>
+    </button>
+
+    <!-- Loading -->
+    <div id="airdropSpinner" class="hidden text-center py-6">
+      <span class="inline-block w-3 h-3 bg-greenpen rounded-full mx-1 animate-bounce" style="animation-delay:0s"></span>
+      <span class="inline-block w-3 h-3 bg-bluepen rounded-full mx-1 animate-bounce" style="animation-delay:0.15s"></span>
+      <span class="inline-block w-3 h-3 bg-accent rounded-full mx-1 animate-bounce" style="animation-delay:0.3s"></span>
+    </div>
+
+    <div id="airdropError" class="hidden bg-accent/10 border-[3px] border-accent rounded-xl p-4 text-accent text-sm mt-3"></div>
+
+    <div id="airdropResult" class="hidden fade-in mt-4">
+      <!-- Verdict Banner -->
+      <div id="airdropVerdictBanner" class="border-[3px] border-pencil shadow-sketch-sm wobbly p-5 text-center mb-4">
+        <div id="airdropVerdictIcon" class="text-5xl mb-1"></div>
+        <div id="airdropVerdictText" class="font-heading text-2xl"></div>
+      </div>
+
+      <!-- Score bar -->
+      <div class="flex justify-between text-sm text-pencil/60 mb-1">
+        <span>Safety Score</span>
+        <span id="airdropScorePct" class="font-heading">0%</span>
+      </div>
+      <div class="h-5 bg-muted/50 rounded-full overflow-hidden border-[2px] border-pencil/20 mb-4">
+        <div id="airdropScoreBar" class="h-full rounded-full transition-all duration-500" style="width:0%"></div>
+      </div>
+
+      <!-- Checks list -->
+      <div id="airdropChecks" class="space-y-2 mb-4"></div>
+
+      <!-- URL preview -->
+      <div class="bg-postit/40 border-[2px] border-pencil/20 rounded-xl p-3">
+        <div class="text-xs text-pencil/50 uppercase tracking-wide mb-1">Analyzed URL</div>
+        <div id="airdropAnalyzedUrl" class="text-sm text-pencil/70 break-all font-mono text-xs"></div>
+      </div>
     </div>
   </div>
 
@@ -1053,11 +1116,13 @@ function switchTab(tab) {
     scam: document.getElementById('panelScam'),
     approval: document.getElementById('panelApproval'),
     eip7702: document.getElementById('panelEIP7702'),
+    airdrop: document.getElementById('panelAirdrop'),
   };
   const tabs = {
     scam: document.getElementById('tabScam'),
     approval: document.getElementById('tabApproval'),
     eip7702: document.getElementById('tabEIP7702'),
+    airdrop: document.getElementById('tabAirdrop'),
   };
 
   // Hide all, deactivate all
@@ -1309,6 +1374,88 @@ async function checkEIP7702() {
   }
 }
 
+// ── Airdrop Safety ──
+async function checkAirdrop() {
+  const url = document.getElementById('airdropUrl').value.trim();
+
+  document.getElementById('airdropResult').classList.add('hidden');
+  document.getElementById('airdropError').classList.add('hidden');
+
+  if (!url) {
+    document.getElementById('airdropError').textContent = 'Nhập link airdrop cần kiểm tra';
+    document.getElementById('airdropError').classList.remove('hidden');
+    return;
+  }
+
+  document.getElementById('airdropSpinner').classList.remove('hidden');
+  document.getElementById('airdropBtn').disabled = true;
+
+  try {
+    const resp = await fetch('/api/airdrop/safety?url=' + encodeURIComponent(url));
+    const data = await resp.json();
+
+    if (data.error) {
+      document.getElementById('airdropError').textContent = data.error;
+      document.getElementById('airdropError').classList.remove('hidden');
+      return;
+    }
+
+    // Verdict banner
+    const verdictBanner = document.getElementById('airdropVerdictBanner');
+    const verdictIcon = document.getElementById('airdropVerdictIcon');
+    const verdictText = document.getElementById('airdropVerdictText');
+
+    const verdictStyles = {
+      SAFE:          { icon: '✅', color: 'border-greenpen bg-greenpen/5', text: 'text-greenpen' },
+      LIKELY_SAFE:   { icon: '👍', color: 'border-greenpen bg-greenpen/5', text: 'text-greenpen' },
+      SUSPICIOUS:    { icon: '⚠️', color: 'border-yellowpen bg-yellowpen/5', text: 'text-yellowpen' },
+      HIGH_RISK:     { icon: '🚨', color: 'border-accent bg-accent/5', text: 'text-accent' },
+      CONFIRMED_SCAM:{ icon: '💀', color: 'border-accent bg-accent/5', text: 'text-accent' },
+      INVALID_URL:   { icon: '❌', color: 'border-pencil/50 bg-muted/30', text: 'text-pencil/50' },
+    };
+
+    const style = verdictStyles[data.verdict] || verdictStyles.SAFE;
+    verdictBanner.className = 'border-[3px] shadow-sketch-sm wobbly p-5 text-center mb-4 ' + style.color;
+    verdictIcon.textContent = style.icon;
+    verdictText.className = 'font-heading text-2xl ' + style.text;
+    verdictText.textContent = data.verdict.replace(/_/g, ' ');
+
+    // Score bar
+    const score = data.score;
+    document.getElementById('airdropScorePct').textContent = score + '%';
+    const bar = document.getElementById('airdropScoreBar');
+    bar.style.width = score + '%';
+    bar.style.background = score >= 80 ? 'var(--greenpen)' :
+      (score >= 40 ? '#d4a017' : 'var(--accent)');
+
+    // Checks list
+    const icons = {PASS: '✅', WARN: '⚠️', FAIL: '🚨', INFO: 'ℹ️', UNKNOWN: '❓'};
+    document.getElementById('airdropChecks').innerHTML = data.checks.map(c =>
+      '<div class="flex justify-between items-start py-2 border-b-[2px] border-dashed border-pencil/10">' +
+        '<div class="flex-1">' +
+          '<strong class="text-sm">' + (icons[c.status] || '❓') + ' ' + c.name + '</strong>' +
+          '<div class="text-xs text-pencil/50 mt-0.5">' + (c.detail || '') + '</div>' +
+        '</div>' +
+        '<span class="font-heading text-sm ml-3 ' + (c.penalty > 0 ? 'text-accent' : 'text-greenpen') + '">' +
+          (c.penalty > 0 ? '-' + c.penalty : 'OK') + '</span>' +
+      '</div>'
+    ).join('');
+
+    // URL display
+    document.getElementById('airdropAnalyzedUrl').textContent = data.url;
+
+    document.getElementById('airdropResult').classList.remove('hidden');
+    document.getElementById('airdropResult').scrollIntoView({ behavior: 'smooth', block: 'center' });
+
+  } catch (e) {
+    document.getElementById('airdropError').textContent = 'Lỗi mạng. Thử lại.';
+    document.getElementById('airdropError').classList.remove('hidden');
+  } finally {
+    document.getElementById('airdropSpinner').classList.add('hidden');
+    document.getElementById('airdropBtn').disabled = false;
+  }
+}
+
 // ── Unified Hero Search ──
 async function heroSearch() {
   const query = document.getElementById('heroSearch').value.trim();
@@ -1427,6 +1574,7 @@ document.getElementById('address').addEventListener('keydown', e => { if (e.key 
 document.getElementById('walletAddr').addEventListener('keydown', e => { if (e.key === 'Enter') checkApprovals(); });
 document.getElementById('eip7702Wallet').addEventListener('keydown', e => { if (e.key === 'Enter') checkEIP7702(); });
 document.getElementById('heroSearch').addEventListener('keydown', e => { if (e.key === 'Enter') heroSearch(); });
+document.getElementById('airdropUrl').addEventListener('keydown', e => { if (e.key === 'Enter') checkAirdrop(); });
 </script>
 </body>
 </html>
