@@ -542,6 +542,17 @@ tailwind.config = {
         class="block text-center text-sm text-bluepen hover:text-accent transition-colors underline decoration-dashed underline-offset-4">
         <span data-i18n="honeypot_link">Xem báo cáo đầy đủ trên Honeypot.is →</span>
       </a>
+
+      <!-- ☕ Donate -->
+      <div id="donateScan" class="hidden mt-5 pt-3 border-t-[2px] border-dashed border-pencil/10 text-center">
+        <p class="text-xs text-pencil/40 mb-1">☕ This tool is free forever. Help keep it running?</p>
+        <div class="flex justify-center gap-2 flex-wrap mb-1">
+          <span class="inline-flex items-center gap-1 bg-postit/30 border-[2px] border-pencil/15 rounded-lg px-2 py-0.5 text-xs font-heading"><span class="w-1.5 h-1.5 rounded-full bg-[#627eea] inline-block"></span> ETH</span>
+          <span class="inline-flex items-center gap-1 bg-postit/30 border-[2px] border-pencil/15 rounded-lg px-2 py-0.5 text-xs font-heading"><span class="w-1.5 h-1.5 rounded-full bg-[#0052ff] inline-block"></span> Base</span>
+          <span class="inline-flex items-center gap-1 bg-postit/30 border-[2px] border-pencil/15 rounded-lg px-2 py-0.5 text-xs font-heading"><span class="w-1.5 h-1.5 rounded-full bg-[#28a0f0] inline-block"></span> Arbitrum</span>
+        </div>
+        <button onclick="copyDonate()" class="text-xs text-pencil/30 font-mono hover:text-accent hover:underline transition-colors cursor-copy tracking-tight" title="Click to copy">0xe43f...15BB 📋</button>
+      </div>
     </div>
   </div>
 
@@ -976,6 +987,18 @@ tailwind.config = {
       <a href="https://github.com/Leonis237/token-scam-detector" target="_blank" rel="noopener" class="hover:text-accent hover:line-through transition-colors">GitHub</a>
       <a href="https://honeypot.is" target="_blank" rel="noopener" class="hover:text-accent hover:line-through transition-colors">Honeypot.is</a>
     </div>
+
+    <!-- ☕ Donate -->
+    <div class="mb-4 py-3 px-4 bg-postit/20 border-[2px] border-dashed border-pencil/10 rounded-xl inline-block">
+      <p class="text-xs text-pencil/40 mb-1">☕ Support Leonis Forge — send any token on these chains:</p>
+      <div class="flex justify-center gap-2 flex-wrap mb-1">
+        <span class="inline-flex items-center gap-1 text-xs font-heading text-pencil/60"><span class="w-2 h-2 rounded-full bg-[#627eea] inline-block"></span> ETH</span>
+        <span class="inline-flex items-center gap-1 text-xs font-heading text-pencil/60"><span class="w-2 h-2 rounded-full bg-[#0052ff] inline-block"></span> Base</span>
+        <span class="inline-flex items-center gap-1 text-xs font-heading text-pencil/60"><span class="w-2 h-2 rounded-full bg-[#28a0f0] inline-block"></span> Arbitrum</span>
+      </div>
+      <button onclick="copyDonate()" class="text-xs text-pencil/30 font-mono hover:text-accent hover:underline transition-colors cursor-copy" title="Click to copy">0xe43f191d3DBcCEBd94F960a42dEafdF8E57215BB 📋</button>
+    </div>
+
     <p class="text-xs text-pencil/40">
       <span data-i18n="footer_disclaimer">© 2026 Leonis Forge. Không phải lời khuyên tài chính. DYOR.</span> <span data-i18n="footer_built">Built with ✦ by</span> <a href="https://x.com/Leonis237" class="hover:text-accent transition-colors">@Leonis237</a>
     </p>
@@ -1092,6 +1115,7 @@ async function checkToken() {
       document.getElementById('infoProxy').textContent = '?';
       document.getElementById('redFlags').classList.add('hidden');
       document.getElementById('honeypotLink').href = data.honeypot_url || '#';
+      document.getElementById('donateScan').classList.remove('hidden');
       document.getElementById('result').scrollIntoView({ behavior: 'smooth', block: 'center' });
       return;
     }
@@ -1132,6 +1156,7 @@ async function checkToken() {
 
     document.getElementById('honeypotLink').href = data.honeypot_url;
     document.getElementById('result').classList.remove('hidden');
+    document.getElementById('donateScan').classList.remove('hidden');
     document.getElementById('result').scrollIntoView({ behavior: 'smooth', block: 'center' });
 
   } catch (e) {
@@ -1145,6 +1170,17 @@ async function checkToken() {
 function showError(msg) {
   document.getElementById('error').textContent = msg;
   document.getElementById('error').classList.remove('hidden');
+}
+
+function copyDonate() {
+  const addr = '0xe43f191d3DBcCEBd94F960a42dEafdF8E57215BB';
+  navigator.clipboard.writeText(addr).then(() => {
+    const btn = event.target;
+    btn.textContent = addr + ' ✅ Copied!';
+    setTimeout(() => { btn.innerHTML = '0xe43f...15BB 📋'; }, 2000);
+  }).catch(() => {
+    prompt('Copy this address:', addr);
+  });
 }
 
 // ── Approval Checker ──
