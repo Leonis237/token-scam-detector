@@ -341,7 +341,7 @@ tailwind.config = {
       <a href="#faq" class="hover:text-accent transition-colors"><span data-i18n="nav_faq">FAQ</span></a>
       <a href="#ecosystem" class="hover:text-accent transition-colors">Minara</a>
       <a href="#guides" class="hover:text-accent transition-colors">Guides</a>
-      <a href="/blog/pizzaday" class="hover:text-accent transition-colors">Blog</a>
+      <a href="#blog" class="hover:text-accent transition-colors">Blog</a>
     </div>
     <div class="hidden md:flex items-center gap-3">
       <button onclick="toggleTheme()" id="themeToggle" class="font-heading text-sm bg-white border-[2px] border-pencil/30 shadow-sketch-sm px-2.5 py-1 rounded-full hover:bg-muted transition-colors" title="Toggle dark mode">
@@ -987,25 +987,21 @@ tailwind.config = {
       </div>
     </div>
 
-    <!-- Blog card -->
-    <div class="bg-white border-[3px] border-pencil shadow-sketch-sm wobbly-md p-6 relative md:col-span-2 mt-4">
-      <div class="tape"></div>
-      <div class="flex items-center gap-2 mb-1">
-        <span class="text-2xl">🍕</span>
-        <h3 class="font-heading text-xl">Latest Article</h3>
-        <span class="text-xs bg-postit border-[2px] border-pencil/20 px-2 py-0.5 rounded-full font-heading">📝 New</span>
-      </div>
-      <p class="text-xs text-pencil/40 mb-2">May 18, 2026 · Research & Backtesting</p>
+  </div>
+</section>
 
-      <p class="text-sm text-pencil/70 mb-3 leading-relaxed"><strong>Pizza Day 'Sniper' Tactics 2026 on Minara Strategy Studio.</strong> 6-phase backtesting journey — from -8.17% drawdown to +2.84% PnL with 100% win rate. One EMA200 filter changed everything.</p>
+<!-- ════════════════ BLOG ════════════════ -->
+<section class="max-w-4xl mx-auto px-6 pb-20" id="blog">
+  <div class="text-center mb-8">
+    <span class="inline-block bg-postit border-[2px] border-pencil/30 shadow-sketch-sm px-4 py-1 wobbly-sm -rotate-1 font-heading text-sm mb-4">📝 Blog</span>
+    <h2 class="font-heading text-3xl md:text-4xl text-pencil mb-3">Latest Research & Articles</h2>
+    <p class="text-pencil/60 text-sm max-w-lg mx-auto">Deep dives, backtesting experiments, and Web3 analysis — straight from the forge.</p>
+  </div>
 
-      <div class="flex gap-2 flex-wrap mb-3">
-        <span class="text-xs bg-greenpen/10 border-[2px] border-greenpen/20 px-2 py-0.5 rounded-full">📊 Backtesting</span>
-        <span class="text-xs bg-greenpen/10 border-[2px] border-greenpen/20 px-2 py-0.5 rounded-full">🍕 Bitcoin Pizza Day</span>
-        <span class="text-xs bg-greenpen/10 border-[2px] border-greenpen/20 px-2 py-0.5 rounded-full">🧠 Minara Strategy Studio</span>
-      </div>
-
-      <a href="/blog/pizzaday" class="font-heading text-sm bg-bluepen text-white border-[3px] border-bluepen shadow-sketch px-4 py-1.5 wobbly-sm hover:bg-bluepen/90 transition-colors">📖 Read Article →</a>
+  <div class="grid grid-cols-1 md:grid-cols-2 gap-6" id="blogGrid">
+    <!-- JS fills this -->
+    <div class="col-span-2 text-center py-10 text-pencil/30 font-heading text-sm">
+      Loading articles...
     </div>
   </div>
 </section>
@@ -1597,6 +1593,44 @@ document.getElementById('walletAddr').addEventListener('keydown', e => { if (e.k
 document.getElementById('eip7702Wallet').addEventListener('keydown', e => { if (e.key === 'Enter') checkEIP7702(); });
 document.getElementById('heroSearch').addEventListener('keydown', e => { if (e.key === 'Enter') heroSearch(); });
 document.getElementById('airdropUrl').addEventListener('keydown', e => { if (e.key === 'Enter') checkAirdrop(); });
+
+// ── Blog loader ──
+async function loadBlog() {
+  const grid = document.getElementById('blogGrid');
+  if (!grid) return;
+  try {
+    const resp = await fetch('/api/blog/list');
+    const data = await resp.json();
+    if (!data.articles || data.articles.length === 0) {
+      grid.innerHTML = '<div class="col-span-2 text-center py-10 text-pencil/30 font-heading text-sm">No articles yet — check back soon.</div>';
+      return;
+    }
+    grid.innerHTML = data.articles.map(a => {
+      const imgHtml = a.image
+        ? '<img src="' + a.image + '" alt="' + a.title + '" class="w-full h-40 object-cover rounded-lg border-[2px] border-pencil/20 mb-3">'
+        : '';
+      const dateHtml = a.date ? '<span class="text-xs text-pencil/40">' + a.date + '</span>' : '';
+      const desc = (a.description || '').length > 120
+        ? (a.description || '').substring(0, 120) + '...'
+        : (a.description || '');
+      return '<a href="' + a.url + '" class="block bg-white border-[3px] border-pencil shadow-sketch-sm wobbly-md p-5 card-hover hover:border-accent transition-colors group">'
+        + imgHtml
+        + '<div class="flex items-center justify-between mb-1">'
+        + '<h3 class="font-heading text-lg group-hover:text-accent transition-colors truncate pr-2">' + a.title + '</h3>'
+        + '</div>'
+        + dateHtml
+        + '<p class="text-sm text-pencil/60 mt-1.5 leading-relaxed">' + desc + '</p>'
+        + '<span class="inline-block mt-2 font-heading text-xs text-accent">Read →</span>'
+        + '</a>';
+    }).join('');
+  } catch(e) {
+    grid.innerHTML = '<div class="col-span-2 text-center py-10 text-pencil/30 font-heading text-sm">Articles coming soon.</div>';
+  }
+}
+
+document.addEventListener('DOMContentLoaded', () => {
+  loadBlog();
+});
 </script>
 </body>
 </html>

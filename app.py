@@ -667,6 +667,76 @@ def api_airdrop_safety():
         return jsonify({"error": f"Analysis failed: {str(e)[:200]}"}), 500
 
 
+# ── Blog API ──
+@app.route("/api/blog/list")
+def api_blog_list():
+    """Return all blog articles sorted by date (newest first)."""
+    import re
+    blog_root = DIR / "static" / "blog"
+    articles = []
+
+    if not blog_root.exists():
+        return jsonify({"articles": []})
+
+    for slug_dir in sorted(blog_root.iterdir(), reverse=True):
+        if not slug_dir.is_dir():
+            continue
+        html_path = slug_dir / "index.html"
+        if not html_path.exists():
+            continue
+
+        slug = slug_dir.name
+        try:
+            html = html_path.read_text(encoding="utf-8")
+        except Exception:
+            continue
+
+        # Extract metadata from HTML (lightweight, no bs4 needed)
+        title = ""
+        date = ""
+        description = ""
+        image = ""
+
+        # <title>...</title>
+        m = re.search(r'<title>(.*?)</title>', html, re.DOTALL)
+        if m:
+            title = m.group(1).strip()
+            # Strip site name suffix
+            title = re.sub(r'\s*[—–-]\s*Leonis Forge\s*$', '', title).strip()
+
+        # <meta name="description" content="...">
+        m = re.search(r'<meta\s+name="description"\s+content="([^"]*)"', html)
+        if m:
+            description = m.group(1).strip()
+
+        # Date from <div class="meta"> or <time>
+        m = re.search(r'class="meta"[^>]*>([^<]+)<', html)
+        if not m:
+            m = re.search(r'<time[^>]*>([^<]+)<', html)
+        if m:
+            date = m.group(1).strip()
+
+        # First image (hero or first figure)
+        m = re.search(r'<img\s+[^>]*src="([^"]*)"', html)
+        if m:
+            img_src = m.group(1).strip()
+            if img_src.startswith("/"):
+                image = img_src
+            else:
+                image = f"/blog/{slug}/{img_src}"
+
+        articles.append({
+            "slug": slug,
+            "title": title,
+            "date": date,
+            "description": description,
+            "image": image,
+            "url": f"/blog/{slug}",
+        })
+
+    return jsonify({"articles": articles})
+
+
 # ── Blog ──
 @app.route("/blog/<slug>")
 def blog_article(slug):
