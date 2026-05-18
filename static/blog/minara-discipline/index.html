@@ -1,0 +1,296 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>How I Architected My Trading Discipline At Minara Strategy Studio — Leonis Forge</title>
+<meta name="description" content="Building a 6-layer automated trading system on Minara Strategy Studio — from V1's naive trend-following to V10's fortress of independent filters. +3.07% profit with -3.06% max drawdown.">
+<meta property="og:title" content="How I Architected My Trading Discipline At Minara Strategy Studio">
+<meta property="og:description" content="6 independent filters stacked on 1H — a hands-free momentum system that slept through -14.44% market losses.">
+<meta property="og:image" content="https://leonisforge.com/blog/minara-discipline/header.jpg">
+<meta property="og:type" content="article">
+<meta property="og:url" content="https://leonisforge.com/blog/minara-discipline">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:creator" content="@Leonis237">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Kalam:wght@400;700&family=Patrick+Hand&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #fdfbf7;
+    --text: #2d2d2d;
+    --accent: #d94f4f;
+    --accent2: #3b82f6;
+    --border: #2d2d2d;
+  }
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body {
+    background: var(--bg);
+    background-image: radial-gradient(circle, #e8e4dc 1px, transparent 1px);
+    background-size: 20px 20px;
+    color: var(--text);
+    font-family: 'Patrick Hand', cursive;
+    font-size: 20px;
+    line-height: 1.7;
+    -webkit-font-smoothing: antialiased;
+  }
+  .container {
+    max-width: 720px;
+    margin: 0 auto;
+    padding: 40px 20px 80px;
+  }
+  h1, h2, h3 {
+    font-family: 'Kalam', cursive;
+    font-weight: 700;
+  }
+  h1 {
+    font-size: 2.2em;
+    margin-bottom: 0.3em;
+  }
+  h2 {
+    font-size: 1.5em;
+    margin-top: 2em;
+    margin-bottom: 0.5em;
+    padding-bottom: 6px;
+    border-bottom: 3px solid var(--border);
+    display: inline-block;
+  }
+  p { margin-bottom: 1.2em; }
+  .meta {
+    color: #777;
+    font-size: 0.85em;
+    margin-bottom: 2em;
+  }
+  .hero {
+    border: 3px solid var(--border);
+    border-radius: 12px 12px 12px 12px / 10px 10px 10px 10px;
+    box-shadow: 4px 4px 0 var(--border);
+    margin: 1.5em 0 2.5em;
+    overflow: hidden;
+    background: #fff;
+  }
+  .hero img {
+    width: 100%;
+    display: block;
+  }
+  .figure {
+    border: 2px solid var(--border);
+    border-radius: 8px 8px 8px 8px / 6px 6px 6px 6px;
+    box-shadow: 4px 4px 0 var(--border);
+    margin: 2em 0;
+    padding: 12px;
+    background: #fff;
+  }
+  .figure img {
+    width: 100%;
+    display: block;
+  }
+  .figcaption {
+    font-size: 0.8em;
+    color: #666;
+    text-align: center;
+    margin-top: 8px;
+  }
+  .highlight {
+    background: #fff3cd;
+    padding: 2px 6px;
+    border-radius: 3px;
+  }
+  .verdict {
+    border: 3px solid var(--accent2);
+    border-radius: 12px 12px 12px 12px / 10px 10px 10px 10px;
+    box-shadow: 4px 4px 0 var(--accent2);
+    padding: 24px;
+    margin: 2em 0;
+    background: #f0f7ff;
+  }
+  .verdict h3 {
+    color: var(--accent2);
+    margin-top: 0;
+  }
+  ul { margin: 1em 0 1em 1.5em; }
+  li { margin-bottom: 0.8em; }
+  .layer-tag {
+    display: inline-block;
+    background: var(--border);
+    color: #fff;
+    padding: 2px 10px;
+    border-radius: 4px;
+    font-size: 0.75em;
+    margin-right: 6px;
+    font-family: 'Kalam', cursive;
+  }
+  .layer-tag.l1 { background: #8b5cf6; }
+  .layer-tag.l2 { background: #3b82f6; }
+  .layer-tag.l3 { background: #06b6d4; }
+  .layer-tag.l4 { background: #22c55e; }
+  .layer-tag.l5 { background: #f59e0b; }
+  .layer-tag.l6 { background: #d94f4f; }
+  .code-block {
+    background: #1e1e1e;
+    color: #d4d4d4;
+    padding: 20px;
+    border-radius: 8px;
+    font-family: 'Courier New', monospace;
+    font-size: 14px;
+    line-height: 1.5;
+    overflow-x: auto;
+    margin: 1.5em 0;
+    border: 2px solid var(--border);
+    box-shadow: 4px 4px 0 var(--border);
+  }
+  .code-block .kw { color: #569cd6; }
+  .code-block .cm { color: #6a9955; }
+  .code-block .str { color: #ce9178; }
+  .code-block .num { color: #b5cea8; }
+  a {
+    color: var(--accent2);
+    text-decoration: underline wavy;
+    text-underline-offset: 3px;
+  }
+  a:hover { color: var(--accent); }
+  .back-link {
+    display: inline-block;
+    margin-top: 3em;
+    padding: 8px 18px;
+    border: 2px solid var(--border);
+    border-radius: 6px;
+    box-shadow: 3px 3px 0 var(--border);
+    text-decoration: none;
+    color: var(--border);
+    font-family: 'Kalam', cursive;
+  }
+  .back-link:hover {
+    background: var(--border);
+    color: #fff;
+  }
+  .nav {
+    margin-bottom: 2em;
+  }
+  .nav a {
+    font-family: 'Kalam', cursive;
+    font-size: 0.9em;
+    text-decoration: none;
+    color: var(--border);
+  }
+  @media (max-width: 600px) {
+    body { font-size: 17px; }
+    h1 { font-size: 1.6em; }
+    .container { padding: 20px 15px 40px; }
+  }
+</style>
+</head>
+<body>
+<div class="container">
+
+<div class="nav">
+  <a href="https://leonisforge.com">← Leonis Forge</a>
+</div>
+
+<h1>How I Architected My Trading Discipline At Minara Strategy Studio</h1>
+<div class="meta">
+  Leonis &middot; May 12, 2026 &middot; Minara Strategy Studio
+</div>
+
+<div class="hero">
+  <img src="/blog/minara-discipline/header.jpg" alt="Minara Trading Discipline header">
+</div>
+
+<p>I hate staring at charts. As a busy Content Creator, I want to minimize screen time, sleep well at night, and only engage the system when absolutely necessary.</p>
+
+<p><strong>My Hypothesis:</strong> By stacking enough independent filters on a 1H timeframe, I can capture momentum while dodging market chop, completely hands-free.</p>
+
+<h2>The Iteration Journey</h2>
+
+<h3>1. V1 – The Rough Sketch <span style="font-weight:400;font-size:0.7em;color:#999;">(ID: QgK98J)</span></h3>
+
+<ul>
+  <li><strong>Prompt:</strong> "Build a long-only trend following strategy for BTC 4H using EMA cross and ADX."</li>
+  <li><strong>Reality:</strong> Loose logic, weak risk management. It was just a bunch of theories easily "wiped out" by market volatility. It yielded <strong>+6.09% profit</strong> but only <strong>4 trades all year.</strong></li>
+  <li><strong>The Flaw:</strong> The sample size was too small for peace of mind. If one of those 4 trades had been a "Black Swan," the <strong>-8.94% Drawdown</strong> could have been much worse.</li>
+</ul>
+
+<h3>2. V5 – 4H Conservative <span style="font-weight:400;font-size:0.7em;color:#999;">(ID: u8sz2E)</span></h3>
+
+<ul>
+  <li><strong>The Attempt:</strong> I refined the logic to increase frequency, reaching <strong>31 trades.</strong></li>
+  <li><strong>The Result:</strong> However, it failed to deliver consistent returns (<strong>-0.87%</strong>), showing that simple trend following wasn't enough to handle more active market participation.</li>
+</ul>
+
+<h3>3. V10 – 1H Multi-Filter <span style="font-weight:400;font-size:0.7em;color:#999;">(ID: d9fMRL)</span></h3>
+
+<ul>
+  <li><strong>The Breakthrough:</strong> To solve the "more data but stay lazy" puzzle, I dropped to the 1H timeframe and stacked <strong>6 independent filters</strong> to compensate for lower timeframe noise.</li>
+</ul>
+
+<div class="figure">
+  <img src="/blog/minara-discipline/comparison.jpg" alt="Systematic Evolution: From V1 to V10">
+  <div class="figcaption">Systematic Evolution: From V1 to V10 — A comparison panel showcasing the performance metrics of three strategy generations: V1, V5, and V10.</div>
+</div>
+
+<h2>Deep-dive: The V10 6-Layer System</h2>
+
+<p>Each layer acts as a shield to filter out market "noise":</p>
+
+<ol style="margin:1em 0 1em 1.5em;">
+  <li style="margin-bottom:0.8em;"><span class="layer-tag l1">Layer 1</span> <strong>Directional Momentum</strong> (+DI > -DI): Bulls in control.</li>
+  <li style="margin-bottom:0.8em;"><span class="layer-tag l2">Layer 2</span> <strong>Trend Strength</strong> (ADX > ADX Mean 9): Ensures the trend is actually gaining strength.</li>
+  <li style="margin-bottom:0.8em;"><span class="layer-tag l3">Layer 3</span> <strong>Short-term Trend</strong> (Price > EMA63): Guarantees short-term momentum.</li>
+  <li style="margin-bottom:0.8em;"><span class="layer-tag l4">Layer 4</span> <strong>Macro Trend Filter</strong> (MVP — Price > EMA4800): The <em>"Holy Grail."</em> This single layer saved V10 from ~20 false breakouts during the brutal 2025 chop phase.</li>
+  <li style="margin-bottom:0.8em;"><span class="layer-tag l5">Layer 5</span> <strong>Breakout Confirmation</strong> (Close > Previous High): Confirmed by actual price action.</li>
+  <li style="margin-bottom:0.8em;"><span class="layer-tag l6">Layer 6</span> <strong>Trend Separation</strong> (Gap EMA2400/4800 > 2.2x ATR): Avoids risky, narrow consolidation zones.</li>
+</ol>
+
+<div class="figure">
+  <img src="/blog/minara-discipline/code.jpg" alt="V10 Strategy Logic Breakdown">
+  <div class="figcaption">V10 Strategy Logic Breakdown: The 6-Layer Multi-Filter System — Backend code with annotations highlighting the core logic layers.</div>
+</div>
+
+<h2>Backtest Results <span style="font-weight:400;font-size:0.65em;color:#999;">(1H, 5x Leverage, Jan 2025 – May 2026)</span></h2>
+
+<div class="verdict">
+  <h3>V10 Performance Summary</h3>
+  <ul style="margin-bottom:0;">
+    <li><strong>Net Profit: +3.07%</strong> — While Buy &amp; Hold lost <strong>-14.44%</strong></li>
+    <li><strong>Max Drawdown: -3.06%</strong> — Extremely smooth at 5x leverage</li>
+    <li><strong>Win Rate: 31.3%</strong> — Losing small to win big (Profit Factor <strong>1.40</strong>)</li>
+    <li><strong>Frequency: 48 trades</strong> (~3 trades/month) — The sweet spot for a low-stress life</li>
+  </ul>
+</div>
+
+<div class="figure">
+  <img src="/blog/minara-discipline/results.jpg" alt="V10 Performance Results">
+  <div class="figcaption">V10 Performance Results: Mastering Capital Preservation — Final backtest results with key performance metrics highlighted.</div>
+</div>
+
+<h2>Real-time Status</h2>
+
+<p>I've deployed V10 for live <strong>Paper Trading</strong> to battle-test the logic against this week's volatility. The beauty of this is being able to validate the 6-layer filters in a live environment — <strong>zero capital at risk</strong> — while ensuring the system maintains the same stability shown in my backtests.</p>
+
+<div class="figure">
+  <img src="/blog/minara-discipline/papertrading.jpg" alt="V10 in Action — Paper Trading">
+  <div class="figcaption">V10 in Action — Deploying the 6-layer logic on a 1H Paper Trading session. Leveraging 40x only because the filters provide the necessary safety net.</div>
+</div>
+
+<h2>Conclusion</h2>
+
+<p>Minara Strategy Studio helped me turn a vague feeling of "wanting safety" into a concrete, automatable ruleset. When the system matches your lifestyle, trading is no longer a burden.</p>
+
+<p>What about you? Are you still struggling to monitor multiple indicators manually, or are you ready to architect a professional Multi-Layer system like this?</p>
+
+<p style="font-size:1.1em;margin-top:1.5em;">With <a href="https://minara.io" target="_blank" rel="noopener">@minara</a>, stacking 6 filters isn't a mess — it's a fortress. <em>How many layers do you need to finally sleep soundly?</em></p>
+
+<p style="margin-top:2em;">
+  <a href="https://minara.io" target="_blank" rel="noopener">@minara</a>
+  &nbsp;#MinaraStrategyStudio &nbsp;#TradingDiscipline
+</p>
+
+<div style="border: 2px solid #ccc; border-radius: 8px; padding: 16px; margin: 2em 0; background: #fefefe; font-size: 0.85em; color: #888;">
+  <strong>⚠️ Disclaimer:</strong> Backtests are not a guarantee of future results. This is a journey log, not financial advice.
+</div>
+
+<a href="https://leonisforge.com" class="back-link">← Back to Leonis Forge</a>
+
+</div>
+</body>
+</html>

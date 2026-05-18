@@ -1,0 +1,293 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Cách Tôi Xây Dựng Kỷ Luật Giao Dịch Trên Minara Strategy Studio — Leonis Forge</title>
+<meta name="description" content="Xây dựng hệ thống giao dịch tự động 6 lớp trên Minara Strategy Studio — từ V1 trend-following ngây thơ đến V10 pháo đài với các bộ lọc độc lập. Lợi nhuận +3.07% với drawdown tối đa -3.06%.">
+<meta property="og:title" content="Cách Tôi Xây Dựng Kỷ Luật Giao Dịch Trên Minara Strategy Studio">
+<meta property="og:description" content="Hành trình từ V1 đến V10: xếp chồng 6 bộ lọc độc lập để bắt momentum, né nhiễu thị trường, và ngủ ngon mỗi đêm.">
+<meta property="og:image" content="https://leonisforge.com/blog/minara-discipline/header.jpg">
+<meta property="og:type" content="article">
+<meta property="og:url" content="https://leonisforge.com/blog/minara-discipline">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:creator" content="@Leonis237">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Kalam:wght@400;700&family=Patrick+Hand&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #fdfbf7;
+    --text: #2d2d2d;
+    --accent: #d94f4f;
+    --accent2: #3b82f6;
+    --border: #2d2d2d;
+  }
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body {
+    background: var(--bg);
+    background-image: radial-gradient(circle, #e8e4dc 1px, transparent 1px);
+    background-size: 20px 20px;
+    color: var(--text);
+    font-family: 'Patrick Hand', cursive;
+    font-size: 20px;
+    line-height: 1.7;
+    -webkit-font-smoothing: antialiased;
+  }
+  .container {
+    max-width: 720px;
+    margin: 0 auto;
+    padding: 40px 20px 80px;
+  }
+  h1, h2, h3 {
+    font-family: 'Kalam', cursive;
+    font-weight: 700;
+  }
+  h1 {
+    font-size: 2.2em;
+    margin-bottom: 0.3em;
+  }
+  h2 {
+    font-size: 1.5em;
+    margin-top: 2em;
+    margin-bottom: 0.5em;
+    padding-bottom: 6px;
+    border-bottom: 3px solid var(--border);
+    display: inline-block;
+  }
+  p { margin-bottom: 1.2em; }
+  .meta {
+    color: #777;
+    font-size: 0.85em;
+    margin-bottom: 2em;
+  }
+  .hero {
+    border: 3px solid var(--border);
+    border-radius: 12px 12px 12px 12px / 10px 10px 10px 10px;
+    box-shadow: 4px 4px 0 var(--border);
+    margin: 1.5em 0 2.5em;
+    overflow: hidden;
+    background: #fff;
+  }
+  .hero img {
+    width: 100%;
+    display: block;
+  }
+  .figure {
+    border: 2px solid var(--border);
+    border-radius: 8px 8px 8px 8px / 6px 6px 6px 6px;
+    box-shadow: 4px 4px 0 var(--border);
+    margin: 2em 0;
+    padding: 12px;
+    background: #fff;
+  }
+  .figure img {
+    width: 100%;
+    display: block;
+  }
+  .figcaption {
+    font-size: 0.8em;
+    color: #666;
+    text-align: center;
+    margin-top: 8px;
+  }
+  .highlight {
+    background: #fff3cd;
+    padding: 2px 6px;
+    border-radius: 3px;
+  }
+  .verdict {
+    border: 3px solid var(--accent);
+    border-radius: 12px 12px 12px 12px / 10px 10px 10px 10px;
+    box-shadow: 4px 4px 0 var(--accent);
+    padding: 24px;
+    margin: 2em 0;
+    background: #fff5f5;
+  }
+  .verdict h3 {
+    color: var(--accent);
+    margin-top: 0;
+  }
+  ul { margin: 1em 0 1em 1.5em; }
+  li { margin-bottom: 0.8em; }
+  .phase-tag {
+    display: inline-block;
+    background: var(--border);
+    color: #fff;
+    padding: 2px 10px;
+    border-radius: 4px;
+    font-size: 0.75em;
+    margin-right: 6px;
+    font-family: 'Kalam', cursive;
+  }
+  .phase-tag.win { background: #22c55e; }
+  .phase-tag.loss { background: var(--accent); }
+  .code-block {
+    background: #1e1e1e;
+    color: #d4d4d4;
+    padding: 20px;
+    border-radius: 8px;
+    font-family: 'Courier New', monospace;
+    font-size: 14px;
+    line-height: 1.5;
+    overflow-x: auto;
+    margin: 1.5em 0;
+    border: 2px solid var(--border);
+    box-shadow: 4px 4px 0 var(--border);
+  }
+  .code-block .kw { color: #569cd6; }
+  .code-block .cm { color: #6a9955; }
+  .code-block .str { color: #ce9178; }
+  .code-block .num { color: #b5cea8; }
+  a {
+    color: var(--accent2);
+    text-decoration: underline wavy;
+    text-underline-offset: 3px;
+  }
+  a:hover { color: var(--accent); }
+  .back-link {
+    display: inline-block;
+    margin-top: 3em;
+    padding: 8px 18px;
+    border: 2px solid var(--border);
+    border-radius: 6px;
+    box-shadow: 3px 3px 0 var(--border);
+    text-decoration: none;
+    color: var(--border);
+    font-family: 'Kalam', cursive;
+  }
+  .back-link:hover {
+    background: var(--border);
+    color: #fff;
+  }
+  .nav {
+    margin-bottom: 2em;
+  }
+  .nav a {
+    font-family: 'Kalam', cursive;
+    font-size: 0.9em;
+    text-decoration: none;
+    color: var(--border);
+  }
+  @media (max-width: 600px) {
+    body { font-size: 17px; }
+    h1 { font-size: 1.6em; }
+    .container { padding: 20px 15px 40px; }
+  }
+</style>
+</head>
+<body>
+<div class="container">
+
+<div class="nav">
+  <a href="https://leonisforge.com">← Leonis Forge</a>
+</div>
+
+<h1>Cách Tôi Xây Dựng Kỷ Luật Giao Dịch Trên Minara Strategy Studio</h1>
+<div class="meta">
+  Leonis &middot; 12/05/2026 &middot; Minara Strategy Studio
+</div>
+
+<div class="hero">
+  <img src="/blog/minara-discipline/header.jpg" alt="Minara Trading Discipline header">
+</div>
+
+<p>Tôi ghét nhìn chart. Là một Content Creator bận rộn, tôi muốn giảm thiểu thời gian trước màn hình, ngủ ngon mỗi đêm, và chỉ can thiệp vào hệ thống khi thực sự cần thiết.</p>
+
+<p>Giả thuyết của tôi: Bằng cách xếp chồng đủ bộ lọc độc lập trên khung 1H, tôi có thể bắt momentum trong khi né nhiễu thị trường — hoàn toàn hands-free.</p>
+
+<h2>Hành Trình Lặp Đi Lặp Lại</h2>
+
+<h3>1. V1 – Bản Phác Thảo Thô (ID: QgK98J)</h3>
+<ul>
+  <li>Prompt: "Xây dựng chiến lược long-only trend following cho BTC 4H dùng EMA cross và ADX."</li>
+  <li>Thực tế: Logic lỏng lẻo, quản lý rủi ro yếu. Chỉ là một đống lý thuyết dễ dàng bị "quét sạch" bởi biến động thị trường. Lãi <strong>+6.09%</strong> nhưng chỉ 4 lệnh cả năm.</li>
+  <li>Lỗ hổng: Sample size quá nhỏ để yên tâm. Nếu 1 trong 4 lệnh đó là "Thiên Nga Đen", mức Drawdown <strong>-8.94%</strong> có thể tệ hơn nhiều.</li>
+</ul>
+
+<h3>2. V5 – 4H Bảo Thủ (ID: u8sz2E)</h3>
+<ul>
+  <li>Nỗ lực: Tinh chỉnh logic để tăng tần suất, đạt 31 lệnh.</li>
+  <li>Kết quả: Tuy nhiên không mang lại lợi nhuận ổn định (<strong>-0.87%</strong>), cho thấy trend following đơn giản không đủ để xử lý khi tham gia thị trường tích cực hơn.</li>
+</ul>
+
+<h3>3. V10 – 1H Đa Bộ Lọc (ID: d9fMRL)</h3>
+<ul>
+  <li>Đột phá: Để giải bài toán "nhiều dữ liệu hơn nhưng vẫn lười", tôi hạ xuống khung 1H và xếp chồng 6 bộ lọc độc lập để bù đắp cho nhiễu ở khung thấp.</li>
+</ul>
+
+<div class="figure">
+  <img src="/blog/minara-discipline/comparison.jpg" alt="Tiến Hóa Hệ Thống: Từ V1 đến V10">
+  <div class="figcaption">Tiến Hóa Hệ Thống: Từ V1 đến V10 — Bảng so sánh hiệu suất của ba thế hệ chiến lược: V1, V5, và V10.</div>
+</div>
+
+<h2>Phân Tích Sâu: Hệ Thống 6 Lớp Của V10</h2>
+
+<p>Mỗi lớp hoạt động như một lá chắn lọc nhiễu thị trường:</p>
+
+<ol>
+  <li><strong>Động Lượng Hướng</strong> (+DI > -DI): Phe bò đang kiểm soát.</li>
+  <li><strong>Sức Mạnh Xu Hướng</strong> (ADX > ADX Mean 9): Đảm bảo xu hướng thực sự đang mạnh lên.</li>
+  <li><strong>Xu Hướng Ngắn Hạn</strong> (Giá > EMA63): Đảm bảo momentum ngắn hạn.</li>
+  <li><strong>Bộ Lọc Xu Hướng Vĩ Mô</strong> (MVP - Giá > EMA4800): "Chén Thánh." Một lớp này đã cứu V10 khỏi ~20 lần breakout giả trong giai đoạn chop khốc liệt năm 2025.</li>
+  <li><strong>Xác Nhận Phá Vỡ</strong> (Close > Previous High): Được xác nhận bởi price action thực tế.</li>
+  <li><strong>Phân Tách Xu Hướng</strong> (Khoảng cách EMA2400/4800 > 2.2x ATR): Tránh vùng tích lũy hẹp rủi ro cao.</li>
+</ol>
+
+<div class="figure">
+  <img src="/blog/minara-discipline/code.jpg" alt="Phân Tích Logic V10: Hệ Thống 6 Lớp Đa Bộ Lọc">
+  <div class="figcaption">Phân Tích Logic V10: Hệ Thống 6 Lớp Đa Bộ Lọc — Code backend với chú thích làm nổi bật các lớp logic cốt lõi.</div>
+</div>
+
+<h2>Kết Quả Backtest</h2>
+<p><em>(1H, Đòn Bẩy 5x, Tháng 1/2025 – Tháng 5/2026)</em></p>
+
+<ul>
+  <li><strong>Lợi Nhuận Ròng:</strong> +3.07% (Trong khi Buy &amp; Hold mất -14.44%)</li>
+  <li><strong>Drawdown Tối Đa:</strong> -3.06% (Cực kỳ mượt ở đòn bẩy 5x)</li>
+  <li><strong>Tỷ Lệ Thắng:</strong> 31.3% — Thua nhỏ để thắng lớn (Profit Factor 1.40)</li>
+  <li><strong>Tần Suất:</strong> 48 lệnh (~3 lệnh/tháng) — Điểm ngọt cho cuộc sống ít căng thẳng</li>
+</ul>
+
+<div class="verdict">
+  <h3>Kết Quả V10</h3>
+  <p style="font-size:1.3em;margin:0"><strong>+3.07% Lợi Nhuận Ròng</strong> &middot; <strong>-3.06% Drawdown</strong> &middot; <strong>Profit Factor 1.40</strong></p>
+  <p style="margin-bottom:0">48 lệnh trong 17 tháng. Thua nhỏ, thắng lớn. Làm chủ bảo toàn vốn.</p>
+</div>
+
+<div class="figure">
+  <img src="/blog/minara-discipline/results.jpg" alt="Kết Quả V10: Làm Chủ Bảo Toàn Vốn">
+  <div class="figcaption">Kết Quả V10: Làm Chủ Bảo Toàn Vốn — Kết quả backtest cuối cùng với các chỉ số hiệu suất chính được làm nổi bật.</div>
+</div>
+
+<h2>Trạng Thái Thực Tế</h2>
+
+<p>Tôi đã triển khai V10 để Paper Trading trực tiếp nhằm thử nghiệm logic trước biến động tuần này. Cái hay là có thể xác thực bộ lọc 6 lớp trong môi trường thực — không rủi ro vốn — đồng thời đảm bảo hệ thống duy trì độ ổn định như trong backtest.</p>
+
+<div class="figure">
+  <img src="/blog/minara-discipline/papertrading.jpg" alt="V10 Đang Hoạt Động — Paper Trading 1H">
+  <div class="figcaption">V10 Đang Hoạt Động — Triển khai logic 6 lớp trên phiên Paper Trading 1H. Sử dụng đòn bẩy 40x chỉ vì các bộ lọc cung cấp lưới an toàn cần thiết.</div>
+</div>
+
+<h2>Kết Luận</h2>
+
+<p>Minara Strategy Studio đã giúp tôi biến cảm giác mơ hồ "muốn an toàn" thành bộ quy tắc cụ thể, có thể tự động hóa. Khi hệ thống phù hợp với lối sống của bạn, giao dịch không còn là gánh nặng.</p>
+
+<p>Còn bạn thì sao? Vẫn đang vật lộn theo dõi nhiều chỉ báo thủ công, hay sẵn sàng kiến trúc một hệ thống Đa Lớp chuyên nghiệp như thế này?</p>
+
+<p>Với <a href="https://minara.io" target="_blank" rel="noopener">@minara</a>, xếp chồng 6 bộ lọc không phải là mớ hỗn độn — đó là pháo đài. Bạn cần bao nhiêu lớp để cuối cùng ngủ ngon giấc?</p>
+
+<div class="verdict" style="background:#fff8e1;border-color:#f0a030;box-shadow:4px 4px 0 #f0a030;">
+  <p style="margin:0;font-size:0.9em;">⚠️ <strong>Tuyên bố miễn trách:</strong> Backtest không đảm bảo kết quả trong tương lai. Đây là nhật ký hành trình, không phải lời khuyên tài chính.</p>
+</div>
+
+<p>
+  <a href="https://minara.io" target="_blank" rel="noopener">@minara</a>
+  &nbsp;#MinaraStrategyStudio &nbsp;#TradingDiscipline &nbsp;#MultiLayer
+</p>
+
+<a href="https://leonisforge.com" class="back-link">← Quay lại Leonis Forge</a>
+
+</div>
+</body>
+</html>
