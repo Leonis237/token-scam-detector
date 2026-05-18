@@ -1,0 +1,377 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Pizza Day 'Sniper' Tactics 2026 — Leonis Forge</title>
+<meta name="description" content="6-phase backtesting journey: building a Bitcoin Pizza Day trading strategy on Minara Strategy Studio. From -8.17% to +2.84% with 100% win rate.">
+<meta property="og:title" content="Pizza Day 'Sniper' Tactics 2026 on Minara Strategy Studio">
+<meta property="og:description" content="9 years of BTC data, 6 broken assumptions, 1 EMA200 filter that changed everything.">
+<meta property="og:image" content="https://leonisforge.com/blog/pizzaday/pizzaday-header.jpg">
+<meta property="og:type" content="article">
+<meta property="og:url" content="https://leonisforge.com/blog/pizzaday">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:creator" content="@Leonis237">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Kalam:wght@400;700&family=Patrick+Hand&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #fdfbf7;
+    --text: #2d2d2d;
+    --accent: #d94f4f;
+    --accent2: #3b82f6;
+    --border: #2d2d2d;
+  }
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body {
+    background: var(--bg);
+    background-image: radial-gradient(circle, #e8e4dc 1px, transparent 1px);
+    background-size: 20px 20px;
+    color: var(--text);
+    font-family: 'Patrick Hand', cursive;
+    font-size: 20px;
+    line-height: 1.7;
+    -webkit-font-smoothing: antialiased;
+  }
+  .container {
+    max-width: 720px;
+    margin: 0 auto;
+    padding: 40px 20px 80px;
+  }
+  h1, h2, h3 {
+    font-family: 'Kalam', cursive;
+    font-weight: 700;
+  }
+  h1 {
+    font-size: 2.2em;
+    margin-bottom: 0.3em;
+  }
+  h2 {
+    font-size: 1.5em;
+    margin-top: 2em;
+    margin-bottom: 0.5em;
+    padding-bottom: 6px;
+    border-bottom: 3px solid var(--border);
+    display: inline-block;
+  }
+  p { margin-bottom: 1.2em; }
+  .meta {
+    color: #777;
+    font-size: 0.85em;
+    margin-bottom: 2em;
+  }
+  .hero {
+    border: 3px solid var(--border);
+    border-radius: 12px 12px 12px 12px / 10px 10px 10px 10px;
+    box-shadow: 4px 4px 0 var(--border);
+    margin: 1.5em 0 2.5em;
+    overflow: hidden;
+    background: #fff;
+  }
+  .hero img {
+    width: 100%;
+    display: block;
+  }
+  .figure {
+    border: 2px solid var(--border);
+    border-radius: 8px 8px 8px 8px / 6px 6px 6px 6px;
+    box-shadow: 4px 4px 0 var(--border);
+    margin: 2em 0;
+    padding: 12px;
+    background: #fff;
+  }
+  .figure img {
+    width: 100%;
+    display: block;
+  }
+  .figcaption {
+    font-size: 0.8em;
+    color: #666;
+    text-align: center;
+    margin-top: 8px;
+  }
+  .highlight {
+    background: #fff3cd;
+    padding: 2px 6px;
+    border-radius: 3px;
+  }
+  .verdict {
+    border: 3px solid var(--accent);
+    border-radius: 12px 12px 12px 12px / 10px 10px 10px 10px;
+    box-shadow: 4px 4px 0 var(--accent);
+    padding: 24px;
+    margin: 2em 0;
+    background: #fff5f5;
+  }
+  .verdict h3 {
+    color: var(--accent);
+    margin-top: 0;
+  }
+  ul { margin: 1em 0 1em 1.5em; }
+  li { margin-bottom: 0.8em; }
+  .phase-tag {
+    display: inline-block;
+    background: var(--border);
+    color: #fff;
+    padding: 2px 10px;
+    border-radius: 4px;
+    font-size: 0.75em;
+    margin-right: 6px;
+    font-family: 'Kalam', cursive;
+  }
+  .phase-tag.win { background: #22c55e; }
+  .phase-tag.loss { background: var(--accent); }
+  .code-block {
+    background: #1e1e1e;
+    color: #d4d4d4;
+    padding: 20px;
+    border-radius: 8px;
+    font-family: 'Courier New', monospace;
+    font-size: 14px;
+    line-height: 1.5;
+    overflow-x: auto;
+    margin: 1.5em 0;
+    border: 2px solid var(--border);
+    box-shadow: 4px 4px 0 var(--border);
+  }
+  .code-block .kw { color: #569cd6; }
+  .code-block .cm { color: #6a9955; }
+  .code-block .str { color: #ce9178; }
+  .code-block .num { color: #b5cea8; }
+  a {
+    color: var(--accent2);
+    text-decoration: underline wavy;
+    text-underline-offset: 3px;
+  }
+  a:hover { color: var(--accent); }
+  .back-link {
+    display: inline-block;
+    margin-top: 3em;
+    padding: 8px 18px;
+    border: 2px solid var(--border);
+    border-radius: 6px;
+    box-shadow: 3px 3px 0 var(--border);
+    text-decoration: none;
+    color: var(--border);
+    font-family: 'Kalam', cursive;
+  }
+  .back-link:hover {
+    background: var(--border);
+    color: #fff;
+  }
+  .nav {
+    margin-bottom: 2em;
+  }
+  .nav a {
+    font-family: 'Kalam', cursive;
+    font-size: 0.9em;
+    text-decoration: none;
+    color: var(--border);
+  }
+  @media (max-width: 600px) {
+    body { font-size: 17px; }
+    h1 { font-size: 1.6em; }
+    .container { padding: 20px 15px 40px; }
+  }
+</style>
+</head>
+<body>
+<div class="container">
+
+<div class="nav">
+  <a href="https://leonisforge.com">← Leonis Forge</a>
+</div>
+
+<h1>Pizza Day 'Sniper' Tactics 2026</h1>
+<div class="meta">
+  Leonis &middot; May 18, 2026 &middot; Minara Strategy Studio
+</div>
+
+<div class="hero">
+  <img src="pizzaday-header.jpg" alt="Pizza Day Sniper Tactics header">
+</div>
+
+<p>Following our recent deep dive into the <strong>Sell in May</strong> effect on Minara Strategy Studio, a question hit me:</p>
+
+<p><em>"As the market heads toward May 22nd Bitcoin Pizza Day, how does BTC's price actually react on this exact date?"</em></p>
+
+<p>Do market makers exploit retail FOMO to run liquidity sweeps? To find out, I built a time-isolated script that freezes the bot for 364 days a year, waking it up <strong>exclusively around Pizza Day</strong> across 9 years of BTC history (8 cycles, 2017–2026).</p>
+
+<p>What started as a simple experiment turned into a 6-stage grind of broken assumptions and rebuilt logic. Here's the raw data, the failures, and the code that survived.</p>
+
+<h2>Phase 1: The Naive Baseline &amp; The Over-Optimization Traps</h2>
+<p>Our journey started with pure intuition, and the market immediately punished our assumptions.</p>
+
+<ul>
+  <li><span class="phase-tag">V1</span> <strong>Pizza Day</strong> (ID: VuFJgD): Buying blindly at 00:00 on May 22nd and exiting on May 23rd. The result? A stellar <strong>62.5% Win Rate</strong> but a net <strong>Loss of -1.55%</strong>. The math exposed a toxic asymmetry: Avg Win was +$163, while Avg Loss was -$323. Losers completely swallowed the winners.</li>
+
+  <li><span class="phase-tag">V2</span> <strong>Pizza Day Hunt</strong> (ID: qkupnD): To fix the heavy losses, I added a 1H Bullish Pin Bar filter and choked the Stop Loss to 1%. The market slapped me with a <strong>0% Win Rate</strong> (-4.05% PnL). Because 1H candles have lag, entry happens late, making a tight 1% SL pure suicide against institutional wicks.</li>
+
+  <li><span class="phase-tag">V3</span> <strong>Pizza Window Elite</strong> (ID: UbkfNJ): Expanding the window to May 20–24 and widening the SL to 2.5% resulted in our biggest drawdown: <strong>-8.17% PnL</strong>. However, the data revealed a crucial metric: Losers had an average Maximum Favorable Excursion (MFE) of +1.44%. The direction was right, but the entry timing on 1H was too noisy.</li>
+</ul>
+
+<p>Three versions in, maybe 10 minutes of backtesting. On any other platform this would've been an afternoon of data wrangling.</p>
+
+<div class="figure">
+  <img src="pizzaday-phase1.jpg" alt="Phase 1 dashboard — V1, V2, V3 metrics comparison">
+  <div class="figcaption">Phase 1 dashboard: V1–V3 metrics. High win rates, negative PnL — the asymmetry trap in full display.</div>
+</div>
+
+<h2>Phase 2: The Multi-Timeframe Shift &amp; The Break-Even Wound</h2>
+<p>Realizing 1H was pure noise during high-hype events, I shifted the entire logic to the macro <strong>4H Timeframe</strong> to capture true institutional rejections.</p>
+
+<ul>
+  <li><span class="phase-tag">V4</span> <strong>Pin Bar Pizza</strong> (ID: udgqQb): Win rate skyrocketed to <strong>85.7%</strong> (6W/1L), but PnL stayed negative at <strong>-1.83%</strong>. The trigger moved SL to break-even (+0.2%) too early. Average MFE was +3.76%, price surged, pulled back just enough to tap our tight stop, then flew without us. Strategy Studio's per-trade MFE tracking made this visible immediately.</li>
+
+  <li><span class="phase-tag">V6</span> <strong>Pizza Day Anomaly</strong> (ID: pAxTHB): Fixed the flaw by lifting the trigger: once price hits +3.0%, the bot locks a +1.5% profit floor with 1.5% pullback room. PnL recovered to <strong>-0.31%</strong>, Profit Factor 0.95.</li>
+</ul>
+
+<p>Five versions deep. Still red. But the iteration speed was changing how I thought about the problem — every hypothesis tested in minutes.</p>
+
+<div class="figure">
+  <img src="pizzaday-phase2.jpg" alt="Phase 2 dashboard — V4 to V6 metrics">
+  <div class="figcaption">Phase 2 dashboard: V4–V6. Win rate improved, but break-even triggers were killing profits.</div>
+</div>
+
+<h2>Phase 3: The Macro Filter — V7</h2>
+<p>The final missing puzzle piece was clear: our bot was catching falling knives by trying to hunt wicks during brutal macro bear markets (like 2018 and 2022).</p>
+
+<ul>
+  <li><span class="phase-tag win">V7</span> <strong>Pizza Day Grail</strong> (ID: UDxwG2): One line changed everything: <strong>EMA 200 on 4H</strong>. The bot only enters if Bitcoin is in a verified macro uptrend (close > EMA200).</li>
+</ul>
+
+<p><strong>Backtest.</strong> 2 trades over 9 years — May 2019 and May 2024. <strong>Both won.</strong></p>
+
+<div class="verdict">
+  <h3>Final Result</h3>
+  <p style="font-size:1.3em;margin:0"><strong>+2.84% PnL</strong> &middot; <strong>100% Win Rate</strong> &middot; <strong>Zero losing trades</strong></p>
+  <p style="margin-bottom:0">The filter didn't find more trades. It <strong>killed the bad ones.</strong></p>
+</div>
+
+<div class="figure">
+  <img src="pizzaday-phase3.jpg" alt="V7 Pizza Day Grail — 100% win rate under macro uptrends">
+  <div class="figcaption">V7 Pizza Day Grail: 100% win rate. 2 trades, 2 wins. EMA200 filtered out 7 years of noise.</div>
+</div>
+
+<h2>The Code: From Plain English to PineScript</h2>
+<p>I never wrote this code. I described the strategy in plain English, Strategy Studio generated it — including edge cases I didn't think to specify.</p>
+
+<p>Generated. Backtested. Deployed. From one paragraph.</p>
+
+<div class="code-block">
+<pre>// strategy("Pizza Day Grail", overlay=true, pyramiding=1)
+
+// Sizing convention
+const baseMarginPct = 10; // 10% margin per trade
+
+// === 0. State init (must be at top per T7) ===
+if (state.prevPos === undefined) state.prevPos = 0;
+if (state.entryPrice === undefined) state.entryPrice = 0;
+if (state.maxHighSinceEntry === undefined) state.maxHighSinceEntry = 0;
+if (state.lockedIn === undefined) state.lockedIn = false;
+
+// === 1. Pizza Day window (May 19–25, UTC) ===
+const isPizzaWindow = (month === 5) && (dayofmonth >= 19) && (dayofmonth <= 25);
+
+// === 2. Core technical filter: bullish pin bar with long lower wick ===
+const o = +open;
+const c = +close;
+const l = +low;
+const body = Math.abs(c - o);
+const lowerWick = Math.min(o, c) - l;
+const isPinBar = (c > o) && (lowerWick > body * 1.5);
+
+// Volume spike: volume > SMA20 * 1.2
+const volSma20 = ta.sma(volume, 20);
+const volumeSpike = +volume > +volSma20 * 1.2;
+
+// === 3. Macro trend filter: close above EMA200 ===
+const ema200 = ta.ema(close, 200);
+const isUptrend = c > +ema200;
+
+// === 4. Entry: only when flat ===
+const flat = strategy.position_size === 0;
+if (
+  isPizzaWindow &&
+  isPinBar &&
+  volumeSpike &&
+  isUptrend &&
+  flat &&
+  isFinite(+ema200) &&
+  isFinite(+volSma20)
+) {
+  strategy.entry('Pizza Day Grail', 'long', {
+    qty: baseMarginPct * strategy.leverage,
+    qty_type: 'percent_of_equity',
+    reasoning: 'Pizza Day window + bullish pin bar + volume spike + EMA200 uptrend',
+  });
+}
+
+// === 5. Detect just-entered to (re)init trade tracking ===
+const pos = strategy.position_size;
+const justEntered = pos > 0 && (state.prevPos) <= 0;
+if (justEntered) {
+  state.entryPrice = +strategy.position_avg_price;
+  state.maxHighSinceEntry = +high;
+  state.lockedIn = false;
+  // Initial hard exit: stop -3%, TP +8%
+  const entry = state.entryPrice;
+  strategy.exit('Hard_Exit', 'Pizza Day Grail', {
+    stop: entry * 0.97,
+    limit: entry * 1.08,
+    reasoning: 'Initial hard stop -3% / TP +8%',
+  });
+}
+
+// === 6. Dynamic risk management: while in position ===
+if (pos > 0) {
+  // Track running max high since entry
+  if (+high > state.maxHighSinceEntry) {
+    state.maxHighSinceEntry = +high;
+  }
+  const entry = state.entryPrice;
+  const maxH = state.maxHighSinceEntry;
+
+  // Transition: once MFE hits +3%, swap hard stop for profit lock at +1.5%
+  const mfeHit = maxH >= entry * 1.03;
+  if (mfeHit && !state.lockedIn) {
+    // Replace exits
+    strategy.cancel('Hard_Exit');
+    strategy.exit('Lock_Profit', 'Pizza Day Grail', {
+      stop: entry * 1.015,
+      limit: entry * 1.08,
+      reasoning: 'MFE >= +3% — lock floor at +1.5%, TP +8%',
+    });
+    state.lockedIn = true;
+  }
+}
+
+// === 7. Reset on flat ===
+if (pos === 0 && state.prevPos !== 0) {
+  state.entryPrice = 0;
+  state.maxHighSinceEntry = 0;
+  state.lockedIn = false;
+}
+
+state.prevPos = pos;
+return null;</pre>
+</div>
+
+<h2>Reality Check &amp; Seasonal Strategy</h2>
+<p>2 trades over 9 years. That's not a trading system — the EMA200 filter eliminated 7 of 8 years entirely. Any quant will tell you sample size matters more than win rate.</p>
+<p>But as a <strong>seasonal framework</strong> deployed through Strategy Studio, it does exactly what it's supposed to: capitalize on high-hype volatility windows without getting wiped out during the wrong macro regime. The platform made it trivial to discover that 2018 and 2022 were destroying every version — and equally trivial to filter them out with one line of code.</p>
+<p>This whole experiment took <strong>under two hours</strong>. Natural language → backtest → iterate → deploy. On any other stack I'd still be debugging the data pipeline.</p>
+
+<p style="margin-top:2em;font-size:1.1em;"><em>The EMA200 filter stayed silent for 7 years. When it speaks again, it'll be because BTC earned it. 🍕</em></p>
+
+<p>
+  <a href="https://minara.io" target="_blank" rel="noopener">@minara</a>
+  &nbsp;#MinaraStrategyStudio &nbsp;#Pizzaday
+</p>
+
+<a href="https://leonisforge.com" class="back-link">← Back to Leonis Forge</a>
+
+</div>
+</body>
+</html>

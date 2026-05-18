@@ -667,6 +667,26 @@ def api_airdrop_safety():
         return jsonify({"error": f"Analysis failed: {str(e)[:200]}"}), 500
 
 
+# ── Blog ──
+@app.route("/blog/<slug>")
+def blog_article(slug):
+    blog_dir = DIR / "static" / "blog" / slug
+    if (blog_dir / "index.html").exists():
+        return send_from_directory(str(blog_dir.parent), f"{slug}/index.html")
+    return "Article not found", 404
+
+
+@app.route("/blog/")
+def blog_index():
+    return "Blog coming soon", 200
+
+
+@app.route("/blog/<slug>/<path:filename>")
+def blog_asset(slug, filename):
+    blog_dir = DIR / "static" / "blog" / slug
+    return send_from_directory(str(blog_dir), filename)
+
+
 if __name__ == "__main__":
     port = int(os.environ.get("PORT", 8080))
     app.run(host="0.0.0.0", port=port)
