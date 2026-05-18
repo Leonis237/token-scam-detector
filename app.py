@@ -757,6 +757,22 @@ def api_blog_list():
             "default_lang": "en",
         })
 
+    # Sort by date, newest first
+    from datetime import datetime
+    def _parse_date(article):
+        date_str = article.get("languages", {}).get("en", {}).get("date", "")
+        # "Leonis · May 6, 2026 · Minara Strategy Studio"
+        for fmt in ("%B %d, %Y", "%d/%m/%Y"):
+            for part in date_str.split("·"):
+                part = part.strip()
+                try:
+                    return datetime.strptime(part, fmt)
+                except ValueError:
+                    continue
+        return datetime.min  # fallback: sort to the end
+
+    articles.sort(key=_parse_date, reverse=True)
+
     return jsonify({"articles": articles})
 
 
