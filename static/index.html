@@ -998,9 +998,9 @@ tailwind.config = {
     <p class="text-pencil/60 text-sm max-w-lg mx-auto" data-i18n="blog_desc">Deep dives, backtesting experiments, and Web3 analysis — straight from the forge.</p>
   </div>
 
-  <div class="grid grid-cols-1 md:grid-cols-2 gap-6" id="blogGrid">
+  <div class="grid grid-cols-1 md:grid-cols-3 gap-6" id="blogGrid">
     <!-- JS fills this -->
-    <div class="col-span-2 text-center py-10 text-pencil/30 font-heading text-sm">
+    <div class="col-span-3 text-center py-10 text-pencil/30 font-heading text-sm">
       Loading articles...
     </div>
   </div>
@@ -1613,7 +1613,7 @@ async function loadBlog() {
     _blogData = await resp.json();
     renderBlog();
   } catch(e) {
-    grid.innerHTML = '<div class="col-span-2 text-center py-10 text-pencil/30 font-heading text-sm">Articles coming soon.</div>';
+    grid.innerHTML = '<div class="col-span-3 text-center py-10 text-pencil/30 font-heading text-sm">Articles coming soon.</div>';
   }
 }
 
@@ -1623,7 +1623,7 @@ function renderBlog() {
   const lang = (typeof currentLang !== 'undefined' ? currentLang : 'en');
 
   if (!_blogData.articles || _blogData.articles.length === 0) {
-    grid.innerHTML = '<div class="col-span-2 text-center py-10 text-pencil/30 font-heading text-sm">' + blogLabel('blog_empty') + '</div>';
+    grid.innerHTML = '<div class="col-span-3 text-center py-10 text-pencil/30 font-heading text-sm">' + blogLabel('blog_empty') + '</div>';
     return;
   }
 
