@@ -764,6 +764,11 @@ def api_blog_list():
 @app.route("/blog/<slug>")
 def blog_article(slug):
     blog_dir = DIR / "static" / "blog" / slug
+    lang = request.args.get("lang", "").lower()
+    if lang and lang in ("vi", "zh", "ko"):
+        lang_file = blog_dir / f"index.{lang}.html"
+        if lang_file.exists():
+            return send_from_directory(str(blog_dir.parent), f"{slug}/index.{lang}.html")
     if (blog_dir / "index.html").exists():
         return send_from_directory(str(blog_dir.parent), f"{slug}/index.html")
     return "Article not found", 404

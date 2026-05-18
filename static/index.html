@@ -1639,7 +1639,9 @@ function renderBlog() {
       : '';
     const dateHtml = date ? '<span class="text-xs text-pencil/40">' + date + '</span>' : '';
     const readLabel = blogLabel('blog_read') || 'Read →';
-    return '<a href="' + a.url + '" class="block bg-white border-[3px] border-pencil shadow-sketch-sm wobbly-md p-5 card-hover hover:border-accent transition-colors group">'
+    const hasTranslated = a.languages[lang] && lang !== 'en';
+    const url = hasTranslated ? a.url + '?lang=' + lang : a.url;
+    return '<a href="' + url + '" class="block bg-white border-[3px] border-pencil shadow-sketch-sm wobbly-md p-5 card-hover hover:border-accent transition-colors group">'
       + imgHtml
       + '<div class="flex items-center justify-between mb-1">'
       + '<h3 class="font-heading text-lg group-hover:text-accent transition-colors truncate pr-2">' + title + '</h3>'
