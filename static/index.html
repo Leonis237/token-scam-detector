@@ -1004,6 +1004,8 @@ tailwind.config = {
       Loading articles...
     </div>
   </div>
+  <span data-i18n="blog_empty" class="hidden">No articles yet — check back soon.</span>
+  <span data-i18n="blog_read" class="hidden">Read →</span>
 </section>
 
 <!-- ════════════════ FAQ ════════════════ -->
@@ -1595,37 +1597,67 @@ document.getElementById('heroSearch').addEventListener('keydown', e => { if (e.k
 document.getElementById('airdropUrl').addEventListener('keydown', e => { if (e.key === 'Enter') checkAirdrop(); });
 
 // ── Blog loader ──
+let _blogData = null;
+
+function blogLabel(key) {
+  // Read the translated label from the page's data-i18n element
+  const el = document.querySelector('[data-i18n="' + key + '"]');
+  return el ? el.textContent : key;
+}
+
 async function loadBlog() {
   const grid = document.getElementById('blogGrid');
   if (!grid) return;
   try {
     const resp = await fetch('/api/blog/list');
-    const data = await resp.json();
-    if (!data.articles || data.articles.length === 0) {
-      grid.innerHTML = '<div class="col-span-2 text-center py-10 text-pencil/30 font-heading text-sm">No articles yet — check back soon.</div>';
-      return;
-    }
-    grid.innerHTML = data.articles.map(a => {
-      const imgHtml = a.image
-        ? '<img src="' + a.image + '" alt="' + a.title + '" class="w-full h-40 object-cover rounded-lg border-[2px] border-pencil/20 mb-3">'
-        : '';
-      const dateHtml = a.date ? '<span class="text-xs text-pencil/40">' + a.date + '</span>' : '';
-      const desc = (a.description || '').length > 120
-        ? (a.description || '').substring(0, 120) + '...'
-        : (a.description || '');
-      return '<a href="' + a.url + '" class="block bg-white border-[3px] border-pencil shadow-sketch-sm wobbly-md p-5 card-hover hover:border-accent transition-colors group">'
-        + imgHtml
-        + '<div class="flex items-center justify-between mb-1">'
-        + '<h3 class="font-heading text-lg group-hover:text-accent transition-colors truncate pr-2">' + a.title + '</h3>'
-        + '</div>'
-        + dateHtml
-        + '<p class="text-sm text-pencil/60 mt-1.5 leading-relaxed">' + desc + '</p>'
-        + '<span class="inline-block mt-2 font-heading text-xs text-accent">Read →</span>'
-        + '</a>';
-    }).join('');
+    _blogData = await resp.json();
+    renderBlog();
   } catch(e) {
     grid.innerHTML = '<div class="col-span-2 text-center py-10 text-pencil/30 font-heading text-sm">Articles coming soon.</div>';
   }
+}
+
+function renderBlog() {
+  const grid = document.getElementById('blogGrid');
+  if (!grid || !_blogData) return;
+  const lang = (typeof currentLang !== 'undefined' ? currentLang : 'en');
+
+  if (!_blogData.articles || _blogData.articles.length === 0) {
+    grid.innerHTML = '<div class="col-span-2 text-center py-10 text-pencil/30 font-heading text-sm">' + blogLabel('blog_empty') + '</div>';
+    return;
+  }
+
+  grid.innerHTML = _blogData.articles.map(a => {
+    const meta = a.languages[lang] || a.languages[a.default_lang] || a.languages['en'] || {};
+    const title = meta.title || a.slug;
+    const date = meta.date || '';
+    const desc = (meta.description || '').length > 120
+      ? (meta.description || '').substring(0, 120) + '...'
+      : (meta.description || '');
+    const imgHtml = meta.image
+      ? '<img src="' + meta.image + '" alt="' + title + '" class="w-full h-40 object-cover rounded-lg border-[2px] border-pencil/20 mb-3">'
+      : '';
+    const dateHtml = date ? '<span class="text-xs text-pencil/40">' + date + '</span>' : '';
+    const readLabel = blogLabel('blog_read') || 'Read →';
+    return '<a href="' + a.url + '" class="block bg-white border-[3px] border-pencil shadow-sketch-sm wobbly-md p-5 card-hover hover:border-accent transition-colors group">'
+      + imgHtml
+      + '<div class="flex items-center justify-between mb-1">'
+      + '<h3 class="font-heading text-lg group-hover:text-accent transition-colors truncate pr-2">' + title + '</h3>'
+      + '</div>'
+      + dateHtml
+      + '<p class="text-sm text-pencil/60 mt-1.5 leading-relaxed">' + desc + '</p>'
+      + '<span class="inline-block mt-2 font-heading text-xs text-accent">' + readLabel + '</span>'
+      + '</a>';
+  }).join('');
+}
+
+// Re-render blog when language changes
+const _origSetLang = typeof setLang === 'function' ? setLang : null;
+if (_origSetLang) {
+  window.setLang = function(lang) {
+    _origSetLang(lang);
+    renderBlog();
+  };
 }
 
 document.addEventListener('DOMContentLoaded', () => {

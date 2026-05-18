@@ -111,6 +111,8 @@ const I18N = {
     blog_badge: "📝 Blog",
     blog_title: "Bài Viết & Nghiên Cứu Mới Nhất",
     blog_desc: "Phân tích chuyên sâu, backtesting, và nghiên cứu Web3 — trực tiếp từ lò rèn.",
+    blog_empty: "Chưa có bài viết nào — quay lại sau nhé.",
+    blog_read: "Đọc →",
 
     og_badge: "🔬 AI 작동 방식",
     og_desc: "Mô hình Logistic Regression (572B) huấn luyện trên 200+ token. Chạy local qua ONNX — không gửi data ra ngoài.",
@@ -413,6 +415,8 @@ const I18N = {
     blog_badge: "📝 Blog",
     blog_title: "Latest Research & Articles",
     blog_desc: "Deep dives, backtesting experiments, and Web3 analysis — straight from the forge.",
+    blog_empty: "No articles yet — check back soon.",
+    blog_read: "Read →",
 
     og_badge: "🔬 AI 작동 방식",
     og_desc: "Mô hình Logistic Regression (572B) huấn luyện trên 200+ token. Chạy local qua ONNX — không gửi data ra ngoài.",
@@ -715,6 +719,8 @@ const I18N = {
     blog_badge: "📝 博客",
     blog_title: "最新研究 & 文章",
     blog_desc: "深度分析、回测实验和 Web3 研究 — 来自熔炉。",
+    blog_empty: "暂无文章 — 稍后再来看看。",
+    blog_read: "阅读 →",
 
     og_badge: "🔬 AI 작동 방식",
     og_desc: "Mô hình Logistic Regression (572B) huấn luyện trên 200+ token. Chạy local qua ONNX — không gửi data ra ngoài.",
@@ -1017,6 +1023,8 @@ const I18N = {
     blog_badge: "📝 블로그",
     blog_title: "최신 연구 및 기사",
     blog_desc: "심층 분석, 백테스팅 실험, Web3 연구 — 대장간에서 직접.",
+    blog_empty: "아직 글이 없습니다 — 곧 다시 확인해주세요.",
+    blog_read: "읽기 →",
 
     og_badge: "🔬 AI 작동 방식",
     og_desc: "Mô hình Logistic Regression (572B) huấn luyện trên 200+ token. Chạy local qua ONNX — không gửi data ra ngoài.",

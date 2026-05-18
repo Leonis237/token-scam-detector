@@ -668,10 +668,49 @@ def api_airdrop_safety():
 
 
 # ── Blog API ──
+def _parse_meta(html, slug, image_dir):
+    """Extract title, date, description, image from article HTML."""
+    import re, html as _html
+    title = ""
+    date = ""
+    description = ""
+    image = ""
+
+    m = re.search(r'<title>(.*?)</title>', html, re.DOTALL)
+    if m:
+        title = m.group(1).strip()
+        title = re.sub(r'\s*[—–-]\s*Leonis Forge\s*$', '', title).strip()
+        title = _html.unescape(title)
+
+    m = re.search(r'<meta\s+name="description"\s+content="([^"]*)"', html)
+    if m:
+        description = m.group(1).strip()
+
+    m = re.search(r'class="meta"[^>]*>([^<]+)<', html)
+    if not m:
+        m = re.search(r'<time[^>]*>([^<]+)<', html)
+    if m:
+        date = _html.unescape(m.group(1).strip())
+
+    m = re.search(r'<img\s+[^>]*src="([^"]*)"', html)
+    if m:
+        img_src = m.group(1).strip()
+        if img_src.startswith("/"):
+            image = img_src
+        else:
+            image = f"/{image_dir}/{img_src}"
+
+    return {
+        "title": title,
+        "date": date,
+        "description": description,
+        "image": image,
+    }
+
+
 @app.route("/api/blog/list")
 def api_blog_list():
-    """Return all blog articles sorted by date (newest first)."""
-    import re, html as _html
+    """Return all blog articles with multilingual metadata."""
     blog_root = DIR / "static" / "blog"
     articles = []
 
@@ -681,58 +720,41 @@ def api_blog_list():
     for slug_dir in sorted(blog_root.iterdir(), reverse=True):
         if not slug_dir.is_dir():
             continue
-        html_path = slug_dir / "index.html"
-        if not html_path.exists():
-            continue
 
         slug = slug_dir.name
+        main_html = slug_dir / "index.html"
+
+        # Must have at least the default (English) version
+        if not main_html.exists():
+            continue
+
         try:
-            html = html_path.read_text(encoding="utf-8")
+            main_content = main_html.read_text(encoding="utf-8")
         except Exception:
             continue
 
-        # Extract metadata from HTML (lightweight, no bs4 needed)
-        title = ""
-        date = ""
-        description = ""
-        image = ""
+        # Parse all available language versions
+        languages = {}
+        image_dir = f"blog/{slug}"
 
-        # <title>...</title>
-        m = re.search(r'<title>(.*?)</title>', html, re.DOTALL)
-        if m:
-            title = m.group(1).strip()
-            # Strip site name suffix
-            title = re.sub(r'\s*[—–-]\s*Leonis Forge\s*$', '', title).strip()
-            title = _html.unescape(title)
+        # Default (English) — from index.html
+        languages["en"] = _parse_meta(main_content, slug, image_dir)
 
-        # <meta name="description" content="...">
-        m = re.search(r'<meta\s+name="description"\s+content="([^"]*)"', html)
-        if m:
-            description = m.group(1).strip()
-
-        # Date from <div class="meta"> or <time>
-        m = re.search(r'class="meta"[^>]*>([^<]+)<', html)
-        if not m:
-            m = re.search(r'<time[^>]*>([^<]+)<', html)
-        if m:
-            date = _html.unescape(m.group(1).strip())
-
-        # First image (hero or first figure)
-        m = re.search(r'<img\s+[^>]*src="([^"]*)"', html)
-        if m:
-            img_src = m.group(1).strip()
-            if img_src.startswith("/"):
-                image = img_src
-            else:
-                image = f"/blog/{slug}/{img_src}"
+        # Check for translated versions: index.vi.html, index.zh.html, index.ko.html
+        for lang in ("vi", "zh", "ko"):
+            lang_path = slug_dir / f"index.{lang}.html"
+            if lang_path.exists():
+                try:
+                    lang_content = lang_path.read_text(encoding="utf-8")
+                    languages[lang] = _parse_meta(lang_content, slug, image_dir)
+                except Exception:
+                    pass
 
         articles.append({
             "slug": slug,
-            "title": title,
-            "date": date,
-            "description": description,
-            "image": image,
             "url": f"/blog/{slug}",
+            "languages": languages,
+            "default_lang": "en",
         })
 
     return jsonify({"articles": articles})
