@@ -671,7 +671,7 @@ def api_airdrop_safety():
 @app.route("/api/blog/list")
 def api_blog_list():
     """Return all blog articles sorted by date (newest first)."""
-    import re
+    import re, html as _html
     blog_root = DIR / "static" / "blog"
     articles = []
 
@@ -703,6 +703,7 @@ def api_blog_list():
             title = m.group(1).strip()
             # Strip site name suffix
             title = re.sub(r'\s*[—–-]\s*Leonis Forge\s*$', '', title).strip()
+            title = _html.unescape(title)
 
         # <meta name="description" content="...">
         m = re.search(r'<meta\s+name="description"\s+content="([^"]*)"', html)
@@ -714,7 +715,7 @@ def api_blog_list():
         if not m:
             m = re.search(r'<time[^>]*>([^<]+)<', html)
         if m:
-            date = m.group(1).strip()
+            date = _html.unescape(m.group(1).strip())
 
         # First image (hero or first figure)
         m = re.search(r'<img\s+[^>]*src="([^"]*)"', html)
