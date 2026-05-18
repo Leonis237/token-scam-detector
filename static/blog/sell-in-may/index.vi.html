@@ -1,0 +1,273 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Minara Strategy Studio Đã Bóc Trần Huyền Thoại "Sell in May" Năm 2026 Như Thế Nào — Leonis Forge</title>
+<meta name="description" content="Backtest câu thần chú Phố Wall trên Minara Strategy Studio — từ -1.41% khi short mù quáng đến +1.98% với chiến lược theo mùa. BTC-USD, đòn bẩy 5x, 6 vòng tối ưu.">
+<meta property="og:title" content="Minara Strategy Studio Đã Bóc Trần Huyền Thoại &quot;Sell in May&quot; Năm 2026 Như Thế Nào">
+<meta property="og:description" content="V8 chỉ short thua lỗ. V2 chỉ long theo mùa thắng. Đây là những gì 6 vòng backtest tiết lộ về &quot;Sell in May&quot; trong crypto.">
+<meta property="og:image" content="https://leonisforge.com/blog/sell-in-may/header.jpg">
+<meta property="og:type" content="article">
+<meta property="og:url" content="https://leonisforge.com/blog/sell-in-may">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:creator" content="@Leonis237">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Kalam:wght@400;700&family=Patrick+Hand&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #fdfbf7;
+    --text: #2d2d2d;
+    --accent: #d94f4f;
+    --accent2: #3b82f6;
+    --border: #2d2d2d;
+  }
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body {
+    background: var(--bg);
+    background-image: radial-gradient(circle, #e8e4dc 1px, transparent 1px);
+    background-size: 20px 20px;
+    color: var(--text);
+    font-family: 'Patrick Hand', cursive;
+    font-size: 20px;
+    line-height: 1.7;
+    -webkit-font-smoothing: antialiased;
+  }
+  .container {
+    max-width: 720px;
+    margin: 0 auto;
+    padding: 40px 20px 80px;
+  }
+  h1, h2, h3 {
+    font-family: 'Kalam', cursive;
+    font-weight: 700;
+  }
+  h1 {
+    font-size: 2.2em;
+    margin-bottom: 0.3em;
+  }
+  h2 {
+    font-size: 1.5em;
+    margin-top: 2em;
+    margin-bottom: 0.5em;
+    padding-bottom: 6px;
+    border-bottom: 3px solid var(--border);
+    display: inline-block;
+  }
+  h3 {
+    font-size: 1.25em;
+    margin-top: 1.5em;
+    margin-bottom: 0.4em;
+  }
+  p { margin-bottom: 1.2em; }
+  .meta {
+    color: #777;
+    font-size: 0.85em;
+    margin-bottom: 2em;
+  }
+  .hero {
+    border: 3px solid var(--border);
+    border-radius: 12px 12px 12px 12px / 10px 10px 10px 10px;
+    box-shadow: 4px 4px 0 var(--border);
+    margin: 1.5em 0 2.5em;
+    overflow: hidden;
+    background: #fff;
+  }
+  .hero img {
+    width: 100%;
+    display: block;
+  }
+  .figure {
+    border: 2px solid var(--border);
+    border-radius: 8px 8px 8px 8px / 6px 6px 6px 6px;
+    box-shadow: 4px 4px 0 var(--border);
+    margin: 2em 0;
+    padding: 12px;
+    background: #fff;
+  }
+  .figure img {
+    width: 100%;
+    display: block;
+  }
+  .figcaption {
+    font-size: 0.8em;
+    color: #666;
+    text-align: center;
+    margin-top: 8px;
+  }
+  .highlight {
+    background: #fff3cd;
+    padding: 2px 6px;
+    border-radius: 3px;
+  }
+  .verdict {
+    border: 3px solid var(--accent2);
+    border-radius: 12px 12px 12px 12px / 10px 10px 10px 10px;
+    box-shadow: 4px 4px 0 var(--accent2);
+    padding: 24px;
+    margin: 2em 0;
+    background: #f0f7ff;
+  }
+  .verdict h3 {
+    color: var(--accent2);
+    margin-top: 0;
+  }
+  ul { margin: 1em 0 1em 1.5em; }
+  li { margin-bottom: 0.8em; }
+  a {
+    color: var(--accent2);
+    text-decoration: underline wavy;
+    text-underline-offset: 3px;
+  }
+  a:hover { color: var(--accent); }
+  .back-link {
+    display: inline-block;
+    margin-top: 3em;
+    padding: 8px 18px;
+    border: 2px solid var(--border);
+    border-radius: 6px;
+    box-shadow: 3px 3px 0 var(--border);
+    text-decoration: none;
+    color: var(--border);
+    font-family: 'Kalam', cursive;
+  }
+  .back-link:hover {
+    background: var(--border);
+    color: #fff;
+  }
+  .nav {
+    margin-bottom: 2em;
+  }
+  .nav a {
+    font-family: 'Kalam', cursive;
+    font-size: 0.9em;
+    text-decoration: none;
+    color: var(--border);
+  }
+  @media (max-width: 600px) {
+    body { font-size: 17px; }
+    h1 { font-size: 1.6em; }
+    .container { padding: 20px 15px 40px; }
+  }
+</style>
+</head>
+<body>
+<div class="container">
+
+<div class="nav">
+  <a href="https://leonisforge.com">← Leonis Forge</a>
+</div>
+
+<h1>Minara Strategy Studio Đã Bóc Trần Huyền Thoại "Sell in May" Năm 2026 Như Thế Nào</h1>
+<div class="meta">
+  Leonis &middot; 06/05/2026 &middot; Minara Strategy Studio
+</div>
+
+<div class="hero">
+  <img src="/blog/sell-in-may/header.jpg" alt="Sell in May — Minara Strategy Studio backtest">
+</div>
+
+<p>"Sell in May and go away" — câu thần chú quen thuộc lại rộ lên khi tháng 5 bắt đầu. Nhưng với BTC đang chạm $81K, bức tranh thị trường đang vẽ một câu chuyện hoàn toàn khác. Thay vì tranh luận dựa trên cảm tính, tôi đã nhét giả thuyết này vào <strong>Minara Strategy Studio</strong> để kiểm chứng bằng dữ liệu thực tế từ 2023 đến nay.</p>
+
+<h2>Thiết Lập Chiến Lược</h2>
+
+<p>Tôi thiết kế chiến lược <strong>Seasonal Regime EMA Crossover</strong> trên khung Daily với ba thành phần cốt lõi:</p>
+
+<ul>
+  <li><strong>Giai đoạn Phòng Thủ</strong> (1/5 – 31/10): Giảm vị thế xuống 50%, <strong>chỉ Short</strong> qua tín hiệu EMA20 cắt xuống dưới EMA50 — đây là cách hiểu theo nghĩa đen của "Sell in May".</li>
+  <li><strong>Giai đoạn Tấn Công</strong> (1/11 – 30/4): Vị thế 100%, <strong>cả Long &amp; Short</strong> qua tín hiệu EMA crossover — đón đầu cú bật "mua vào tháng 10".</li>
+  <li><strong>Bộ lọc:</strong> EMA200 lọc xu hướng vĩ mô + ADX(14) &gt; 25 để tránh thị trường lình xình, thiếu conviction.</li>
+</ul>
+
+<h2>Kết Quả Backtest</h2>
+
+<p><strong>Thị trường:</strong> BTC-USD Perpetual &middot; <strong>Khung:</strong> 1D &middot; <strong>Đòn bẩy:</strong> 5x &middot; <strong>Giai đoạn:</strong> Tháng 1/2023 – 4/5/2026</p>
+
+<h3>V8 — Phiên Bản Gốc</h3>
+
+<p>Đây là bản triển khai "Sell in May" theo nghĩa đen — thiên về Short trong mùa hè, tin vào câu thần chú Phố Wall một cách mù quáng.</p>
+
+<div class="verdict">
+  <h3>Hiệu Suất V8</h3>
+  <ul style="margin-bottom:0;">
+    <li><strong>Lợi nhuận: -1.41%</strong> — Short mù quáng trong một thị trường thiên Long là cái giá đắt.</li>
+    <li><strong>Drawdown tối đa: -6.24%</strong> — Các lệnh Short bị xu hướng tăng vĩ mô của BTC nghiền nát.</li>
+    <li><strong>Tỷ lệ thắng: 25%</strong> — 4 lệnh: 1 Long thắng, 3 Short thất bại hoàn toàn.</li>
+  </ul>
+</div>
+
+<div class="figure">
+  <img src="/blog/sell-in-may/v8-equity.jpg" alt="V8 Equity Curve — Short-only seasonal">
+  <div class="figcaption">Đường Equity V8: Phiên bản "Sell in May" gốc. Thiên Short mùa hè cho ra -1.41% lợi nhuận với tỷ lệ thắng 25%.</div>
+</div>
+
+<h3>V2 — Phiên Bản Tối Ưu</h3>
+
+<p>Sau <strong>6 vòng Optimization</strong>, tôi xoay trục toàn bộ chiến lược: chuyển sang <strong>Long-only theo mùa</strong> thay vì Short trong những tháng hè. Logic trở thành: giảm exposure trong mùa hè, nhưng khi giao dịch, <em>chỉ đi Long</em>.</p>
+
+<div class="verdict">
+  <h3>Hiệu Suất V2</h3>
+  <ul style="margin-bottom:0;">
+    <li><strong>Lợi nhuận: +1.98%</strong> — Đảo chiều hoàn toàn từ âm sang dương.</li>
+    <li><strong>Drawdown tối đa: -3.01%</strong> — Giảm hơn một nửa so với V8.</li>
+    <li><strong>Tỷ lệ thắng: 50%</strong> — 2 lệnh, cả hai đều khớp trong những setup có conviction cao.</li>
+  </ul>
+</div>
+
+<div class="figure">
+  <img src="/blog/sell-in-may/v2-equity.jpg" alt="V2 Equity Curve — Long-only seasonal">
+  <div class="figcaption">Đường Equity V2: Sau 6 vòng tối ưu. Long-only theo mùa mang về +1.98% với drawdown giảm đáng kể.</div>
+</div>
+
+<h2>Hành Trình Tối Ưu</h2>
+
+<p>Đây là toàn bộ quá trình tiến hóa — 6 vòng từ V8 xuống V2, mỗi vòng lặp tinh chỉnh logic theo mùa dựa trên những gì dữ liệu thực sự nói, chứ không phải những gì câu thần chú tuyên bố:</p>
+
+<div class="figure">
+  <img src="/blog/sell-in-may/optimization.png" alt="Hành trình tối ưu từ V8 đến V2">
+  <div class="figcaption">Hành trình 6 vòng tối ưu: xoay trục từ "Sell in May" thiên Short sang Long-only theo mùa đầy kỷ luật.</div>
+</div>
+
+<p>Điểm pivot rất rõ: ngay khi tôi ngừng ép Short và để dữ liệu lên tiếng, hiệu suất lật từ âm sang dương. Engine Optimization không chỉ tinh chỉnh tham số — nó thách thức chính giả thuyết cốt lõi.</p>
+
+<h2>Insights Cốt Lõi</h2>
+
+<p>Ba bài học chính rút ra từ thí nghiệm này:</p>
+
+<ul>
+  <li><strong>BTC có xu hướng Long mạnh trên khung Daily.</strong> Ép Short trong bất kỳ mùa nào thực chất là đánh ngược xu hướng vĩ mô. Ngay cả trong những tháng hè "yếu", xu hướng nền của BTC vẫn là đi lên — các lệnh Short trong V8 rơi chính xác vào cái bẫy này.</li>
+  <li><strong>Chế Độ Phòng Thủ mới là cứu tinh thực sự.</strong> Giảm vị thế xuống 50% trong những tháng hè quản lý rủi ro hiệu quả <em>mà không cần full bear</em>. Bạn không cần Short thị trường — chỉ cần chọn lọc hơn và dùng ít đòn bẩy hơn khi điều kiện lịch sử yếu hơn.</li>
+  <li><strong>Giá trị thực của Minara là tốc độ lặp siêu nhanh.</strong> Chỉ trong vài phút, tôi pivot từ giả thuyết thất bại (-1.41%) sang phiên bản có edge rõ ràng (+1.98%). Nếu không có engine Optimization, mỗi vòng lặp sẽ tốn hàng giờ tinh chỉnh thủ công. Tốc độ lặp chính là edge.</li>
+</ul>
+
+<h2>Phán Quyết Cuối Cùng</h2>
+
+<p>"Sell in May" không hoàn toàn sai — nhưng trong crypto, nó cần được diễn giải lại một cách cấp thiết. Dữ liệu nói rằng: <strong>"Giảm exposure + ưu tiên Long chất lượng cao"</strong> thay vì short mù quáng.</p>
+
+<p>Chiến lược V2 chiến thắng đã public nếu bạn muốn đào sâu vào logic:</p>
+
+<p style="font-size:1.1em;text-align:center;margin:1.5em 0;">
+  <a href="https://minara.ai/share/strategy/95WrEeWH" target="_blank" rel="noopener" style="font-size:1.1em;">🔗 Xem Chiến Lược V2 Trên Minara →</a>
+</p>
+
+<h2>Tiếp Theo Là Gì</h2>
+
+<p>Tôi đang tinh chỉnh V2 dựa trên các gợi ý Optimization bổ sung và đã deploy lên <strong>Paper Trading</strong> để test với dữ liệu thời gian thực. Mục tiêu là xác thực logic seasonal regime trước điều kiện thị trường sống trước khi commit bất kỳ vốn nào.</p>
+
+<p style="font-size:1.15em;margin-top:1.5em;">Vậy tôi hỏi bạn cùng một câu mà dữ liệu đã buộc tôi phải đối mặt: <strong>Bạn đang thiên về Long hay Short cho mùa hè này?</strong></p>
+
+<div style="border: 2px solid #ccc; border-radius: 8px; padding: 16px; margin: 2em 0; background: #fefefe; font-size: 0.85em; color: #888;">
+  <strong>⚠️ Tuyên bố miễn trừ trách nhiệm:</strong> Không phải quảng cáo trả phí — phản hồi thực tế từ người dùng Minara. Backtest không đảm bảo kết quả trong tương lai. Đây là nhật ký hành trình, không phải lời khuyên tài chính.
+</div>
+
+<p style="margin-top:2em;">
+  <a href="https://minara.io" target="_blank" rel="noopener">@minara</a>
+  &nbsp;#MinaraStrategyStudio &nbsp;#SellInMay &nbsp;#CryptoBacktesting
+</p>
+
+<a href="https://leonisforge.com" class="back-link">← Về Leonis Forge</a>
+
+</div>
+</body>
+</html>

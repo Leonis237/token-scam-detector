@@ -1,0 +1,273 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>How Minara Strategy Studio Debunked "Sell in May" in 2026 — Leonis Forge</title>
+<meta name="description" content="Backtesting the Wall Street adage on Minara Strategy Studio — from -1.41% blind shorting to +1.98% with seasonal regime switching. BTC-USD, 5x leverage, 6 optimization rounds.">
+<meta property="og:title" content="How Minara Strategy Studio Debunked &quot;Sell in May&quot; in 2026">
+<meta property="og:description" content="V8 short-only lost money. V2 long-only seasonal won. Here's what 6 rounds of backtesting revealed about &quot;Sell in May&quot; in crypto.">
+<meta property="og:image" content="https://leonisforge.com/blog/sell-in-may/header.jpg">
+<meta property="og:type" content="article">
+<meta property="og:url" content="https://leonisforge.com/blog/sell-in-may">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:creator" content="@Leonis237">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Kalam:wght@400;700&family=Patrick+Hand&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #fdfbf7;
+    --text: #2d2d2d;
+    --accent: #d94f4f;
+    --accent2: #3b82f6;
+    --border: #2d2d2d;
+  }
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body {
+    background: var(--bg);
+    background-image: radial-gradient(circle, #e8e4dc 1px, transparent 1px);
+    background-size: 20px 20px;
+    color: var(--text);
+    font-family: 'Patrick Hand', cursive;
+    font-size: 20px;
+    line-height: 1.7;
+    -webkit-font-smoothing: antialiased;
+  }
+  .container {
+    max-width: 720px;
+    margin: 0 auto;
+    padding: 40px 20px 80px;
+  }
+  h1, h2, h3 {
+    font-family: 'Kalam', cursive;
+    font-weight: 700;
+  }
+  h1 {
+    font-size: 2.2em;
+    margin-bottom: 0.3em;
+  }
+  h2 {
+    font-size: 1.5em;
+    margin-top: 2em;
+    margin-bottom: 0.5em;
+    padding-bottom: 6px;
+    border-bottom: 3px solid var(--border);
+    display: inline-block;
+  }
+  h3 {
+    font-size: 1.25em;
+    margin-top: 1.5em;
+    margin-bottom: 0.4em;
+  }
+  p { margin-bottom: 1.2em; }
+  .meta {
+    color: #777;
+    font-size: 0.85em;
+    margin-bottom: 2em;
+  }
+  .hero {
+    border: 3px solid var(--border);
+    border-radius: 12px 12px 12px 12px / 10px 10px 10px 10px;
+    box-shadow: 4px 4px 0 var(--border);
+    margin: 1.5em 0 2.5em;
+    overflow: hidden;
+    background: #fff;
+  }
+  .hero img {
+    width: 100%;
+    display: block;
+  }
+  .figure {
+    border: 2px solid var(--border);
+    border-radius: 8px 8px 8px 8px / 6px 6px 6px 6px;
+    box-shadow: 4px 4px 0 var(--border);
+    margin: 2em 0;
+    padding: 12px;
+    background: #fff;
+  }
+  .figure img {
+    width: 100%;
+    display: block;
+  }
+  .figcaption {
+    font-size: 0.8em;
+    color: #666;
+    text-align: center;
+    margin-top: 8px;
+  }
+  .highlight {
+    background: #fff3cd;
+    padding: 2px 6px;
+    border-radius: 3px;
+  }
+  .verdict {
+    border: 3px solid var(--accent2);
+    border-radius: 12px 12px 12px 12px / 10px 10px 10px 10px;
+    box-shadow: 4px 4px 0 var(--accent2);
+    padding: 24px;
+    margin: 2em 0;
+    background: #f0f7ff;
+  }
+  .verdict h3 {
+    color: var(--accent2);
+    margin-top: 0;
+  }
+  ul { margin: 1em 0 1em 1.5em; }
+  li { margin-bottom: 0.8em; }
+  a {
+    color: var(--accent2);
+    text-decoration: underline wavy;
+    text-underline-offset: 3px;
+  }
+  a:hover { color: var(--accent); }
+  .back-link {
+    display: inline-block;
+    margin-top: 3em;
+    padding: 8px 18px;
+    border: 2px solid var(--border);
+    border-radius: 6px;
+    box-shadow: 3px 3px 0 var(--border);
+    text-decoration: none;
+    color: var(--border);
+    font-family: 'Kalam', cursive;
+  }
+  .back-link:hover {
+    background: var(--border);
+    color: #fff;
+  }
+  .nav {
+    margin-bottom: 2em;
+  }
+  .nav a {
+    font-family: 'Kalam', cursive;
+    font-size: 0.9em;
+    text-decoration: none;
+    color: var(--border);
+  }
+  @media (max-width: 600px) {
+    body { font-size: 17px; }
+    h1 { font-size: 1.6em; }
+    .container { padding: 20px 15px 40px; }
+  }
+</style>
+</head>
+<body>
+<div class="container">
+
+<div class="nav">
+  <a href="https://leonisforge.com">← Leonis Forge</a>
+</div>
+
+<h1>How Minara Strategy Studio Debunked "Sell in May" in 2026</h1>
+<div class="meta">
+  Leonis &middot; May 6, 2026 &middot; Minara Strategy Studio
+</div>
+
+<div class="hero">
+  <img src="/blog/sell-in-may/header.jpg" alt="Sell in May — Minara Strategy Studio backtest">
+</div>
+
+<p>"Sell in May and go away" is trending again. BTC is hovering around $81K, and my timeline is flooded with the usual seasonal hot takes. But instead of arguing based on intuition or recycled wisdom, I plugged this adage directly into <strong>Minara Strategy Studio</strong> to run a hard reality check — using real market data from 2023 to present.</p>
+
+<h2>The Strategy Setup</h2>
+
+<p>I designed a <strong>Seasonal Regime EMA Crossover</strong> strategy on the Daily timeframe with three core components:</p>
+
+<ul>
+  <li><strong>Defensive Period</strong> (May 1 – Oct 31): 50% position size, <strong>Short-only</strong> via EMA20/EMA50 crossover — this is the literal "Sell in May" interpretation.</li>
+  <li><strong>Aggressive Period</strong> (Nov 1 – Apr 30): 100% position size, <strong>Long &amp; Short</strong> via EMA crossovers — capturing the "buy in October" rebound.</li>
+  <li><strong>Filters:</strong> EMA200 macro trend filter + ADX(14) &gt; 25 to avoid choppy, low-conviction markets.</li>
+</ul>
+
+<h2>Backtest Results</h2>
+
+<p><strong>Market:</strong> BTC-USD Perpetual &middot; <strong>Timeframe:</strong> 1D &middot; <strong>Leverage:</strong> 5x &middot; <strong>Period:</strong> Jan 2023 – May 4, 2026</p>
+
+<h3>V8 — The Original Version</h3>
+
+<p>This was the literal "Sell in May" implementation — short-biased during summer, trusting the Wall Street adage at face value.</p>
+
+<div class="verdict">
+  <h3>V8 Performance</h3>
+  <ul style="margin-bottom:0;">
+    <li><strong>Net Return: -1.41%</strong> — Blindly shorting into a long-biased market was punishing.</li>
+    <li><strong>Max Drawdown: -6.24%</strong> — The shorts got steamrolled by BTC's macro uptrend.</li>
+    <li><strong>Win Rate: 25%</strong> — 4 trades total: 1 Long win, 3 Shorts failed.</li>
+  </ul>
+</div>
+
+<div class="figure">
+  <img src="/blog/sell-in-may/v8-equity.jpg" alt="V8 Equity Curve — Short-only seasonal">
+  <div class="figcaption">V8 Equity Curve: The original "Sell in May" implementation. Short-only summer bias resulted in -1.41% net return with a 25% win rate.</div>
+</div>
+
+<h3>V2 — The Optimized Version</h3>
+
+<p>After <strong>6 rounds of Optimization</strong>, I pivoted the strategy entirely: switched to <strong>Long-only seasonal</strong> instead of shorting the summer months. The logic became: reduce exposure during summer, but when you trade, <em>go Long</em>.</p>
+
+<div class="verdict">
+  <h3>V2 Performance</h3>
+  <ul style="margin-bottom:0;">
+    <li><strong>Net Return: +1.98%</strong> — A complete reversal from negative to positive territory.</li>
+    <li><strong>Max Drawdown: -3.01%</strong> — Cut drawdown by more than half compared to V8.</li>
+    <li><strong>Win Rate: 50%</strong> — 2 trades, both executing during high-conviction setups.</li>
+  </ul>
+</div>
+
+<div class="figure">
+  <img src="/blog/sell-in-may/v2-equity.jpg" alt="V2 Equity Curve — Long-only seasonal">
+  <div class="figcaption">V2 Equity Curve: After 6 optimization rounds. Long-only seasonal regime switching delivered +1.98% with significantly reduced drawdown.</div>
+</div>
+
+<h2>The Optimization Journey</h2>
+
+<p>Here's the full evolution — 6 rounds from V8 down to V2, each iteration refining the seasonal logic based on what the data was actually saying, not what the adage claimed:</p>
+
+<div class="figure">
+  <img src="/blog/sell-in-may/optimization.png" alt="Optimization journey from V8 to V2">
+  <div class="figcaption">The 6-round optimization journey: pivoting from a short-biased "Sell in May" towards a disciplined Long-only seasonal regime.</div>
+</div>
+
+<p>The pivot point is clear: once I stopped forcing shorts and let the data speak, performance flipped from negative to positive. The Optimization engine didn't just tweak parameters — it challenged the core hypothesis.</p>
+
+<h2>Core Insights</h2>
+
+<p>Three key takeaways emerged from this experiment:</p>
+
+<ul>
+  <li><strong>BTC is strongly Long-biased on the Daily timeframe.</strong> Forcing shorts during any season is effectively fighting the macro trend. Even in the "weak" summer months, BTC's underlying drift is upward — the shorts in V8 got caught in exactly this trap.</li>
+  <li><strong>Defensive Mode is the real lifesaver.</strong> Reducing position size to 50% during the summer months manages risk effectively <em>without going full bear</em>. You don't need to short the market — you just need to be more selective and use less leverage when conditions are historically weaker.</li>
+  <li><strong>Minara's real value is ultra-fast iteration.</strong> In minutes, I pivoted from a failing hypothesis (-1.41%) to one with a clear edge (+1.98%). Without the Optimization engine, each round would have taken hours of manual tuning. The speed of iteration is the edge.</li>
+</ul>
+
+<h2>Final Verdict</h2>
+
+<p>"Sell in May" isn't entirely wrong — but in crypto, it desperately needs a reinterpretation. The data says: <strong>"Reduce exposure + prioritize high-quality Longs"</strong> instead of blindly shorting the market.</p>
+
+<p>The winning V2 strategy is public if you want to dig into the logic yourself:</p>
+
+<p style="font-size:1.1em;text-align:center;margin:1.5em 0;">
+  <a href="https://minara.ai/share/strategy/95WrEeWH" target="_blank" rel="noopener" style="font-size:1.1em;">🔗 View V2 Strategy on Minara →</a>
+</p>
+
+<h2>What's Next</h2>
+
+<p>I'm currently refining V2 further based on additional Optimization suggestions and have deployed it to <strong>Paper Trading</strong> for real-time testing. The goal is to validate the seasonal regime logic against live market conditions before committing any capital.</p>
+
+<p style="font-size:1.15em;margin-top:1.5em;">So I'll ask the same question the data forced me to confront: <strong>Are you biasing Long or Short this summer?</strong></p>
+
+<div style="border: 2px solid #ccc; border-radius: 8px; padding: 16px; margin: 2em 0; background: #fefefe; font-size: 0.85em; color: #888;">
+  <strong>⚠️ Disclaimer:</strong> Not a paid promotion — real feedback from a Minara user. Backtests are not a guarantee of future results. This is a journey log, not financial advice.
+</div>
+
+<p style="margin-top:2em;">
+  <a href="https://minara.io" target="_blank" rel="noopener">@minara</a>
+  &nbsp;#MinaraStrategyStudio &nbsp;#SellInMay &nbsp;#CryptoBacktesting
+</p>
+
+<a href="https://leonisforge.com" class="back-link">← Back to Leonis Forge</a>
+
+</div>
+</body>
+</html>
