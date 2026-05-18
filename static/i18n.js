@@ -108,6 +108,10 @@ const I18N = {
     faq_q4: "Có hỗ trợ Solana không?",
     faq_a4: "Chưa. Honeypot.is chỉ hỗ trợ EVM chains. Solana sẽ được thêm khi có API phù hợp.",
 
+    blog_badge: "📝 Blog",
+    blog_title: "Bài Viết & Nghiên Cứu Mới Nhất",
+    blog_desc: "Phân tích chuyên sâu, backtesting, và nghiên cứu Web3 — trực tiếp từ lò rèn.",
+
     og_badge: "🔬 AI 작동 방식",
     og_desc: "Mô hình Logistic Regression (572B) huấn luyện trên 200+ token. Chạy local qua ONNX — không gửi data ra ngoài.",
     og_link: "OpenGradient에서 모델 보기 →",
@@ -405,6 +409,10 @@ const I18N = {
     faq_a3: "It checks allowances of popular tokens (USDT, USDC, ETH, WBTC...) against major DEX routers (Uniswap, 0x, 1inch, PancakeSwap...). Detects unlimited approvals to unknown spenders. Currently scans ~8-10 tokens × 8 spenders per chain.",
     faq_q4: "Does it support Solana?",
     faq_a4: "Not yet. Honeypot.is only supports EVM chains. Solana will be added when suitable APIs become available.",
+
+    blog_badge: "📝 Blog",
+    blog_title: "Latest Research & Articles",
+    blog_desc: "Deep dives, backtesting experiments, and Web3 analysis — straight from the forge.",
 
     og_badge: "🔬 AI 작동 방식",
     og_desc: "Mô hình Logistic Regression (572B) huấn luyện trên 200+ token. Chạy local qua ONNX — không gửi data ra ngoài.",
@@ -704,6 +712,10 @@ const I18N = {
     faq_q4: "支持 Solana 吗？",
     faq_a4: "暂不支持。Honeypot.is 仅支持 EVM 链。待有合适的 API 后添加 Solana。",
 
+    blog_badge: "📝 博客",
+    blog_title: "最新研究 & 文章",
+    blog_desc: "深度分析、回测实验和 Web3 研究 — 来自熔炉。",
+
     og_badge: "🔬 AI 작동 방식",
     og_desc: "Mô hình Logistic Regression (572B) huấn luyện trên 200+ token. Chạy local qua ONNX — không gửi data ra ngoài.",
     og_link: "OpenGradient에서 모델 보기 →",
@@ -1001,6 +1013,10 @@ const I18N = {
     faq_a3: "인기 토큰(USDT, USDC, ETH, WBTC...)의 주요 DEX 라우터(Uniswap, 0x, 1inch, PancakeSwap...)에 대한 승인 한도를 확인합니다. 알 수 없는 지출자에 대한 무제한 승인을 감지합니다. 현재 체인당 약 8-10개 토큰 × 8개 지출자를 스캔합니다.",
     faq_q4: "솔라나를 지원하나요?",
     faq_a4: "아직 아닙니다. Honeypot.is는 EVM 체인만 지원합니다. 적절한 API가 제공되면 솔라나를 추가할 예정입니다.",
+
+    blog_badge: "📝 블로그",
+    blog_title: "최신 연구 및 기사",
+    blog_desc: "심층 분석, 백테스팅 실험, Web3 연구 — 대장간에서 직접.",
 
     og_badge: "🔬 AI 작동 방식",
     og_desc: "Mô hình Logistic Regression (572B) huấn luyện trên 200+ token. Chạy local qua ONNX — không gửi data ra ngoài.",
