@@ -632,6 +632,7 @@ const I18N = {
     tab_scam: "🔍 代币骗局扫描",
     tab_approval: "🛡️ 授权检查",
     tab_eip7702: "🔐 EIP-7702 检查",
+    tab_chainlist: "⛓️ 链列表",
 
     checker_mcap: "市值",
     checker_fdv: "完全稀释估值",
@@ -936,6 +937,7 @@ const I18N = {
     tab_scam: "🔍 토큰 사기 스캔",
     tab_approval: "🛡️ 승인 확인",
     tab_eip7702: "🔐 EIP-7702 검사",
+    tab_chainlist: "⛓️ 체인리스트",
 
     checker_mcap: "시가총액",
     checker_fdv: "FDV",

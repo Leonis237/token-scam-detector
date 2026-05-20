@@ -440,6 +440,10 @@ tailwind.config = {
       class="font-heading text-lg px-5 py-2 border-[3px] border-b-0 border-muted rounded-t-2xl bg-muted/40 text-pencil/50 transition-colors">
       <span>🪂 Airdrop Safety</span>
     </button>
+    <button id="tabChainlist" onclick="switchTab('chainlist')"
+      class="font-heading text-lg px-5 py-2 border-[3px] border-b-0 border-muted rounded-t-2xl bg-muted/40 text-pencil/50 transition-colors">
+      <span data-i18n="tab_chainlist">⛓️ Chainlist</span>
+    </button>
   </div>
 
   <!-- ═══ SCAM DETECTOR TAB ═══ -->
@@ -730,6 +734,66 @@ tailwind.config = {
     </div>
   </div>
 
+  <!-- ═══ CHAINLIST TAB ═══ -->
+  <div id="panelChainlist" class="hidden bg-white border-[3px] border-pencil shadow-sketch-sm wobbly-md p-6 md:p-8">
+
+    <!-- Info box -->
+    <div class="bg-bluepen/10 border-[3px] border-bluepen/30 rounded-xl p-4 mb-4">
+      <p class="text-sm text-pencil/80 leading-relaxed" data-i18n-html="tab_chainlist_desc"><strong class="font-heading text-bluepen">⛓️ Chainlist</strong> — Thêm mạng EVM vào ví <span class="text-accent font-semibold">chỉ 1 click</span>. Không cần connect ví, không cần nhập tay Chain ID hay RPC. Chọn chain → bấm Add → ví hiện popup xác nhận. <em>Hỗ trợ MetaMask, Rabby, OKX, Trust Wallet.</em></p>
+    </div>
+
+    <!-- Search -->
+    <div class="mb-4 flex gap-2">
+      <input type="text" id="chainlistSearch"
+        class="input-sketch flex-1 border-[3px] border-pencil rounded-xl px-4 py-3 bg-white transition-colors"
+        data-i18n-placeholder="chainlist_search" placeholder="Tìm chain theo tên, Chain ID hoặc symbol..."
+        autocomplete="off" spellcheck="false"
+        oninput="filterChainlist()">
+      <div class="flex gap-1">
+        <button onclick="filterChainlist('all')" id="clFilterAll"
+          class="font-heading text-xs px-3 py-2 border-[2px] border-pencil rounded-lg bg-pencil text-white transition-colors">
+          <span data-i18n="chainlist_filter_all">All</span>
+        </button>
+        <button onclick="filterChainlist('L2')" id="clFilterL2"
+          class="font-heading text-xs px-3 py-2 border-[2px] border-muted rounded-lg bg-white text-pencil/50 transition-colors">
+          <span data-i18n="chainlist_filter_l2">L2</span>
+        </button>
+        <button onclick="filterChainlist('L1')" id="clFilterL1"
+          class="font-heading text-xs px-3 py-2 border-[2px] border-muted rounded-lg bg-white text-pencil/50 transition-colors">
+          <span data-i18n="chainlist_filter_l1">L1</span>
+        </button>
+      </div>
+    </div>
+
+    <!-- Count -->
+    <div class="flex justify-between items-center mb-3">
+      <span id="clCount" class="text-xs text-pencil/40 font-body"></span>
+    </div>
+
+    <!-- Chain table -->
+    <div class="overflow-x-auto">
+      <table class="w-full text-left">
+        <thead>
+          <tr class="border-b-[2px] border-pencil/20 text-xs text-pencil/50 uppercase tracking-wider font-heading">
+            <th class="py-2 pr-3" data-i18n="chainlist_th_chain">Chain</th>
+            <th class="py-2 px-3" data-i18n="chainlist_th_id">Chain ID</th>
+            <th class="py-2 px-3" data-i18n="chainlist_th_gas">Gas</th>
+            <th class="py-2 px-3 hidden md:table-cell" data-i18n="chainlist_th_tvl">TVL</th>
+            <th class="py-2 pl-3" data-i18n="chainlist_th_action">Action</th>
+          </tr>
+        </thead>
+        <tbody id="clTableBody" class="divide-y divide-pencil/10">
+        </tbody>
+      </table>
+    </div>
+
+    <!-- Empty state -->
+    <div id="clEmpty" class="hidden text-center py-10 text-pencil/30 font-body text-sm" data-i18n="chainlist_empty">Không tìm thấy chain nào.</div>
+
+    <!-- Error toast -->
+    <div id="clToast" class="hidden fixed bottom-6 left-1/2 -translate-x-1/2 bg-pencil text-white border-[2px] border-pencil shadow-sketch-lg rounded-xl px-5 py-3 text-sm font-body z-50 max-w-md text-center"></div>
+  </div>
+
 </section>
 
 <!-- ════════════════ FEATURES ════════════════ -->
@@ -860,6 +924,7 @@ tailwind.config = {
         <span class="text-xs bg-greenpen/10 border-[2px] border-greenpen/20 px-2 py-0.5 rounded-full">🛡️ Scan tokens</span>
         <span class="text-xs bg-greenpen/10 border-[2px] border-greenpen/20 px-2 py-0.5 rounded-full">🔍 Check approvals</span>
         <span class="text-xs bg-greenpen/10 border-[2px] border-greenpen/20 px-2 py-0.5 rounded-full">🔐 EIP-7702</span>
+        <span class="text-xs bg-greenpen/10 border-[2px] border-greenpen/20 px-2 py-0.5 rounded-full">⛓️ Chainlist</span>
       </div>
       <p class="text-xs text-pencil/40 italic">→ Step 1: Verify the token isn't a scam</p>
     </div>
@@ -1130,6 +1195,45 @@ window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', e =
   }
 });
 
+// ── Chainlist Data ──
+const CHAINLIST = [
+  // L1s
+  { name:"Ethereum", chainId:1, symbol:"ETH", rpc:["https://eth.llamarpc.com","https://rpc.ankr.com/eth","https://ethereum-rpc.publicnode.com"], explorer:"https://etherscan.io", tvl:"$97.0B", category:"L1" },
+  { name:"BNB Smart Chain", chainId:56, symbol:"BNB", rpc:["https://binance.llamarpc.com","https://bsc-rpc.publicnode.com","https://bsc-dataseed.binance.org"], explorer:"https://bscscan.com", tvl:"$7.4B", category:"L1" },
+  { name:"Polygon", chainId:137, symbol:"POL", rpc:["https://polygon.llamarpc.com","https://polygon-rpc.com","https://polygon-bor-rpc.publicnode.com"], explorer:"https://polygonscan.com", tvl:"$1.2B", category:"L1" },
+  { name:"Avalanche C-Chain", chainId:43114, symbol:"AVAX", rpc:["https://avalanche-c-chain-rpc.publicnode.com","https://api.avax.network/ext/bc/C/rpc","https://avalanche.drpc.org"], explorer:"https://snowtrace.io", tvl:"$1.3B", category:"L1" },
+  { name:"Fantom", chainId:250, symbol:"FTM", rpc:["https://rpcapi.fantom.network","https://fantom-rpc.publicnode.com","https://fantom.drpc.org"], explorer:"https://ftmscan.com", tvl:"$85M", category:"L1" },
+  { name:"Celo", chainId:42220, symbol:"CELO", rpc:["https://forno.celo.org","https://celo.drpc.org"], explorer:"https://celoscan.io", tvl:"$110M", category:"L1" },
+  { name:"Gnosis", chainId:100, symbol:"XDAI", rpc:["https://gnosis-rpc.publicnode.com","https://rpc.gnosischain.com","https://gnosis.drpc.org"], explorer:"https://gnosisscan.io", tvl:"$340M", category:"L1" },
+  { name:"Moonbeam", chainId:1284, symbol:"GLMR", rpc:["https://moonbeam-rpc.publicnode.com","https://rpc.api.moonbeam.network"], explorer:"https://moonscan.io", tvl:"$45M", category:"L1" },
+  { name:"Cronos", chainId:25, symbol:"CRO", rpc:["https://evm.cronos.org","https://cronos-evm-rpc.publicnode.com"], explorer:"https://cronoscan.com", tvl:"$380M", category:"L1" },
+  { name:"Kaia", chainId:8217, symbol:"KAIA", rpc:["https://public-en.node.kaia.io","https://kaia.blockpi.network/v1/rpc/public"], explorer:"https://kaiascan.io", tvl:"$95M", category:"L1" },
+  // L2s - major
+  { name:"Arbitrum One", chainId:42161, symbol:"ETH", rpc:["https://arb1.arbitrum.io/rpc","https://arbitrum.llamarpc.com","https://arbitrum-one-rpc.publicnode.com"], explorer:"https://arbiscan.io", tvl:"$2.3B", category:"L2" },
+  { name:"OP Mainnet", chainId:10, symbol:"ETH", rpc:["https://mainnet.optimism.io","https://optimism.llamarpc.com","https://optimism-rpc.publicnode.com"], explorer:"https://optimistic.etherscan.io", tvl:"$674M", category:"L2" },
+  { name:"Base", chainId:8453, symbol:"ETH", rpc:["https://mainnet.base.org","https://base.llamarpc.com","https://base-rpc.publicnode.com"], explorer:"https://basescan.org", tvl:"$6.6B", category:"L2" },
+  { name:"zkSync Era", chainId:324, symbol:"ETH", rpc:["https://mainnet.era.zksync.io","https://zksync.drpc.org"], explorer:"https://explorer.zksync.io", tvl:"$210M", category:"L2" },
+  { name:"Linea", chainId:59144, symbol:"ETH", rpc:["https://rpc.linea.build","https://linea.drpc.org"], explorer:"https://lineascan.build", tvl:"$450M", category:"L2" },
+  { name:"Scroll", chainId:534352, symbol:"ETH", rpc:["https://rpc.scroll.io","https://scroll.drpc.org","https://scroll-mainnet.public.blastapi.io"], explorer:"https://scrollscan.com", tvl:"$310M", category:"L2" },
+  { name:"Blast", chainId:81457, symbol:"ETH", rpc:["https://rpc.blast.io","https://blast.drpc.org","https://blast-rpc.publicnode.com"], explorer:"https://blastscan.io", tvl:"$480M", category:"L2" },
+  { name:"Mantle", chainId:5000, symbol:"MNT", rpc:["https://rpc.mantle.xyz","https://mantle.drpc.org","https://mantle-rpc.publicnode.com"], explorer:"https://mantlescan.xyz", tvl:"$386M", category:"L2" },
+  { name:"Mode", chainId:34443, symbol:"ETH", rpc:["https://mainnet.mode.network","https://mode.drpc.org"], explorer:"https://modescan.io", tvl:"$95M", category:"L2" },
+  // L2s - hot/new
+  { name:"Monad", chainId:143, symbol:"MON", rpc:["https://rpc.monad.xyz","https://monad.drpc.org"], explorer:"https://monadexplorer.com", tvl:"$694M", category:"L2" },
+  { name:"MegaETH", chainId:4326, symbol:"ETH", rpc:["https://rpc.megaeth.com","https://megaeth.drpc.org"], explorer:"https://megaethscan.com", tvl:"$718M", category:"L2" },
+  { name:"Nexus Mainnet", chainId:3946, symbol:"NEX", rpc:["https://mainnet.rpc.nexus.xyz"], explorer:"https://explorer.nexus.xyz", tvl:"—", category:"L1" },
+  { name:"Ink", chainId:57073, symbol:"ETH", rpc:["https://rpc-gel.inkonchain.com","https://ink.drpc.org"], explorer:"https://explorer.inkonchain.com", tvl:"$515M", category:"L2" },
+  { name:"Abstract", chainId:2741, symbol:"ETH", rpc:["https://api.mainnet.abs.xyz","https://abstract.drpc.org"], explorer:"https://abscan.org", tvl:"$62M", category:"L2" },
+  { name:"Sophon", chainId:50104, symbol:"SOPH", rpc:["https://rpc.sophon.xyz","https://sophon.drpc.org"], explorer:"https://explorer.sophon.xyz", tvl:"$38M", category:"L2" },
+  { name:"Unichain", chainId:130, symbol:"ETH", rpc:["https://mainnet.unichain.org","https://unichain.drpc.org"], explorer:"https://uniscan.xyz", tvl:"$87M", category:"L2" },
+  { name:"World Chain", chainId:480, symbol:"ETH", rpc:["https://worldchain-mainnet.g.alchemy.com/public","https://worldchain.drpc.org"], explorer:"https://worldscan.org", tvl:"$75M", category:"L2" },
+  { name:"Redstone", chainId:690, symbol:"ETH", rpc:["https://rpc.redstonechain.com","https://redstone.drpc.org"], explorer:"https://explorer.redstone.xyz", tvl:"$55M", category:"L2" },
+  { name:"Degen Chain", chainId:666666666, symbol:"DEGEN", rpc:["https://rpc.degen.tips","https://degen.drpc.org"], explorer:"https://explorer.degen.tips", tvl:"$12M", category:"L2" },
+  { name:"Zora", chainId:7777777, symbol:"ETH", rpc:["https://rpc.zora.energy","https://zora.drpc.org"], explorer:"https://explorer.zora.energy", tvl:"$28M", category:"L2" },
+  { name:"Fraxtal", chainId:252, symbol:"frxETH", rpc:["https://rpc.frax.com","https://fraxtal.drpc.org"], explorer:"https://fraxscan.com", tvl:"$42M", category:"L2" },
+  { name:"Lisk", chainId:1135, symbol:"ETH", rpc:["https://rpc.api.lisk.com","https://lisk.drpc.org"], explorer:"https://blockscout.lisk.com", tvl:"$18M", category:"L2" },
+];
+
 // ── Tab switching ──
 function switchTab(tab) {
   const panels = {
@@ -1137,12 +1241,14 @@ function switchTab(tab) {
     approval: document.getElementById('panelApproval'),
     eip7702: document.getElementById('panelEIP7702'),
     airdrop: document.getElementById('panelAirdrop'),
+    chainlist: document.getElementById('panelChainlist'),
   };
   const tabs = {
     scam: document.getElementById('tabScam'),
     approval: document.getElementById('tabApproval'),
     eip7702: document.getElementById('tabEIP7702'),
     airdrop: document.getElementById('tabAirdrop'),
+    chainlist: document.getElementById('tabChainlist'),
   };
 
   // Hide all, deactivate all
@@ -1595,6 +1701,132 @@ document.getElementById('walletAddr').addEventListener('keydown', e => { if (e.k
 document.getElementById('eip7702Wallet').addEventListener('keydown', e => { if (e.key === 'Enter') checkEIP7702(); });
 document.getElementById('heroSearch').addEventListener('keydown', e => { if (e.key === 'Enter') heroSearch(); });
 document.getElementById('airdropUrl').addEventListener('keydown', e => { if (e.key === 'Enter') checkAirdrop(); });
+
+// ── Chainlist ──
+let _clFilter = 'all';
+
+function filterChainlist(cat) {
+  if (cat !== undefined) {
+    _clFilter = cat;
+    // Update filter button styles
+    document.querySelectorAll('[id^="clFilter"]').forEach(b => {
+      b.className = 'font-heading text-xs px-3 py-2 border-[2px] border-muted rounded-lg bg-white text-pencil/50 transition-colors';
+    });
+    const activeBtn = document.getElementById('clFilter' + (cat === 'all' ? 'All' : cat));
+    if (activeBtn) activeBtn.className = 'font-heading text-xs px-3 py-2 border-[2px] border-pencil rounded-lg bg-pencil text-white transition-colors';
+  }
+  const query = document.getElementById('chainlistSearch').value.toLowerCase().trim();
+  let filtered = CHAINLIST;
+  if (_clFilter !== 'all') filtered = filtered.filter(c => c.category === _clFilter);
+  if (query) {
+    filtered = filtered.filter(c =>
+      c.name.toLowerCase().includes(query) ||
+      String(c.chainId).includes(query) ||
+      c.symbol.toLowerCase().includes(query)
+    );
+  }
+
+  const tbody = document.getElementById('clTableBody');
+  const empty = document.getElementById('clEmpty');
+  const count = document.getElementById('clCount');
+
+  count.textContent = filtered.length + ' / ' + CHAINLIST.length + ' chains';
+
+  if (filtered.length === 0) {
+    tbody.innerHTML = '';
+    empty.classList.remove('hidden');
+    return;
+  }
+  empty.classList.add('hidden');
+
+  tbody.innerHTML = filtered.map(c => {
+    const tvlHtml = c.tvl && c.tvl !== '—'
+      ? '<td class="py-3 px-3 text-sm text-greenpen hidden md:table-cell">' + c.tvl + '</td>'
+      : '<td class="py-3 px-3 text-sm text-pencil/30 hidden md:table-cell">—</td>';
+    return '<tr class="hover:bg-postit/20 transition-colors">'
+      + '<td class="py-3 pr-3 font-heading text-sm">' + c.name + '</td>'
+      + '<td class="py-3 px-3 text-sm text-pencil/60 font-mono text-xs">#' + c.chainId + '</td>'
+      + '<td class="py-3 px-3 text-sm text-pencil/60">' + c.symbol + '</td>'
+      + tvlHtml
+      + '<td class="py-3 pl-3">'
+      + '<button onclick="addChain(' + c.chainId + ')" '
+      + 'class="font-heading text-xs px-3 py-1.5 border-[2px] border-pencil shadow-sketch-sm rounded-lg bg-white hover:bg-accent hover:text-white transition-colors whitespace-nowrap" '
+      + 'data-i18n="chainlist_btn_add">Add to Wallet</button>'
+      + '<button onclick="copyChainInfo(' + c.chainId + ')" '
+      + 'class="font-heading text-xs px-2 py-1.5 border-[2px] border-muted rounded-lg bg-white text-pencil/40 hover:text-pencil transition-colors ml-1" '
+      + 'title="Copy chain info">📋</button>'
+      + '</td>'
+      + '</tr>';
+  }).join('');
+
+  // Re-apply i18n to buttons (they have data-i18n)
+  if (typeof applyLang === 'function') applyLang();
+}
+
+function addChain(chainId) {
+  const c = CHAINLIST.find(x => x.chainId === chainId);
+  if (!c) return;
+
+  const hexId = '0x' + chainId.toString(16);
+
+  if (!window.ethereum) {
+    showClToast('No wallet detected. Install MetaMask, Rabby, or OKX Wallet.');
+    return;
+  }
+
+  window.ethereum.request({
+    method: 'wallet_addEthereumChain',
+    params: [{
+      chainId: hexId,
+      chainName: c.name,
+      nativeCurrency: { name: c.symbol, symbol: c.symbol, decimals: 18 },
+      rpcUrls: c.rpc,
+      blockExplorerUrls: c.explorer ? [c.explorer] : []
+    }]
+  }).then(() => {
+    showClToast('✅ ' + c.name + ' added to wallet!');
+  }).catch(err => {
+    if (err.code === 4001) {
+      showClToast('⏎ Cancelled.');
+    } else if (err.code === -32002) {
+      showClToast('⏳ Wallet is busy — check for a pending request.');
+    } else {
+      // Fallback: show manual copy
+      showClToast('⚠️ Could not auto-add. Copy info below.');
+      copyChainInfo(chainId);
+    }
+  });
+}
+
+function copyChainInfo(chainId) {
+  const c = CHAINLIST.find(x => x.chainId === chainId);
+  if (!c) return;
+  const info = 'Chain Name: ' + c.name + '\nChain ID: ' + c.chainId + '\nSymbol: ' + c.symbol + '\nRPC: ' + c.rpc[0] + '\nExplorer: ' + (c.explorer || 'N/A');
+  navigator.clipboard.writeText(info).then(() => {
+    showClToast('📋 Chain info copied! Paste into wallet → Add Network → Custom.');
+  }).catch(() => {
+    showClToast('⚠️ Copy failed. Check browser permissions.');
+  });
+}
+
+function showClToast(msg) {
+  const toast = document.getElementById('clToast');
+  toast.textContent = msg;
+  toast.classList.remove('hidden');
+  setTimeout(() => toast.classList.add('hidden'), 3500);
+}
+
+// Init on tab switch
+const _origSwitchTab = switchTab;
+switchTab = function(tab) {
+  _origSwitchTab(tab);
+  if (tab === 'chainlist') filterChainlist();
+};
+
+// Enter key on search
+document.getElementById('chainlistSearch').addEventListener('keydown', function(e) {
+  if (e.key === 'Enter') filterChainlist();
+});
 
 // ── Blog loader ──
 let _blogData = null;
