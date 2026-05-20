@@ -1736,7 +1736,11 @@ function filterChainlist(cat) {
       ? '<td class="py-3 px-3 text-sm text-greenpen hidden md:table-cell">' + tvlStr + '</td>'
       : '<td class="py-3 px-3 text-sm text-pencil/30 hidden md:table-cell">—</td>';
     return '<tr class="hover:bg-postit/20 transition-colors">'
-      + '<td class="py-3 pr-3 font-heading text-sm">' + (c.icon || '') + ' ' + c.name + '</td>'
+      + '<td class="py-3 pr-3 font-heading text-sm flex items-center gap-2">'
+      + (c.icon
+        ? '<img src="' + c.icon + '" alt="" class="w-5 h-5 rounded-full flex-shrink-0" onerror="this.style.display=\'none\'">'
+        : '<span class="w-5 h-5 rounded-full bg-pencil/10 flex items-center justify-center text-[10px] font-heading text-pencil/50 flex-shrink-0">' + (c.symbol || '?').slice(0,2) + '</span>')
+      + c.name + '</td>'
       + '<td class="py-3 px-3 text-sm text-pencil/60 font-mono text-xs">#' + c.chainId + '</td>'
       + '<td class="py-3 px-3 text-sm text-pencil/60">' + c.symbol + '</td>'
       + tvlHtml
