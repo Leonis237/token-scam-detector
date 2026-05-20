@@ -1197,7 +1197,21 @@ window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', e =
 });
 
 // ── Chainlist Data (loaded from chains_top100.js) ──
-const CHAINLIST = window.CHAINLIST_TOP100 || [];
+let CHAINLIST = window.CHAINLIST_TOP100 || [];
+let _chainsLoaded = CHAINLIST.length > 0;
+
+async function ensureChainsLoaded() {
+  if (_chainsLoaded) return;
+  try {
+    const resp = await fetch('/static/chains_top100.js');
+    const text = await resp.text();
+    const jsonStr = text.split('= ')[1].replace(/;\s*$/, '');
+    CHAINLIST = JSON.parse(jsonStr);
+    _chainsLoaded = true;
+  } catch(e) {
+    console.warn('Failed to load chains, using fallback');
+  }
+}
 
 // ── Tab switching ──
 function switchTab(tab) {
@@ -1673,12 +1687,20 @@ let _clFilter = 'all';
 function filterChainlist(cat) {
   if (cat !== undefined) {
     _clFilter = cat;
-    // Update filter button styles
     document.querySelectorAll('[id^="clFilter"]').forEach(b => {
       b.className = 'font-heading text-xs px-3 py-2 border-[2px] border-muted rounded-lg bg-white text-pencil/50 transition-colors';
     });
     const activeBtn = document.getElementById('clFilter' + (cat === 'all' ? 'All' : cat));
     if (activeBtn) activeBtn.className = 'font-heading text-xs px-3 py-2 border-[2px] border-pencil rounded-lg bg-pencil text-white transition-colors';
+  }
+
+  // Ensure data is loaded
+  if (!_chainsLoaded) {
+    document.getElementById('clTableBody').innerHTML = '';
+    document.getElementById('clEmpty').classList.add('hidden');
+    document.getElementById('clCount').textContent = 'Loading chains...';
+    ensureChainsLoaded().then(() => filterChainlist());
+    return;
   }
   const query = document.getElementById('chainlistSearch').value.toLowerCase().trim();
   let filtered = CHAINLIST;
